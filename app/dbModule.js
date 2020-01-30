@@ -1,12 +1,20 @@
 const sql = require('mssql')
 let fs = require("fs");
 
+// const config= {
+// 	user: 'nodejs',
+// 	password: 'nodejs',
+// 	server: 'hyper2',
+// 	database: 'BORODICH',
+// 	port: 49438
+// };
+
 const config= {
-	user: 'nodejs',
-	password: 'nodejs',
-	server: 'hyper2',
-	database: 'BORODICH',
-	port: 49438
+	user: 'user001',
+	password: '12345',
+	server: '127.0.0.1',
+	database: 'test',
+	port: 1433
 };
 
 module.exports.getData = async function(am, date) {
@@ -14,7 +22,9 @@ module.exports.getData = async function(am, date) {
 		sql.connect(config).then(function() {
 			let myJsonDate = JSON.parse(date);
 			if (am == 10){
-				let obj = new sql.Request().query(`select * from getData(${am})`).then(function (result) {
+				let obj = new sql.Request().query(`select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10), 
+				SiteAddingDate, 104) as SiteAddingTime, Name as company_name,Website,Country as country,Type as type, DbAddingDate as DBAddingTime from Vacancy inner join
+				Company on Company.Id = Vacancy.CompanyId order by Vacancy.DbAddingDate DESC, Vacancy.Url`).then(function (result) {
 					sql.close(function (err) {
 						if (err) {
 							return console.log("Ошибка: " + err.message);
@@ -27,13 +37,16 @@ module.exports.getData = async function(am, date) {
 				});
 			}
 			else {
-				let obj = new sql.Request().query(`select * from getDataDate(${am},\'${myJsonDate.date}\')`).then(function (result) {
+				let obj = new sql.Request().query(`select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10), 
+				SiteAddingDate, 104) as SiteAddingTime, Name as company_name,Website,Country as country,Type as type, DbAddingDate as DBAddingTime from Vacancy,
+				Company where Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' order by Vacancy.DbAddingDate DESC, 
+				Vacancy.Url`).then(function (result) {
 					sql.close(function (err) {
 						if (err) {
 							return console.log("Ошибка: " + err.message);
 						}
-						let obj = result.recordset.splice(0,am-10);
-						resolve(result.recordset);
+						let obj = result.recordset.slice(am-10);
+						resolve(obj);
 						console.log("Подключение закрыто");
 					});
 				}).catch(function (err) {

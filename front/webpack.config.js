@@ -1,7 +1,8 @@
 var path = require('path');
+require('babel-polyfill');
 
 module.exports = {
-    entry: "./app/app.jsx", // входная точка - исходный файл
+    entry: ['babel-polyfill', './app/app.jsx'],
     output:{
         path: path.resolve(__dirname, './public'),     // путь к каталогу выходных файлов - папка public
         publicPath: '/public/',
