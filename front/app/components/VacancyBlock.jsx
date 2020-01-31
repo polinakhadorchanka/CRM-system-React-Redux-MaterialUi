@@ -18,7 +18,38 @@ class VacancyBlock extends React.Component {
         this.setState({isOpening: true});
     }
 
-    openDescription() {
+    async openDescription() {
+        if(!this.state.vacancy.isViewed || this.state.vacancy.isViewed === 0) {
+            await this.setState({vacancy: {...this.state.vacancy, isViewed: 1}});
+
+            let vacancy = this.state.vacancy;
+
+            fetch(`/api/vacancy-status`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(vacancy)
+                })
+                .then(
+                    function(response) {
+                        if (response.status !== 200) {
+                            console.log(`/api/vacancy-status` +
+                                response.status);
+                            return;
+                        }
+
+                        response.json().then(function(data) {
+                            console.log(data.message);
+                        });
+                    }
+                )
+                .catch(function(err) {
+                    console.log('EXP: ', err);
+                });
+        }
+
         let description = document.getElementById(this.state.vacancy.url);
 
         if(description.classList.contains('hide'))
@@ -106,7 +137,17 @@ class VacancyBlock extends React.Component {
         return <div className={this.state.vacancy.isRemoved === 1 ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
                 <div className='vacancy-status'>
-                    <img />
+                    <img src={this.state.vacancy.isViewed === 1 ?
+                        (this.state.vacancy.isFavorite === 1 ? 'images/status-favorite.png' :
+                            (this.state.vacancy.isRemoved === 1 ? 'images/status-removed.png' :
+                            'images/status-viewed.png')) :
+                        (this.state.vacancy.isFavorite === 1 ? 'images/status-favorite.png' :
+                            'images/status-unviewed.png')}
+                    title={this.state.vacancy.isViewed === 1 ?
+                        (this.state.vacancy.isFavorite === 1 ? 'favorite' :
+                            (this.state.vacancy.isRemoved === 1 ? 'removed' :
+                                'viewed')) :
+                        (this.state.vacancy.isFavorite === 1 ? 'favorite' : 'unviewed')}/>
                 </div>
                 <div className='vacancy-information'>
                     <span className='vacancy-name'>{this.state.vacancy.position}</span> <br/>
@@ -135,7 +176,8 @@ class VacancyBlock extends React.Component {
                     </a> <br/>
                     <div className='buttons'>
                         <img id='add-to-favorites' src='images/add-favorites.png'
-                             title='add to favorites'
+                             title={!this.state.vacancy.isFavorite || this.state.vacancy.isFavorite === 0 ?
+                                 'add to favorites' : 'remove from favorites'}
                              className={this.state.vacancy.isFavorite === 1 ? 'add-to-favorites-active' : ''}
                              onClick={this.addToFavorite}/>
                         <img id='remove' src='images/delete.png'
@@ -146,33 +188,6 @@ class VacancyBlock extends React.Component {
             <div  id={this.state.vacancy.url} className='description hide'
                   dangerouslySetInnerHTML = {{__html: this.state.vacancy.Description}} />
         </div>;
-
-
-        {/*<div className={this.state.isOpening ? "vacancy-block open-block" : "vacancy-block"}>*/}
-        {/*    <div className="my-row">*/}
-        {/*        <div>*/}
-        {/*            <span className="position">{this.props.position.position}</span> <br/>*/}
-        {/*        </div>*/}
-        {/*        <div>*/}
-        {/*            <a href={this.props.position.url} target="_blank">*/}
-        {/*                <input type="button" className="button" value="View" onClick={this.onClickView}/>*/}
-        {/*            </a>*/}
-        {/*        </div>*/}
-        {/*    </div>*/}
-
-        {/*    <span className="company-name">*/}
-        {/*        <a href={this.props.position.Website} target="_blank">*/}
-        {/*        {this.props.position.company_name ? this.props.position.company_name : undefined}*/}
-        {/*        </a>*/}
-        {/*        {this.props.position.country ? ' / ' + this.props.position.country : undefined}*/}
-        {/*    </span>*/}
-
-        {/*    <span className="date">{this.props.position.SiteAddingDate}</span>*/}
-        {/*    <span className={this.props.position.location ? "company-name" : ""}>*/}
-        {/*        {this.props.position.location ? 'Location: ' + this.props.position.location : undefined}*/}
-        {/*    </span>*/}
-        {/*    <span className="company-name">Stack</span>*/}
-        {/*</div>;*/}
     }
 }
 

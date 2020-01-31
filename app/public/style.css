@@ -49,22 +49,6 @@ body {
     content: url("images/favorites-active.png");
 }
 
-#bottom-block {
-    height: 50px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 14px;
-    color: #e1e1e1;
-}
-
-#bottom-block:hover {
-    color: #f3533f;
-    cursor: pointer;
-}
-
 .filters img {
     margin-right: 10px;
     cursor: pointer;
@@ -86,9 +70,13 @@ body {
     width: 64px;
     height: 64px;
     margin-right: 10px;
-    border: 1px solid #1e1e1e;
 
     float: left;
+}
+
+.vacancy-status img {
+    width: 64px;
+    height: 64px;
 }
 
 .vacancy-block .vacancy-information {
@@ -145,9 +133,6 @@ body {
     color: #e1e1e1;
     border: none;
     cursor: pointer;
-
-    position: relative;
-    z-index: 1;
 }
 
 .vacancy-block input:hover {
@@ -190,6 +175,56 @@ body {
 
     transition: height 1s ease-out;
     box-shadow: inset 0 5px 8px -3px rgba(50, 50, 50, 0.75);
+}
+
+#bottom-block {
+    padding-top: 19px;
+    padding-bottom: 10px;
+
+    text-align: center;
+    font-size: 14px;
+    color: #e1e1e1;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+#bottom-block:hover {
+    color: #f3533f;
+}
+
+#show-new-vacancies-block {
+    height: 60px;
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    cursor: pointer;
+}
+
+#show-new-vacancies-block input {
+    width: 200px;
+    height: 60px;
+
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 14px;
+
+    background-color: #1e1e1e;
+    color: #e1e1e1;
+    border: none;
+    border-left: 3px solid #e1e1e1;
+
+    outline: none;
+    user-select: none;
+}
+
+#show-new-vacancies-block input:hover {
+    color: #f3533f;
 }
 
 .hide {

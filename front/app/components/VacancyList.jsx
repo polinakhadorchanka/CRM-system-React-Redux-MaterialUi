@@ -184,3 +184,10 @@ class VacancyList extends React.Component {
 }
 
 module.exports = VacancyList;
+
+/*
+<div id="show-new-vacancies-block" className={this.state.newVacanciesCount > 0 ? "" : "hide"}>
+                <input type="button" className={this.state.newVacanciesCount > 0 ? "" : "hide"}
+                       value={"show " + this.state.newVacanciesCount + " new vacancies"}
+                       onClick={this.showNewVacancies} />
+ */
