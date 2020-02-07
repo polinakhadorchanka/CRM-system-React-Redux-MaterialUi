@@ -1,4 +1,4 @@
-const sql = require('mssql');
+const sql = require('mssql')
 let fs = require("fs");
 
 const config= {
@@ -9,93 +9,63 @@ const config= {
 	port: 50100
 };
 
-// const config= {
-// 	user: 'user001',
-// 	password: '12345',
-// 	server: '127.0.0.1',
-// 	database: 'test',
-// 	port: 1433
-// };
-
-module.exports.getData = async function(am, date, filter) {
+module.exports.getData = async function(id, filter) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		// filter ++
 		sql.connect(config).then(function() {
-			let myJsonDate = JSON.parse(date);
-			if (am == 10){
+			if(id == 'undefined') {
 				if(filter == `all`){
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description,SiteAddingDate as SiteAddingTime,
+	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else if(filter == `unviewed`) {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description,SiteAddingDate as SiteAddingTime,
+	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description,SiteAddingDate as SiteAddingTime,
+	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				}
-				let obj = new sql.Request().query(usQuery).then(function (result) {
-					sql.close(function (err) {
-						if (err) {
-							return console.log("Ошибка: " + err.message);
-							reject("Ошибка: " + err.message);
-						}
-						resolve(result.recordset);
-						console.log("Подключение закрыто");
-					});
-				}).catch(function (err) {
-					console.dir(err);
-				});
-			}
-			else {
+			} else{
 				if(filter == `all`){
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved=0 order by Vacancy.DbAddingDate DESC, Vacancy.Url,position`;
+					usQuery = `select * from testF1(\'${id}\') where isRemoved = 0 order by DBAddingTime DESC, url, position`;
 				} else if(filter == `unviewed`) {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+					usQuery = `select * from testF1(\'${id}\') where isRemoved = 0 and isViewed = 0 order by DBAddingTime DESC, url, position`;
 				} else {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
-					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
-					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+					usQuery = `select * from testF1(\'${id}\') where isRemoved = 0 and isFavorite = 1 order by DBAddingTime DESC, url, position`;
 				}
-				let obj = new sql.Request().query(usQuery).then(function (result) {
-					sql.close(function (err) {
-						if (err) {
-							return console.log("Ошибка: " + err.message);
-							reject("Ошибка: " + err.message);
-						}
-						let obj = result.recordset.slice(am-10);
-						resolve(obj);
-						console.log("Подключение закрыто");
-					});
-				}).catch(function (err) {
-					console.dir(err);
-				});
 			}
+			let obj = new sql.Request().query(usQuery).then(function (result) {
+				sql.close(function (err) {
+					if (err) {
+						return console.log("Ошибка: " + err.message);
+						reject("Ошибка: " + err.message);
+					}
+					resolve(result.recordset);
+					console.log("Подключение закрыто");
+				});
+			}).catch(function (err) {
+				console.dir(err);
+			});
 		}).catch(function(err) {
 			console.dir(err);
 		});
 	})
 };
 
-module.exports.getAmount = async function(date, filter) {
+module.exports.getAmount = async function(id, filter) {
 	// filter ++
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		sql.connect(config).then(function() {
-			let myJsonDate = JSON.parse(date);
 			if(filter == `all`){
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate>\'${myJsonDate.date}\' and isRemoved = 0`;
+				usQuery = `select dbo.testF3 (\'${id}\') where isRemoved = 0`;
 			} else if(filter == `unviewed`) {
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate>\'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0`;
+				usQuery = `select dbo.testF3 (\'${id}\') where isRemoved = 0 nad isViewed = 0`;
 			} else {
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate>\'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1`;
+				usQuery = `select dbo.testF3 (\'${id}\') where isRemoved = 0 nad isFavorite = 1`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
@@ -115,18 +85,18 @@ module.exports.getAmount = async function(date, filter) {
 	})
 };
 
-module.exports.getAmountLeft = async function(date,filter) {
+module.exports.getAmountLeft = async function(id,filter) {
 	// filter
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		sql.connect(config).then(function() {
-			let myJsonDate = JSON.parse(date);
+			console.log(id);
 			if(filter == `all`){
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate<=\'${myJsonDate.date}\' and isRemoved = 0`;
+				usQuery = `select dbo.testF2 (\'${id}\',\'all\')`;
 			} else if(filter == `unviewed`) {
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate<=\'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0`;
+				usQuery = `select dbo.testF2 (\'${id}\',\'unviewed\')`;
 			} else {
-				usQuery = `select count(*) as count from Vacancy where DbAddingDate<=\'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1`;
+				usQuery = `select dbo.testF2 (\'${id}\',\'favorite\')`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
@@ -134,6 +104,7 @@ module.exports.getAmountLeft = async function(date,filter) {
 						return console.log("Ошибка: " + err.message);
 						reject("Ошибка: " + err.message);
 					}
+					console.log(result);
 					resolve(result.recordset);
 					console.log("Подключение закрыто");
 				});
@@ -152,17 +123,11 @@ module.exports.getNewData = async function(date,filter) {
 		sql.connect(config).then(function() {
 			let myJsonDate = JSON.parse(date);
 			if(filter == `all`){
-				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
-					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 order by DBAddingTime DESC, url, position`;
 			} else if(filter == `unviewed`) {
-				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
-					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 and isViewed = 0 order by DBAddingTime DESC, url, position`;
 			} else {
-				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description, CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
-					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
+				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 and isFavorite = 1 order by DBAddingTime DESC, url, position`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {

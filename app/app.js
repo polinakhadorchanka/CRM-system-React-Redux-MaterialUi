@@ -4,7 +4,6 @@ let bodyParser = require('body-parser')
 let mod = require('./dbModule')
 
 let app = express();
-let myJsonDate = { "date": ""};
 let curentAmount = +0;
 
 app.use(express.static(__dirname + "/public"));
@@ -17,51 +16,42 @@ app.listen(3000, function(){
 
 app.get("/api/vacancies", function(req, res){
     let vacancies;
+    let id = req.query.id;
     let filter = req.query.filter;
-    console.log(`${curentAmount+10} - it's cureamount+10`);
-    mod.getData(10*req.query.site, JSON.stringify(myJsonDate), filter).then(function(result) {
-        console.log(curentAmount);
-        vacancies = result;
-        if(10*req.query.site == 10 && vacancies.length != 0)
-            myJsonDate.date = vacancies[0].DBAddingTime;
-        res.send(vacancies);
+    mod.getData(id, filter).then(function(result) {
+        res.send(result);
     });
 });
 
 // Получение новых вакансий++
 app.get("/api/vacancies/new", function(req, res){
     let vacancies;
+    let id = req.query.id;
     let filter = req.query.filter;
-    mod.getNewData(JSON.stringify(myJsonDate), filter).then(function(result) {
-        vacancies = result;
-        myJsonDate.date = vacancies[0].DBAddingTime;
-        res.send(vacancies);
-        console.log(vacancies);
+    mod.getNewData(id, filter).then(function(result) {
+        res.send(result);
+        console.log(result);
     });
 });
 
 // Получение количества новых вакансий++
 app.get("/api/vacancies/new/count", function(req, res){
-    let amount;
+    let id = req.query.id;
     let filter = req.query.filter;
-    mod.getAmount(JSON.stringify(myJsonDate), filter).then(function(result) {
-        amount = result;
-        res.send(amount);
+    mod.getAmount(id, filter).then(function(result) {
+        console.log(result);
+        res.send(result);
     });
 });
 
 // Получение количества оставшихся вакансий++
 // Пример вызова `/api/vacancies/next?count=${this.state.nextCount}` , где count - количество отображаемых вакансий
 app.get("/api/vacancies/next", function(req, res){
-    let amount;
     let filter = req.query.filter;
-    mod.getAmountLeft(JSON.stringify(myJsonDate), filter).then(function(result) {
-        amount = result;
-        console.log(amount[0].count - req.query.count);
-        curentAmount = +req.query.count;
-        console.log(curentAmount);
-        amount[0].count-= req.query.count;
-        res.send(amount);
+    let id = req.query.id;
+    mod.getAmountLeft(id, filter).then(function(result) {
+        console.log(result);
+        res.send(result);
     });
 });
 

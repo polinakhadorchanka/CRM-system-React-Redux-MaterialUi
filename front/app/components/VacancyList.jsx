@@ -16,14 +16,18 @@ class VacancyList extends React.Component {
         this.showNewVacancies = this.showNewVacancies.bind(this);
 
         this.showNextVacancies(true);
-
         this.getNewVacanciesCount(this);
     }
 
     async getNextCount(context) {
-        let vacanciesCount = context.state.positions.length;
+        console.log('qq');
+        console.log(context);
+        console.log(context.state.positions[length-1]);
 
-        await fetch(`/api/vacancies/next?count=${vacanciesCount}&filter=${context.state.filter}`)
+        let vacanciesCount = context.state.positions.length,
+            id = context.state.positions[length-1] ? context.state.positions[length-1].vacancyId : undefined;
+
+        await fetch(`/api/vacancies/next?id=${id}&filter=${context.state.filter}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -44,9 +48,10 @@ class VacancyList extends React.Component {
     }
 
     async showNewVacancies() {
-        let context = this;
+        let context = this,
+            id = context.state.positions[0] ? context.state.positions[length-1].vacancyId : undefined;
 
-        await fetch(`api/vacancies/new?filter=${this.state.filter}`)
+        await fetch(`api/vacancies/new?id=${id}filter=${this.state.filter}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -75,9 +80,11 @@ class VacancyList extends React.Component {
 
     async showNextVacancies(empty) {
         let context = this,
-            vacanciesCount = context.state.positions.length;
+            id = context.state.positions[length-1] ? context.state.positions[length-1].vacancyId : undefined;
 
-        await fetch(`/api/vacancies?site=${vacanciesCount/10+1}&` +
+        console.log(id);
+
+        await fetch(`/api/vacancies?id=${id}&` +
             `count=${empty ? 10 : this.state.nextCount}&filter=${this.state.filter}`)
             .then(
                 function(response) {
@@ -96,9 +103,9 @@ class VacancyList extends React.Component {
                                 context.setState({positions: [...context.state.positions, item]});
                             });
                         }
-
-                        context.getNextCount(context);
                         console.log(context.state);
+                    }).then(function () {
+                        context.getNextCount(context);
                     });
                 }
             )
@@ -108,8 +115,10 @@ class VacancyList extends React.Component {
     }
 
     async getNewVacanciesCount(context) {
+        let id = context.state.positions[0] ? context.state.positions[length-1].vacancyId : undefined;
+
         let timerId = await setTimeout(function request() {
-             fetch(  `/api/vacancies/new/count?filter=${context.state.filter}`)
+            fetch(  `/api/vacancies/new/?id=${id}&filter=${context.state.filter}`)
                 .then(
                     function(response) {
                         if (response.status !== 200) {
