@@ -61,7 +61,10 @@ class VacancyList extends React.Component {
                         });
 
                         context.setState({newVacanciesCount: 0});
-                        //window.scrollTo(0, 0);
+
+                        document.getElementById('show-new-vacancies-block').classList.toggle(
+                            'show-new-vacancies-block-hide');
+                        window.scrollTo(0, 0);
                     });
                 }
             )
@@ -85,9 +88,14 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function(data) {
+                        if(empty === true) {
+                            context.setState({positions: data});
+                        }
+                        else {
                             data.forEach(function (item) {
                                 context.setState({positions: [...context.state.positions, item]});
                             });
+                        }
 
                         context.getNextCount(context);
                         console.log(context.state);
@@ -143,10 +151,9 @@ class VacancyList extends React.Component {
                     return <VacancyBlock position={vacancy} filter={filter} />
                 })
             }
-            <div id="show-new-vacancies-block" className={this.state.newVacanciesCount > 0 ? "" : "hide"}>
-                <input type="button" className={this.state.newVacanciesCount > 0 ? "" : "hide"}
-                       value={"show " + this.state.newVacanciesCount + " new vacancies"}
-                       onClick={this.showNewVacancies} />
+            <div id="show-new-vacancies-block" className={this.state.newVacanciesCount=== 0 ? 'show-new-vacancies-block-hide' : ''}
+                 onClick={this.showNewVacancies}>
+                {"show " + this.state.newVacanciesCount + " new vacancies"}
             </div>
             <div id="bottom-block"
                  className={this.state.nextCount <= 0 ? "hide" : ""}

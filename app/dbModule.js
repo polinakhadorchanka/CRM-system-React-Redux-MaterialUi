@@ -1,21 +1,21 @@
 const sql = require('mssql');
 let fs = require("fs");
 
-// const config= {
-// 	user: 'nodejs',
-// 	password: 'nodejs',
-// 	server: 'DBServer1',
-// 	database: 'BORODICH',
-// 	port: 50100
-// };
-
 const config= {
-	user: 'user001',
-	password: '12345',
-	server: '127.0.0.1',
-	database: 'test',
-	port: 1433
+	user: 'nodejs',
+	password: 'nodejs',
+	server: 'DBServer1',
+	database: 'BORODICH',
+	port: 50100
 };
+
+// const config= {
+// 	user: 'user001',
+// 	password: '12345',
+// 	server: '127.0.0.1',
+// 	database: 'test',
+// 	port: 1433
+// };
 
 module.exports.getData = async function(am, date, filter) {
 	return new Promise(function(resolve, reject) {

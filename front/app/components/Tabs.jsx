@@ -33,10 +33,17 @@ class Tabs extends React.Component {
                     <a id='favorites'
                        className="nav-link" data-toggle="tab" href="#list" onClick={this.changeActive}>Favorites</a>
                 </li>
+                <li className="nav-item">
+                    <a id='board'
+                       className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
+                </li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane fade show active" id="list">
                     <VacancyList filter={this.state.active} ref='list'/>
+                </div>
+                <div className="tab-pane fade" id="board-tab">
+                    Доска
                 </div>
             </div>
         </div>;

@@ -138,7 +138,7 @@ body {
 }
 
 .vacancy-block input:hover {
-    color: #465bd5;
+    color: #7f9fd5;
 }
 
 .vacancy-block .buttons {
@@ -186,7 +186,7 @@ body {
 }
 
 .description-hide {
-    margin: 0;
+    margin-bottom: 0;
     padding-top: 0;
     padding-bottom: 0;
 
@@ -206,24 +206,37 @@ body {
 }
 
 #bottom-block:hover {
-    color: #465bd5;
+    color: #7f9fd5;
 }
 
 #show-new-vacancies-block {
+    width: 200px;
     height: 60px;
 
     position: fixed;
     bottom: 0;
     right: 0;
 
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    background-color: #1e1e1e;
+    color: #e1e1e1;
+    font-size: 14px;
+    line-height: 60px;
+    text-align: center;
+
+    outline: none;
+    user-select: none;
+    cursor: pointer;
 
     cursor: pointer;
+    transition: bottom 0.3s ease-out;
+}
+
+.show-new-vacancies-block-hide {
+    bottom: -60px !important;
 }
 
 #show-new-vacancies-block input[type="button"] {
+    position: inherit;
     width: 200px;
     height: 60px;
 
@@ -241,7 +254,7 @@ body {
 }
 
 #show-new-vacancies-block input:hover {
-    color: #465bd5;
+    color: #7f9fd5;
 }
 
 .hide {
