@@ -28,7 +28,8 @@ class VacancyBlock extends React.Component {
                 {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json;charset=utf-8'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(vacancy)
                 })
@@ -52,15 +53,13 @@ class VacancyBlock extends React.Component {
 
         let description = document.getElementById(this.state.vacancy.url);
 
-        if(description.classList.contains('hide'))
-            description.classList.remove('hide');
-        else description.classList.add('hide');
+        description.classList.toggle('description-hide');
     }
 
     async addToFavorite(e) {
         e.stopPropagation();
 
-        if(!this.state.vacancy.isFavorite || this.state.vacancy.isFavorite === 0) {
+        if(!this.state.vacancy.isFavorite || this.state.vacancy.isFavorite == 0) {
             await this.setState({vacancy: {...this.state.vacancy, isFavorite: 1}});
         }
         else await this.setState({vacancy: {...this.state.vacancy, isFavorite: 0}});
@@ -71,7 +70,8 @@ class VacancyBlock extends React.Component {
             {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(vacancy)
             })
@@ -80,12 +80,7 @@ class VacancyBlock extends React.Component {
                     if (response.status !== 200) {
                         console.log(`/api/vacancy-status` +
                             response.status);
-                        return;
                     }
-
-                    response.json().then(function(data) {
-                        console.log(data.message);
-                    });
                 }
             )
             .catch(function(err) {
@@ -106,7 +101,8 @@ class VacancyBlock extends React.Component {
             {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(vacancy)
             })
@@ -115,12 +111,7 @@ class VacancyBlock extends React.Component {
                     if (response.status !== 200) {
                         console.log(`/api/vacancy-status` +
                             response.status);
-                        return;
                     }
-
-                    response.json().then(function (data) {
-                        console.log(data.message);
-                    });
                 }
             )
             .catch(function (err) {
@@ -134,26 +125,27 @@ class VacancyBlock extends React.Component {
     }
 
     render() {
-        return <div className={this.state.vacancy.isRemoved === 1 ? 'hide' : ''}>
+        return <div className={this.state.vacancy.isRemoved == 1 ||
+        (this.state.vacancy.isFavorite == 0 && this.props.filter === 'favorites') ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
                 <div className='vacancy-status'>
-                    <img src={this.state.vacancy.isViewed === 1 ?
-                        (this.state.vacancy.isFavorite === 1 ? 'images/status-favorite.png' :
-                            (this.state.vacancy.isRemoved === 1 ? 'images/status-removed.png' :
+                    <img src={this.state.vacancy.isViewed == 1 ?
+                        (this.state.vacancy.isFavorite == 1 ? 'images/status-favorite.png' :
+                            (this.state.vacancy.isRemoved == 1 ? 'images/status-removed.png' :
                             'images/status-viewed.png')) :
-                        (this.state.vacancy.isFavorite === 1 ? 'images/status-favorite.png' :
+                        (this.state.vacancy.isFavorite == 1 ? 'images/status-favorite.png' :
                             'images/status-unviewed.png')}
-                    title={this.state.vacancy.isViewed === 1 ?
-                        (this.state.vacancy.isFavorite === 1 ? 'favorite' :
-                            (this.state.vacancy.isRemoved === 1 ? 'removed' :
+                    title={this.state.vacancy.isViewed == 1 ?
+                        (this.state.vacancy.isFavorite == 1 ? 'favorite' :
+                            (this.state.vacancy.isRemoved == 1 ? 'removed' :
                                 'viewed')) :
-                        (this.state.vacancy.isFavorite === 1 ? 'favorite' : 'unviewed')}/>
+                        (this.state.vacancy.isFavorite == 1 ? 'favorite' : 'unviewed')}/>
                 </div>
                 <div className='vacancy-information'>
                     <span className='vacancy-name'>{this.state.vacancy.position}</span> <br/>
-                    <a href={this.state.vacancy.Website} target='_blank' onClick={this.stopPropagation}>
-                    <span className={this.state.vacancy.company_name ? 'company-name' : 'hide'}>
-                        {this.state.vacancy.company_name}
+                    <a href={this.state.vacancy.website} target='_blank' onClick={this.stopPropagation}>
+                    <span className={this.state.vacancy.companyName ? 'company-name' : 'hide'}>
+                        {this.state.vacancy.companyName}
                     </span>
                     </a>
                     <span className={this.state.vacancy.country ? 'company-country' : 'hide'}>
@@ -168,14 +160,15 @@ class VacancyBlock extends React.Component {
                 </span>
                 </div>
                 <div className='date'>
-                    {this.state.vacancy.SiteAddingDate}
+                    {this.state.vacancy.siteAddingDate}
                 </div>
                 <div className='vacancy-actions'>
                     <a href={this.state.vacancy.url} target='_blank' onClick={this.stopPropagation}>
                         <input type='button' value='View' title='view vacancy'/>
                     </a> <br/>
                     <div className='buttons'>
-                        <img id='add-to-favorites' src='images/add-favorites.png'
+                        <img id='add-to-favorites' src={this.state.vacancy.isFavorite ?
+                            'images/add-favorites-active.png' : 'images/add-favorites.png'}
                              title={!this.state.vacancy.isFavorite || this.state.vacancy.isFavorite === 0 ?
                                  'add to favorites' : 'remove from favorites'}
                              className={this.state.vacancy.isFavorite === 1 ? 'add-to-favorites-active' : ''}
@@ -185,8 +178,8 @@ class VacancyBlock extends React.Component {
                     </div>
                 </div>
             </div>
-            <div  id={this.state.vacancy.url} className='description hide'
-                  dangerouslySetInnerHTML = {{__html: this.state.vacancy.Description}} />
+            <div  id={this.state.vacancy.url} className='description description-hide'
+                  dangerouslySetInnerHTML = {{__html: this.state.vacancy.description}} />
         </div>;
     }
 }

@@ -1,8 +1,8 @@
 let ReactDOM = require('react-dom');
 let React = require('react');
-let VacancyList = require('./components/VacancyList.jsx');
+let Tabs = require('./components/Tabs.jsx');
 
 ReactDOM.render(
-    <VacancyList />,
+    <Tabs />,
     document.getElementById("container")
 );

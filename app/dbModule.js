@@ -1,16 +1,16 @@
-const sql = require('mssql')
+const sql = require('mssql');
 let fs = require("fs");
 
 // const config= {
 // 	user: 'nodejs',
 // 	password: 'nodejs',
-// 	server: 'hyper2',
+// 	server: 'DBServer1',
 // 	database: 'BORODICH',
-// 	port: 49438
+// 	port: 50100
 // };
 
 const config= {
-	user: 'user1',
+	user: 'user001',
 	password: '12345',
 	server: '127.0.0.1',
 	database: 'test',
@@ -25,17 +25,17 @@ module.exports.getData = async function(am, date, filter) {
 			let myJsonDate = JSON.parse(date);
 			if (am == 10){
 				if(filter == `all`){
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10),SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type,DbAddingDate as DBAddingTime,isViewed,isFavorite,isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Company.Id = Vacancy.CompanyId and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else if(filter == `unviewed`) {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10),SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type,DbAddingDate as DBAddingTime,isViewed,isFavorite,isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10),SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type,DbAddingDate as DBAddingTime,isViewed,isFavorite,isRemoved from Vacancy, Company where
-					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Company.Id = Vacancy.CompanyId and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				}
 				let obj = new sql.Request().query(usQuery).then(function (result) {
 					sql.close(function (err) {
@@ -52,17 +52,17 @@ module.exports.getData = async function(am, date, filter) {
 			}
 			else {
 				if(filter == `all`){
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type, DbAddingDate as DBAddingTime from Vacancy, Company where Vacancy.CompanyId = Company.Id
-					  and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved=0 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved=0 order by Vacancy.DbAddingDate DESC, Vacancy.Url,position`;
 				} else if(filter == `unviewed`) {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type, DbAddingDate as DBAddingTime from Vacancy, Company where Vacancy.CompanyId = Company.Id
-					  and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else {
-					usQuery = `select top(${am}) Vacancy.Id as vacancyId,url,position,location,Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
-					 Name as company_name,Website,Country as country,Type as type, DbAddingDate as DBAddingTime from Vacancy, Company where Vacancy.CompanyId = Company.Id
-					  and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url`;
+					usQuery = `select top(${am}) Vacancy.Id as vacancyId, url, position, location, description, CONVERT(nvarchar(10),SiteAddingDate, 104) as siteAddingDate,
+					 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company where
+					  Vacancy.CompanyId = Company.Id and DbAddingDate <= \'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				}
 				let obj = new sql.Request().query(usQuery).then(function (result) {
 					sql.close(function (err) {
@@ -152,11 +152,17 @@ module.exports.getNewData = async function(date,filter) {
 		sql.connect(config).then(function() {
 			let myJsonDate = JSON.parse(date);
 			if(filter == `all`){
-				usQuery = `select * from getNewData(\'${myJsonDate.date}\') and isRemoved = 0`;
+				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
+					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 			} else if(filter == `unviewed`) {
-				usQuery = `select * from getNewData(\'${myJsonDate.date}\') and isRemoved = 0 and isViewed = 0`;
+				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description,CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
+					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 			} else {
-				usQuery = `select * from getNewData(\'${myJsonDate.date}\') and isRemoved = 0 and isFavorite = 1`;
+				usQuery = `select Vacancy.Id as vacancyId, url, position, location, Description, CONVERT(nvarchar(10), SiteAddingDate, 104) as SiteAddingTime,
+					 Name as company_name, Website, Country as country, Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
+					  where Vacancy.CompanyId = Company.Id and DbAddingDate > \'${myJsonDate.date}\' and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
