@@ -9,7 +9,6 @@ let curentAmount = +0;
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
 });
