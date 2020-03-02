@@ -1,20 +1,12 @@
 const sql = require('mssql')
 let fs = require("fs");
 
-// const config= {
-// 	user: 'nodejs',
-// 	password: 'nodejs',
-// 	server: 'DBServer1',
-// 	database: 'BORODICH',
-// 	port: 50100
-// };
-
 const config= {
-	user: 'user001',
-	password: '12345',
-	server: 'localhost',
-	database: 'test',
-	port: 1433
+	user: 'nodejs',
+	password: 'nodejs',
+	server: 'DBServer1',
+	database: 'BORODICH',
+	port: 50100
 };
 
 module.exports.getData = async function(id, filter) {
@@ -24,15 +16,15 @@ module.exports.getData = async function(id, filter) {
 		sql.connect(config).then(function() {
 			if(id == 'undefined') {
 				if(filter == `all`){
-					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as SiteAddingTime,
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as siteAddingDate,
 	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
 	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else if(filter == `unviewed`) {
-					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as SiteAddingTime,
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as siteAddingDate,
 	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
 	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 and isViewed = 0 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				} else {
-					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as SiteAddingTime,
+					usQuery = `select top(10) Vacancy.Id as vacancyId, url, position, location, Description as description,SiteAddingDate as siteAddingDate,
 	 				 Name as companyName, website, Country as country,Type as type, DbAddingDate as DBAddingTime, isViewed, isFavorite, isRemoved from Vacancy, Company
 	  				  where Company.Id = Vacancy.CompanyId and isRemoved = 0 and isFavorite = 1 order by Vacancy.DbAddingDate DESC, Vacancy.Url, position`;
 				}

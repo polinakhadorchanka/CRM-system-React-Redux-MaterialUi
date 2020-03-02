@@ -20,63 +20,7 @@ class VacancyBlock extends React.Component {
         this.setState({isOpening: true});
     }
 
-    async openDescription() {
-        $('.dropdown-content').removeClass('open');
-        $('.dropbtn').removeClass('open');
-
-        let positions = this.state.filter === 'all' ? this.props.store.allVacancies
-            : this.props.store.unviewedVacancies;
-
-        if(!positions[this.props.index].isViewed || positions[this.props.index].isViewed === 0) {
-            let vacancy = positions[this.props.index];
-            vacancy.isViewed = 1;
-
-            await this.props.changeVacancy(vacancy);
-
-            fetch(`/api/vacancy-status`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(vacancy)
-                })
-                .then(
-                    function(response) {
-                        if (response.status !== 200) {
-                            console.log(`/api/vacancy-status` +
-                                response.status);
-                            return;
-                        }
-
-                        response.json().then(function(data) {
-                            console.log(data.message);
-                        });
-                    }
-                )
-                .catch(function(err) {
-                    console.log('EXP: ', err);
-                });
-        }
-
-        let description = document.getElementById(positions[this.props.index].url + this.state.filter);
-        description.classList.toggle('description-hide');
-    }
-
-    async removeVacancy(e) {
-        VacancyBlock.stopPropagation();
-
-        let positions = this.state.filter === 'all' ? this.props.store.allVacancies
-            : this.props.store.unviewedVacancies,
-            vacancy = positions[this.props.index];
-
-        if (!positions[this.props.index].isRemoved || positions[this.props.index].isRemoved === 0) {
-            vacancy.isRemoved = 1;
-        } else vacancy.isRemoved = 0;
-
-        await this.props.changeVacancy(vacancy);
-
+    changeStatus(vacancy) {
         fetch(`/api/vacancy-status`,
             {
                 method: 'PUT',
@@ -97,6 +41,42 @@ class VacancyBlock extends React.Component {
             .catch(function (err) {
                 console.log('EXP: ', err);
             });
+    }
+
+    async openDescription() {
+        $('.dropdown-content').removeClass('open');
+        $('.dropbtn').removeClass('open');
+
+        let positions = this.state.filter === 'all' ? this.props.store.allVacancies
+            : this.props.store.unviewedVacancies;
+
+        if(!positions[this.props.index].isViewed || positions[this.props.index].isViewed === 0) {
+            let vacancy = positions[this.props.index];
+            vacancy.isViewed = 1;
+
+            this.props.changeVacancy(vacancy);
+
+            this.changeStatus(vacancy);
+        }
+
+        let description = document.getElementById(positions[this.props.index].url + this.state.filter);
+        description.classList.toggle('description-hide');
+    }
+
+    async removeVacancy(e) {
+        VacancyBlock.stopPropagation();
+
+        let positions = this.state.filter === 'all' ? this.props.store.allVacancies
+            : this.props.store.unviewedVacancies,
+            vacancy = positions[this.props.index];
+
+        if (!positions[this.props.index].isRemoved || positions[this.props.index].isRemoved === 0) {
+            vacancy.isRemoved = 1;
+        } else vacancy.isRemoved = 0;
+
+        this.props.changeVacancy(vacancy);
+
+        this.changeStatus(vacancy);
     }
 
     static handleStatusList(e) {
@@ -133,7 +113,7 @@ class VacancyBlock extends React.Component {
 
         this.props.changeVacancy(vacancy);
 
-        console.log(vacancy);
+        this.changeStatus(vacancy);
 
         e.stopPropagation();
     }
@@ -178,10 +158,11 @@ class VacancyBlock extends React.Component {
                 </span>
                 </div>
                 <div className='date'>
-                    {positions[this.props.index].SiteAddingDate}
+                    {positions[this.props.index].siteAddingDate}
                 </div>
                 <div className='vacancy-actions'>
-                    <a href={positions[this.props.index].url} target='_blank' onClick={(e) => e.stopPropagation()}>
+                    <a href={positions[this.props.index].url} target='_blank'
+                       onClick={(e) => e.stopPropagation()}>
                         <input type='button' value='View' title='view vacancy'/>
                     </a> <br/>
                     <div className='buttons'>

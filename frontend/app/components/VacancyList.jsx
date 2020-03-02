@@ -145,7 +145,6 @@ class VacancyList extends React.Component {
     }
 
     render() {
-        console.log(this.props.store);
         let filter = this.state.filter,
         positions = this.state.filter === 'all' ? this.props.store.allVacancies : this.props.store.unviewedVacancies;
 
