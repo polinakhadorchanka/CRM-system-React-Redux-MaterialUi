@@ -1,12 +1,16 @@
+import * as ReactRouterDOM from "react-router-dom";
+
 let ReactDOM = require('react-dom');
 let React = require('react');
 let Tabs = require('./components/Tabs.jsx');
+let Login = require('./components/Login.jsx');
 let redux = require("redux");
 let Provider = require("react-redux").Provider;
 let reducer = require("./reducer.jsx");
 
-import { applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+const Router = ReactRouterDOM.BrowserRouter;
+const Route = ReactRouterDOM.Route;
+const Switch = ReactRouterDOM.Switch;
 
 let startVacancies = {
     all: [],
@@ -14,7 +18,7 @@ let startVacancies = {
     favorites: []
 };
 
-let store = redux.createStore(reducer, applyMiddleware(thunk));
+let store = redux.createStore(reducer);
 getStartVacancies();
 
 async function getStartVacancies() {
@@ -24,7 +28,14 @@ async function getStartVacancies() {
 
     ReactDOM.render(
         <Provider store={store}>
-            <Tabs startVacancies={startVacancies}/>
+            <Router>
+                <div>
+                    <Switch>
+                        <Route exact path="/" component={Tabs} startVacancies={startVacancies}/>
+                        <Route path="/vacancies" component={Tabs} startVacancies={startVacancies}/>
+                    </Switch>
+                </div>
+            </Router>
         </Provider>,
         document.getElementById("container")
     );
