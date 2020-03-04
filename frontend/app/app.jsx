@@ -20,7 +20,7 @@ getStartVacancies();
 async function getStartVacancies() {
     await showNextVacancies('all');
     await showNextVacancies('unviewed');
-    await showNextVacancies('favorites');
+    await showNextVacancies('board');
 
     ReactDOM.render(
         <Provider store={store}>
@@ -32,25 +32,18 @@ async function getStartVacancies() {
 
 async function showNextVacancies(filter) {
     await fetch(`/api/vacancies?id=undefined&` + `count=10&filter=${filter}`)
-        .then(
-            function (response) {
-                if (response.status !== 200) {
-                    console.log(`ERR: showNextVacancies : ` + response.status);
-                    return;
-                }
-
-                response.json().then(function (data) {
-                    switch(filter) {
-                        case 'all':
-                            startVacancies.all = data; break;
-                        case 'unviewed':
-                            startVacancies.unviewed = data; break;
-                        case 'favorites':
-                            startVacancies.favorites = data; break;
-                    }
-                })
+        .then(response => response.json()).then(function (data) {
+            switch(filter) {
+                case 'all':
+                    startVacancies.all = data; break;
+                case 'unviewed':
+                    startVacancies.unviewed = data; break;
+                case 'favorites':
+                    startVacancies.favorites = data; break;
+                case 'board':
+                    startVacancies.board = data; break;
             }
-        )
+        })
         .catch(function (err) {
             console.log('EXP: ', err);
         });

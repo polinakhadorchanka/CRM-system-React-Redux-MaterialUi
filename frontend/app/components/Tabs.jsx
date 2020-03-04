@@ -11,6 +11,7 @@ class Tabs extends React.Component {
 
         props.addVacancy(props.startVacancies.all, 'all');
         props.addVacancy(props.startVacancies.unviewed, 'unviewed');
+        props.addVacancy(props.startVacancies.unviewed, 'board');
     }
 
     render() {

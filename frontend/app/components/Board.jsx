@@ -142,36 +142,41 @@ class KanbanCard extends React.Component {
         };
 
         return (
-            <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
-                ' back-vacancy-information hide'}
-                 onClick={this.handleDescription}>
+            <div>
+                <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
+                    ' back-vacancy-information hide'}
+                     onClick={this.handleDescription}> </div>
                 <div className={this.state.isDescriptionOpen === true ? 'vacancy-information' :
                     'vacancy-information hide'}
                      onClick={(e) => e.stopPropagation()}>
-                    <span className='vacancy-name'>{vacancy.position}</span> <br/>
-                    <a href={vacancy.website} target='_blank'>
-                    <span className={vacancy.companyName ? 'company-name' : 'hide'}>
-                        {vacancy.companyName}
-                    </span>
-                    </a>
-                    <span className={vacancy.country ? 'company-country' : 'hide'}>
-                    {' / ' + vacancy.country}
-                </span>
-                    <span className='tech-stack'>stack</span> <br/>
-                    <span className={vacancy.location ? 'location' : 'hide'}>
-                    Location: {vacancy.location}
-                </span>
-                    <span className={vacancy.contacts ? 'contacts' : 'hide'}>
-                    Contacts: {vacancy.contacts}
-                </span>
-                    <div className='date'>
-                        {vacancy.siteAddingDate}
-                    </div>
-                    <div className='vacancy-actions'>
-                        <a href={vacancy.url} target='_blank'
-                           onClick={(e) => e.stopPropagation()}>
-                            <input type='button' value='View' title='view vacancy'/>
-                        </a>
+                    <div className='flex-block'>
+                        <div>
+                            <span className='vacancy-name'>{vacancy.position}</span> <br/>
+                            <a href={vacancy.website} target='_blank'>
+                            <span className={vacancy.companyName ? 'company-name' : 'hide'}>
+                                {vacancy.companyName}
+                            </span>
+                            </a>
+                            <span className={vacancy.country ? 'company-country' : 'hide'}>
+                                {' / ' + vacancy.country}
+                            </span>
+                            <span className='tech-stack'>stack</span> <br/>
+                            <span className={vacancy.location ? 'location' : 'hide'}>
+                                Location: {vacancy.location}
+                            </span>
+                            <span className={vacancy.contacts ? 'contacts' : 'hide'}>
+                                Contacts: {vacancy.contacts}
+                            </span>
+                        </div>
+                        <div>
+                            <a href={vacancy.url} target='_blank'
+                               onClick={(e) => e.stopPropagation()}>
+                                <input type='button' value='View' title='view vacancy'/>
+                            </a>
+                            <div className='date'>
+                                {vacancy.siteAddingDate}
+                            </div>
+                        </div>
                     </div>
                     <div  id={vacancy.url + 'board'} className='description'
                           dangerouslySetInnerHTML = {{__html:vacancy.description}} />

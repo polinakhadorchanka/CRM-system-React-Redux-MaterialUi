@@ -37,6 +37,7 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function (data) {
+                        console.log(data);
                         data[0].count <= 10 ? context.setState({nextCount: data[0].count}) :
                             context.setState({nextCount: 10});
                     });

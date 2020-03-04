@@ -169,10 +169,10 @@ class VacancyBlock extends React.Component {
                         <div className="dropdown">
                             <button className="dropbtn" onClick={VacancyBlock.handleStatusList}/>
                             <div className="dropdown-content" onClick={this.handleChooseStatus}>
-                                <a href='#'>new</a>
-                                <a href='#'>in the process</a>
-                                <a href='#'>completed</a>
-                                <a href='#'>deferred</a>
+                                <span className='status-element'>new</span>
+                                <span className='status-element'>in the process</span>
+                                <span className='status-element'>completed</span>
+                                <span className='status-element'>deferred</span>
                             </div>
                         </div>
                         <img id='remove' src='images/delete.png'
