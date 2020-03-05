@@ -55,8 +55,29 @@ app.get("/api/vacancies/next", function(req, res){
 });
 
 app.put("/api/vacancy-status", function (req, res) {
-    mod.updateState(req.body.vacancyId,+req.body.isViewed,+req.body.isFavorite,+req.body.isRemoved).then(function(result){
+    mod.updateState(req.body.vacancyId,+req.body.isViewed,+req.body.isFavorite,+req.body.isRemoved,req.body.boardStatus, req.body.position).then(function(result){
         let message = result;
         res.send(message);
     });
+});
+
+app.get("/vacancies", function(req, res){
+    res.sendFile(__dirname + "/public/index.html");
+});
+
+app.get("/login", function(req, res) {
+    let type = req.query.type,
+        login = req.query.login,
+        password = req.query.password;
+
+    if(type === 'Registration')
+        res.redirect('/registration');
+    else if(type === 'Login') {
+        // валидация
+    }
+    else res.sendFile(__dirname + "/public/index.html");
+});
+
+app.get("/registration", function(req, res){
+    res.sendFile(__dirname + "/public/index.html");
 });

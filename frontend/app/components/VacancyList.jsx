@@ -9,6 +9,7 @@ class VacancyList extends React.Component {
         super(props);
 
         this.state = {
+            isLoad: false,
             newVacanciesCount: 0,
             nextCount: 0,
             filter: props.filter
@@ -17,14 +18,15 @@ class VacancyList extends React.Component {
         this.changeStore = this.changeStore.bind(this);
         this.showNextVacancies = this.showNextVacancies.bind(this);
         this.showNewVacancies = this.showNewVacancies.bind(this);
+        this.getNextCount = this.getNextCount.bind(this);
 
-        this.getNextCount(this);
         if(this.state.filter === 'all') this.getNewVacanciesCount(this);
     }
 
-    async getNextCount(context) {
-        let positions = context.state.filter === 'all' ? context.props.store.allVacancies
-            : context.props.store.unviewedVacancies,
+    async getNextCount() {
+        let positions = this.state.filter === 'all' ? this.props.store.allVacancies
+            : this.props.store.unviewedVacancies,
+            context = this,
             id = positions[positions.length-1] ?
                 positions[positions.length-1].vacancyId : undefined;
 
@@ -37,7 +39,6 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function (data) {
-                        console.log(data);
                         data[0].count <= 10 ? context.setState({nextCount: data[0].count}) :
                             context.setState({nextCount: 10});
                     });
@@ -69,7 +70,7 @@ class VacancyList extends React.Component {
                     response.json().then(function(data) {
                         context.changeStore('ADD_VACANCY', positions.concat(data));
                     }).then(function () {
-                        context.getNextCount(context);
+                        context.getNextCount();
                     });
                 }
             )
@@ -79,11 +80,12 @@ class VacancyList extends React.Component {
     }
 
     async getNewVacanciesCount(context) {
-        let positions = context.state.filter === 'all' ? context.props.store.allVacancies
-            : context.props.store.unviewedVacancies,
-            id = positions[0] ? positions[0].vacancyId : undefined;
-
         let timerId = await setTimeout(function request() {
+            let positions = context.state.filter === 'all' ? context.props.store.allVacancies
+                : context.props.store.unviewedVacancies,
+                id = positions[0] ? positions[0].vacancyId : undefined;
+
+            console.log(`/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`);
             fetch(  `/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`)
                 .then(
                     function(response) {
@@ -114,6 +116,7 @@ class VacancyList extends React.Component {
             : context.props.store.unviewedVacancies,
             id = positions[0] ? positions[0].vacancyId : undefined;
 
+        console.log(`api/vacancies/new?id=${id}filter=${this.state.filter}`);
         await fetch(`api/vacancies/new?id=${id}filter=${this.state.filter}`)
             .then(
                 function (response) {
@@ -124,6 +127,7 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function (data) {
+                        console.log(data);
                         context.changeStore('ADD_VACANCY', data.concat(positions));
 
                         context.setState({newVacanciesCount: 0});
@@ -142,6 +146,14 @@ class VacancyList extends React.Component {
     changeStore(type, data) {
         switch(type) {
             case 'ADD_VACANCY': this.props.addVacancy(data, this.state.filter); break;
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let positions = prevState.filter === 'all' ? prevProps.store.allVacancies : prevProps.store.unviewedVacancies;
+        if(prevState.isLoad === false && positions.length > 0) {
+            this.setState({isLoad: true});
+            this.getNextCount();
         }
     }
 

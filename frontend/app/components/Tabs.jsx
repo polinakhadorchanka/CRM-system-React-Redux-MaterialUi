@@ -5,13 +5,45 @@ let actions = require("../actions.jsx");
 let VacancyList = require('./VacancyList.jsx');
 let Board = require('./Board.jsx');
 
+let startVacancies = {
+    all : [],
+    unviewed: [],
+    board : []
+};
+
 class Tabs extends React.Component {
     constructor(props) {
         super(props);
 
-        props.addVacancy(props.startVacancies.all, 'all');
-        props.addVacancy(props.startVacancies.unviewed, 'unviewed');
-        props.addVacancy(props.startVacancies.unviewed, 'board');
+        this.setStartVacancies = this.setStartVacancies.bind(this);
+        this.setStartVacancies();
+    }
+
+    async setStartVacancies() {
+        await this.showNextVacancies('all');
+        await this.showNextVacancies('unviewed');
+        await this.showNextVacancies('board');
+
+        this.props.addVacancy(startVacancies.all, 'all');
+        this.props.addVacancy(startVacancies.unviewed, 'unviewed');
+        this.props.addVacancy(startVacancies.board, 'board');
+    }
+
+    async showNextVacancies(filter) {
+        await fetch(`/api/vacancies?id=undefined&` + `count=10&filter=${filter}`)
+            .then(response => response.json()).then(function (data) {
+                switch(filter) {
+                    case 'all':
+                        startVacancies.all = data; break;
+                    case 'unviewed':
+                        startVacancies.unviewed = data; break;
+                    case 'board':
+                        startVacancies.board = data; break;
+                }
+            })
+            .catch(function (err) {
+                console.log('EXP: ', err);
+            });
     }
 
     render() {
