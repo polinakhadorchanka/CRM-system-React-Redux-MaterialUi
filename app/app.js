@@ -65,24 +65,29 @@ app.get("/vacancies", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
 
-app.get("/login", function(req, res) {
-    let type = req.query.type,
-        login = req.query.login,
-        password = req.query.password;
+app.get("/login", function(req, res){
+    res.sendFile(__dirname + "/public/index.html");
+});
+
+
+app.post("/login", function(req, res) {
+    let type = req.body.type,
+        login = req.body.login,
+        password = req.body.password;
 
     if(type === 'Registration')
         res.redirect('/registration');
     else if(type === 'Login') {
         // валидация
     }
-    else res.sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/registration", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
 
-app.post("/api/registration", function(req, res){
+app.post("/registration", function(req, res){
     console.log(req.body);
-    res.send({errorMessage: 'Данный логин уже используется'})
+
+    // валидация
 });

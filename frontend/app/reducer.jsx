@@ -1,7 +1,9 @@
 const initialUserState = {
     allVacancies: [],
     unviewedVacancies: [],
-    boardVacancies: []
+    boardVacancies: [],
+    newVacanciesCount: 0,
+    idUser: null
 };
 
 const reducer = function(state = initialUserState, action) {
@@ -39,6 +41,7 @@ const reducer = function(state = initialUserState, action) {
             return Object.assign({}, state, { allVacancies: allVacancies,
                 unviewedVacancies: unviewedVacancies,
                 boardVacancies: boardVacancies});
+        case 'CHANGE_COUNT': return Object.assign({}, state, { newVacanciesCount: action.count });
         default: return state;
     }
 };

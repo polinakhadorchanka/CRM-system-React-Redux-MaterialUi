@@ -49,6 +49,12 @@ class Registration extends React.Component {
         if(regexp.test(val))
             this.setState({isPasswordValid: true, password : val});
         else this.setState({isPasswordValid: false, password : val});
+
+        let val2 = document.getElementById('confirmPassword').value;
+
+        if(regexp.test(val2) && val2 === val)
+            this.setState({isConfirmPasswordValid: true, confirmPassword : val2});
+        else this.setState({isConfirmPasswordValid: false, confirmPassword : val2});
     }
 
     onConfirmChange(e) {
@@ -89,7 +95,7 @@ class Registration extends React.Component {
                     password : e.target.password.value,
                     email : e.target.email.value
                 };
-            fetch(`/api/registration`,
+            fetch(`/registration`,
                 {
                     method: 'POST',
                     headers: {
@@ -129,7 +135,7 @@ class Registration extends React.Component {
             <div className='login-container'>
                 <div className='login-block'>
                     <h2>Registration</h2>
-                    <form className='login-form' action='/registration' method='post' onSubmit={this.handleSubmit}>
+                    <form className='login-form' onSubmit={this.handleSubmit}>
                         <div className='info'>
                             <label htmlFor='login'>Login:</label>
                             <div className='info-symbol' onMouseOver={this.handleToolTip}
@@ -144,23 +150,23 @@ class Registration extends React.Component {
                                 </ul>
                             </div>
                         </div>
-                        <input id='login' type='text' placeholder='Login' name='login'
+                        <input id='login' type='text' placeholder='Login' name='login' maxLength={20}
                                style={this.state.isLoginValid === false ? unValid : null}
                                onChange={this.onLoginChange}/> <br/>
                         <label htmlFor='password'>Password:</label>
-                        <input id='password' type='password' placeholder='Password' name='password'
+                        <input id='password' type='password' placeholder='Password' name='password' maxLength={25}
                                style={this.state.isPasswordValid === false ? unValid : null}
                                onChange={this.onPasswordChange}/> <br/>
-                        <label htmlFor='confirmPassword'>Conform password:</label>
-                        <input id='confirmPassword' type='password' placeholder='Confirm password'
+                        <label htmlFor='confirmPassword'>Confirm password:</label>
+                        <input id='confirmPassword' type='password' placeholder='Confirm password' maxLength={25}
                                name='confirmPassword'
                                style={this.state.isConfirmPasswordValid === false ? unValid : null}
                                onChange={this.onConfirmChange}/> <br/>
                         <label htmlFor='email'>E-mail:</label>
-                        <input id='email' type='text' placeholder='E-mail' name='email'
+                        <input id='email' type='text' placeholder='E-mail' name='email' maxLength={50}
                                style={this.state.isEmailValid === false ? unValid : null}
                                onChange={this.onEmailChange}/> <br/>
-                        <input type='submit' name='type' value='Login' style={style}/>
+                        <input type='submit' name='type' value='Registration' style={style}/>
                     </form>
                 </div>
             </div>

@@ -10,7 +10,6 @@ class VacancyList extends React.Component {
 
         this.state = {
             isLoad: false,
-            newVacanciesCount: 0,
             nextCount: 0,
             filter: props.filter
         };
@@ -68,7 +67,7 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function(data) {
-                        context.changeStore('ADD_VACANCY', positions.concat(data));
+                        context.changeStore('ADD_VACANCY', positions.concat(data), context.state.filter);
                     }).then(function () {
                         context.getNextCount();
                     });
@@ -96,10 +95,7 @@ class VacancyList extends React.Component {
                         }
 
                         response.json().then(function(data) {
-                            context.setState({newVacanciesCount: data[0].count});
-
-                            console.log(context.state.newVacanciesCount);
-
+                            context.changeStore('CHANGE_COUNT', data[0].count);
                             context.getNewVacanciesCount(context);
                         });
                     }
@@ -110,14 +106,16 @@ class VacancyList extends React.Component {
         }, 30000);
     }
 
-    async showNewVacancies() {
+    async showNewVacancies(e) {
         let context = this,
-            positions = context.state.filter === 'all' ? context.props.store.allVacancies
-            : context.props.store.unviewedVacancies,
-            id = positions[0] ? positions[0].vacancyId : undefined;
+            allPositions = context.props.store.allVacancies,
+            unviewedPositions = context.props.store.unviewedVacancies,
+            id = allPositions[0] ? allPositions[0].vacancyId : undefined;
 
-        console.log(`api/vacancies/new?id=${id}filter=${this.state.filter}`);
-        await fetch(`api/vacancies/new?id=${id}filter=${this.state.filter}`)
+        $('.description').addClass('description-hide');
+
+        console.log(`api/vacancies/new?id=${id}&filter=${this.state.filter}`);
+        await fetch(`api/vacancies/new?id=${id}&filter=${this.state.filter}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -127,13 +125,10 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function (data) {
-                        console.log(data);
-                        context.changeStore('ADD_VACANCY', data.concat(positions));
+                        context.changeStore('CHANGE_COUNT', 0);
+                        context.changeStore('ADD_VACANCY', data.concat(allPositions), 'all');
+                        context.changeStore('ADD_VACANCY', data.concat(unviewedPositions), 'unviewed');
 
-                        context.setState({newVacanciesCount: 0});
-
-                        document.getElementById('show-new-vacancies-block').classList.toggle(
-                            'show-new-vacancies-block-hide');
                         window.scrollTo(0, 0);
                     });
                 }
@@ -143,9 +138,10 @@ class VacancyList extends React.Component {
             });
     }
 
-    changeStore(type, data) {
+    changeStore(type, data, filter) {
         switch(type) {
-            case 'ADD_VACANCY': this.props.addVacancy(data, this.state.filter); break;
+            case 'ADD_VACANCY': this.props.addVacancy(data, filter); break;
+            case 'CHANGE_COUNT': this.props.changeNewVacanciesCount(data); break;
         }
     }
 
@@ -167,10 +163,10 @@ class VacancyList extends React.Component {
                     return <VacancyBlock position={vacancy} filter={filter} index={index}/>
                 })
             }
-            <div id="show-new-vacancies-block" className={this.state.newVacanciesCount === 0 ?
+            <div id="show-new-vacancies-block" className={this.props.store.newVacanciesCount === 0 ?
                 'show-new-vacancies-block-hide' : ''}
                  onClick={this.showNewVacancies}>
-                {"show " + this.state.newVacanciesCount + " new vacancies"}
+                {"show " + this.props.store.newVacanciesCount + " new vacancies"}
             </div>
             <div id="bottom-block"
                  className={this.state.nextCount <= 0 ? "hide" : ""}
