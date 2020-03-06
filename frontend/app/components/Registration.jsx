@@ -13,7 +13,8 @@ class Registration extends React.Component {
             login: '',
             password: '',
             confirmPassword: '',
-            email: ''
+            email: '',
+            errorMessage: ''
         };
 
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -60,6 +61,7 @@ class Registration extends React.Component {
     }
 
     handleSubmit(e) {
+        e.preventDefault();
         let login = this.state.login,
             password = this.state.password,
             confirmPassword = this.state.confirmPassword,
@@ -70,14 +72,48 @@ class Registration extends React.Component {
                 isLoginValid: login !== '',
                 isPasswordValid: password !== '',
                 isConfirmPasswordValid: confirmPassword !== '',
-                isEmailValid: email !== ''
+                isEmailValid: email !== '',
+                errorMessage : 'Неверно заполнены данные'
             });
-
-            e.preventDefault();
+            $('.info-block').addClass('open');
         }
         else if(!this.state.isLoginValid || !this.state.isPasswordValid ||
-            !this.state.isConfirmPasswordValid || !this.state.isEmailValid)
-            e.preventDefault();
+            !this.state.isConfirmPasswordValid || !this.state.isEmailValid) {
+            this.setState({errorMessage: 'Неверно заполнены данные'});
+            $('.info-block').addClass('open');
+        }
+        else {
+            let context = this,
+                obj = {
+                    login : e.target.login.value,
+                    password : e.target.password.value,
+                    email : e.target.email.value
+                };
+            fetch(`/api/registration`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json()).then(function (data) {
+                if(data.errorMessage !== null)
+                    context.setState({errorMessage : data.errorMessage});
+                else alert('Good!');
+            })
+                .catch(function (err) {
+                    console.log('EXP: ', err);
+                });
+        }
+    }
+
+    handleToolTip(e) {
+        if(e.type === 'mouseover')
+            $(e.target).next().addClass('open');
+        else $(e.target).next().removeClass('open');
+        e.stopPropagation();
     }
 
     render() {
@@ -94,19 +130,37 @@ class Registration extends React.Component {
                 <div className='login-block'>
                     <h2>Registration</h2>
                     <form className='login-form' action='/registration' method='post' onSubmit={this.handleSubmit}>
-                        <input type='text' placeholder='Login' name='login'
+                        <div className='info'>
+                            <label htmlFor='login'>Login:</label>
+                            <div className='info-symbol' onMouseOver={this.handleToolTip}
+                                 onMouseOut={this.handleToolTip}/>
+                            <div className='info-block'>
+                                <ul>
+                                    <li>Login can consist only of letters of the Latin alphabet and numbers,
+                                        start with a letter
+                                        and have a length of at least 5 characters</li>
+                                    <li>The password can consist only of letters of the Latin alphabet and numbers
+                                        and have a length of at least 6 characters</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input id='login' type='text' placeholder='Login' name='login'
                                style={this.state.isLoginValid === false ? unValid : null}
                                onChange={this.onLoginChange}/> <br/>
-                        <input type='password' placeholder='Password' name='password'
+                        <label htmlFor='password'>Password:</label>
+                        <input id='password' type='password' placeholder='Password' name='password'
                                style={this.state.isPasswordValid === false ? unValid : null}
                                onChange={this.onPasswordChange}/> <br/>
-                        <input type='password' placeholder='Confirm password' name='confirmPassword'
+                        <label htmlFor='confirmPassword'>Conform password:</label>
+                        <input id='confirmPassword' type='password' placeholder='Confirm password'
+                               name='confirmPassword'
                                style={this.state.isConfirmPasswordValid === false ? unValid : null}
                                onChange={this.onConfirmChange}/> <br/>
-                        <input type='text' placeholder='Email' name='email'
+                        <label htmlFor='email'>E-mail:</label>
+                        <input id='email' type='text' placeholder='E-mail' name='email'
                                style={this.state.isEmailValid === false ? unValid : null}
                                onChange={this.onEmailChange}/> <br/>
-                        <input type='submit' name='type' value='Login' style={style}/> <br/><br/>
+                        <input type='submit' name='type' value='Login' style={style}/>
                     </form>
                 </div>
             </div>

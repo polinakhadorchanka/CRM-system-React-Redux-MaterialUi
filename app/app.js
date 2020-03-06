@@ -81,3 +81,8 @@ app.get("/login", function(req, res) {
 app.get("/registration", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
+
+app.post("/api/registration", function(req, res){
+    console.log(req.body);
+    res.send({errorMessage: 'Данный логин уже используется'})
+});

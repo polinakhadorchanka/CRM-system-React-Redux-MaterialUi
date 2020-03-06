@@ -491,6 +491,7 @@ body {
     position: absolute;
     width: 100%;
     min-width: 1000px;
+    min-height: 500px;
     height: 100%;
     background-color: #1e1e1e;
 }
@@ -501,11 +502,10 @@ body {
 
     left: 50%;
     top: 50%;
-    /* ширина и высота 2 блока */
     width: 500px;
-    height: 340px;
+    height: 450px;
     margin-left: -250px;
-    margin-top: -170px;
+    margin-top: -225px;
 
     background-color: #e1e1e1;
     color: #1e1e1e;
@@ -517,16 +517,25 @@ body {
     user-select: none;
 }
 
+.login-block form {
+    border: 1px solid #1e1e1e;
+    padding: 10px;
+}
+
 .login-block form input[type="text"], .login-block form input[type="password"] {
     width: 100%;
-    height: 35px;
-
+    height: 30px;
     padding-left: 10px;
     padding-right: 10px;
-
     border: 1px solid #1e1e1e;
-
     margin-bottom: 15px;
+
+    font-size: 14px;
+}
+
+.login-block label {
+    margin-bottom: 2px;
+    font-weight: bold;
 }
 
 .login-block form input[type="text"]:focus, .login-block form input[type="password"]:focus {
@@ -553,4 +562,49 @@ body {
     display: block;
     text-align: center;
     user-select: none;
+}
+
+.login-block .info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.login-block .info-symbol {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-image: url("images/info.png");
+    background-size: 12px 12px;
+}
+
+.login-block .info-block {
+    display: none;
+    position: absolute;
+    right: -210px;
+    top: 0;
+
+    max-width: 200px;
+    box-shadow: 8px 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+
+    font-size: 12px;
+    text-align: justify;
+    padding: 20px 20px 5px 5px;
+
+    background-color: #e1e1e1;
+    color: #1e1e1e;
+}
+
+.login-block .info-block ul {
+    padding-left: 20px;
+}
+
+.login-block .info-block li {
+    margin: 0;
+    padding: 0;
+}
+
+.login-block .info-block.open {
+    display: block;
 }
