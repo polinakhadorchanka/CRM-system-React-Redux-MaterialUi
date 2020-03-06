@@ -608,3 +608,12 @@ body {
 .login-block .info-block.open {
     display: block;
 }
+
+header {
+    padding: 10px;
+    width: 100%;
+    min-width: 1000px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

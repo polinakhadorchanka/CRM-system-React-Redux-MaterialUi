@@ -4,6 +4,7 @@ let actions = require("../actions.jsx");
 
 let VacancyList = require('./VacancyList.jsx');
 let Board = require('./Board.jsx');
+let Header = require('./Header.jsx');
 
 let startVacancies = {
     all : [],
@@ -48,8 +49,7 @@ class Tabs extends React.Component {
 
     render() {
         return <div>
-            <div className='system-name'>
-            </div>
+            <Header/>
             <ul className="nav nav-tabs">
                 <li className="nav-item">
                     <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
