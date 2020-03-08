@@ -136,11 +136,15 @@ class KanbanCard extends React.Component {
         e.stopPropagation();
     }
 
-    vacancyDescription(vacancy) {
-        let style = {
-            'height': document.body.clientHeight
-        };
+    handleDeleteButton(e) {
+        $(e.target).children('.delete-button').toggleClass('hide');
+    }
 
+    deleteCard() {
+
+    }
+
+    vacancyDescription(vacancy) {
         return (
             <div>
                 <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
@@ -190,11 +194,17 @@ class KanbanCard extends React.Component {
             <div className='boardCard'
                  draggable={true}
                  onDragEnd={(e) => {this.props.onDragEnd(e, this.props.project);}}
-                 onClick={this.handleDescription}>
+                 onClick={this.handleDescription}
+                 onMouseOver={this.handleDeleteButton} onMouseOut={this.handleDeleteButton}>
+                <div>
                 <span className='vacancy-name'>{this.props.project.position}</span> <br/>
                 <span className={this.props.project.companyName ? 'company-name' : 'hide'}>
                     {this.props.project.companyName}
                 </span>
+                </div>
+                <div className='delete-button hide' onClick={this.deleteCard}>
+                    &#10006;
+                </div>
                 {this.vacancyDescription(this.props.project)}
             </div>
         );
