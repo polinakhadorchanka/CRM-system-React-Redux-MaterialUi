@@ -15,6 +15,14 @@ let store = redux.createStore(reducer, applyMiddleware(thunk));
 getStartVacancies();
 
 async function getStartVacancies() {
+    //localStorage.removeItem('user');
+    console.log(localStorage.getItem('user').login);
+    if (document.location.pathname === '/') {
+        if (localStorage.getItem('user')) {
+            window.location.href = `/${localStorage.getItem('user').login}`;
+        } else window.location.href = '/login';
+    }
+
     ReactDOM.render(
         <Provider store={store}>
             <Router>
@@ -22,7 +30,7 @@ async function getStartVacancies() {
                     <Switch>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/registration" component={Registration}/>
-                        <Route exact path="/vacancies" component={Tabs} />
+                        <Route path="/:userLogin" component={Tabs} />
                         <Route exact path="/"/>
                     </Switch>
                 </div>

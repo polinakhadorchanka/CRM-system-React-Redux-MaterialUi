@@ -1,16 +1,18 @@
 let express = require("express");
-let fs = require("fs");
-let bodyParser = require('body-parser')
-let mod = require('./dbModule')
+let bodyParser = require('body-parser');
+let mod = require('./dbModule');
+let parseH = require('./parsehubModule')
+let dateFormat = require('dateformat');
 
 let app = express();
-let curentAmount = +0;
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
+    // workWithParseHub('td_sN-PPvfKs', 'tUZFnFRVqZcc');
+    // workWithParseHub('td_sN-PPvfKs', 'tD5N71CEUTDe');
 });
 
 app.get("/api/vacancies", function(req, res){
@@ -29,7 +31,6 @@ app.get("/api/vacancies/new", function(req, res){
     let filter = req.query.filter;
     mod.getNewData(id, filter).then(function(result) {
         res.send(result);
-        console.log(result);
     });
 });
 
@@ -38,7 +39,6 @@ app.get("/api/vacancies/new/count", function(req, res){
     let id = req.query.id;
     let filter = req.query.filter;
     mod.getAmount(id, filter).then(function(result) {
-        console.log(result);
         res.send(result);
     });
 });
@@ -49,11 +49,11 @@ app.get("/api/vacancies/next", function(req, res){
     let filter = req.query.filter;
     let id = req.query.id;
     mod.getAmountLeft(id, filter).then(function(result) {
-        console.log(result);
         res.send(result);
     });
 });
 
+//функция изменения статуса записи
 app.put("/api/vacancy-status", function (req, res) {
     mod.updateState(req.body.vacancyId,+req.body.isViewed,+req.body.isFavorite,+req.body.isRemoved,req.body.boardStatus, req.body.position).then(function(result){
         let message = result;
@@ -61,6 +61,45 @@ app.put("/api/vacancy-status", function (req, res) {
     });
 });
 
+//функция работы с парсером
+function workWithParseHub(key,token){
+    let a = setInterval(function () {
+        parseH.getStateFromParseHub(key, token).then(function (result) {
+            console.log(result);
+            console.log(result.status);
+            console.log(result.pages)
+            result.end_time = result.end_time.substr(0, 10);
+            if(+(result.pages)==0){//++
+                console.log("У нас 0 страниц перезапустим ка мы пармер");
+                //parseH.runParseHubFunction(key, token);
+            }
+            else if(result.status == 'queued ' || result.status == 'initialized ' || result.status == 'running ')//++
+                return;
+            else if((result.status == 'cancelled' || result.status == 'complete') && +(result.pages)>0){//TODO: сделать внутри функцию сравнения  ++
+                mod.getLastNoteDate().then(function (resultD) {
+                    let a = new Date();
+                    let b = dateFormat(a,"isoDate");
+                    if(Date.parse(result.end_time) < Date.parse(b)) {// дата поселеднего парсинга меньше сегодня => запустить парсер ++
+                        //parseH.runParseHubFunction(key, token);
+                        console.log(result.status + " " + "Надо бы запустить парсерочек");
+                    }
+                    else if(Date.parse(result.end_time) > Date.parse(resultD.DbAddingDate)){// дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД++
+                        /*parseH.getDataFromParseHub(key, token).then(function (result) {
+                            mod.insertVacations(JSON.stringify(result));
+                        });*/
+                        console.log("дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД");
+                    }
+                    else if(Date.parse(result.end_time) == Date.parse(resultD.DbAddingDate)){// дата добавления в бд равне дате парсера => return ++
+                        return;
+                    }
+
+                })
+            }
+        });
+    },20000);//900000
+}
+
+//TODO: тут новое
 app.get("/vacancies", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -69,17 +108,17 @@ app.get("/login", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
 
-
 app.post("/login", function(req, res) {
-    let type = req.body.type,
-        login = req.body.login,
+    let login = req.body.login,
         password = req.body.password;
 
-    if(type === 'Registration')
-        res.redirect('/registration');
-    else if(type === 'Login') {
-        // валидация
-    }
+    mod.LogInValidation(login,password).then(function (result) {
+        if(result.errorCode == 0){
+            res.send(result);
+        } else {
+            res.send([{errorCode: 3, errorMessage: "Login failed"}]);
+        }
+    })
 });
 
 app.get("/registration", function(req, res){
@@ -88,6 +127,26 @@ app.get("/registration", function(req, res){
 
 app.post("/registration", function(req, res){
     console.log(req.body);
+    let loginCount = +0,
+        emailCount = +0;
+    mod.registrationValidationEmail(req.body.email).then(function (resultE) {
+        emailCount = resultE;
+        mod.registrationValidationLogin(req.body.login).then(function (resultL) {
+            loginCount = resultL;
+            if(loginCount == 0 && emailCount == 0) {
+                res.send([{errorCode: 0}]);
+                mod.insertNewClient(req.body.login,req.body.password,req.body.email);
+            }
+            else if(loginCount > 0 && emailCount == 0)
+                res.send([{errorCode: 1, errorMessage: "Reserved login"}]);
+            else if(loginCount == 0 && emailCount > 0)
+                res.send([{errorCode: 2, errorMessage: "Reserved email"}]);
+            else if(loginCount > 0 && emailCount > 0)
+                res.send([{errorCode: 1, errorMessage: "Reserved login"},{errorCode: 2, errorMessage: "Reserved email"}]);
+        });
+    });
+});
 
-    // валидация
+app.get("/*", function(req, res){
+    res.sendFile(__dirname + "/public/index.html");
 });

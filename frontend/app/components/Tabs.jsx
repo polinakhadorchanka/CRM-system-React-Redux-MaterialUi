@@ -28,6 +28,8 @@ class Tabs extends React.Component {
         this.props.addVacancy(startVacancies.all, 'all');
         this.props.addVacancy(startVacancies.unviewed, 'unviewed');
         this.props.addVacancy(startVacancies.board, 'board');
+
+        this.props.setUser(localStorage.getItem('user'));
     }
 
     async showNextVacancies(filter) {
@@ -48,34 +50,47 @@ class Tabs extends React.Component {
     }
 
     render() {
-        return <div>
-            <Header/>
-            <ul className="nav nav-tabs">
-                <li className="nav-item">
-                    <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
-                </li>
-                <li className="nav-item">
-                    <a id='unviewed'
-                       className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
-                </li>
-                <li className="nav-item">
-                    <a id='board'
-                       className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
-                </li>
-            </ul>
-            <div className="tab-content">
-                <div className="tab-pane fade show active" id="l-all">
-                    <VacancyList filter='all' ref='l-all'/>
+        console.log(JSON.parse(localStorage.getItem('user')));
+        console.log(this.props.store.user);
+        if(!this.props.store.user || this.props.match.params.userLogin !== this.props.store.user.login) {
+            return <h1>error 404</h1>;
+        }
+        else {
+            return <div>
+                <Header/>
+                <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
+                    </li>
+                    <li className="nav-item">
+                        <a id='unviewed'
+                           className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
+                    </li>
+                    <li className="nav-item">
+                        <a id='board'
+                           className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
+                    </li>
+                </ul>
+                <div className="tab-content">
+                    <div className="tab-pane fade show active" id="l-all">
+                        <VacancyList filter='all' ref='l-all'/>
+                    </div>
+                    <div className="tab-pane fade show" id="l-unviewed">
+                        <VacancyList filter='unviewed' ref='l-unviewed'/>
+                    </div>
+                    <div className="tab-pane fade" id="board-tab">
+                        <Board/>
+                    </div>
                 </div>
-                <div className="tab-pane fade show" id="l-unviewed">
-                    <VacancyList filter='unviewed' ref='l-unviewed'/>
-                </div>
-                <div className="tab-pane fade" id="board-tab">
-                    <Board/>
-                </div>
-            </div>
-        </div>;
+            </div>;
+        }
     }
 }
 
-module.exports = connect(null, actions)(Tabs);
+function mapStateToProps(state) {
+    return {
+        store: state
+    };
+}
+
+module.exports = connect(mapStateToProps, actions)(Tabs);

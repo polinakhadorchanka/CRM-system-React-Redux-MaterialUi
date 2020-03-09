@@ -3,7 +3,7 @@ const initialUserState = {
     unviewedVacancies: [],
     boardVacancies: [],
     newVacanciesCount: 0,
-    idUser: null
+    user: null
 };
 
 const reducer = function(state = initialUserState, action) {
@@ -42,6 +42,10 @@ const reducer = function(state = initialUserState, action) {
                 unviewedVacancies: unviewedVacancies,
                 boardVacancies: boardVacancies});
         case 'CHANGE_COUNT': return Object.assign({}, state, { newVacanciesCount: action.count });
+        case 'ADD_USER':
+            if(action.user) localStorage.setItem('user', action.user);
+            else localStorage.removeItem('user');
+            return Object.assign({}, state, { user: action.user });
         default: return state;
     }
 };

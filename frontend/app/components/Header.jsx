@@ -7,14 +7,13 @@ class Header extends React.Component {
         super(props);
         this.state = {
         };
-
     }
 
     myAccount() {
         return (
             <div className='my-account'>
-                <input type='button' id='my-account-list'/>
-                <div className='my-account-list'>
+                <input type='button' id='my-account-list' value='My Account'/>
+                <div className='my-account-list hide'>
                     <span>My settings</span>
                     <span>Log out</span>
                 </div>
@@ -25,13 +24,13 @@ class Header extends React.Component {
     logIn() {
         return (
         <div>
-            <input type='button' id='login'/>
+            <input type='button' id='login' value='Log In' onClick={function() {window.location.href = '/login'}}/>
         </div>
         );
     }
 
     render() {
-        if(this.props.store.idUser) {
+        if(this.props.store.user) {
             return (
                 <header>
                     <div className='system-name'>CRM System</div>

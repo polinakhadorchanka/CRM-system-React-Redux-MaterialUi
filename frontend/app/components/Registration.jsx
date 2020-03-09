@@ -14,7 +14,7 @@ class Registration extends React.Component {
             password: '',
             confirmPassword: '',
             email: '',
-            errorMessage: ''
+            errors: []
         };
 
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -26,20 +26,22 @@ class Registration extends React.Component {
 
     onEmailChange(e) {
         let val = e.target.value,
-            regexp = /^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i;
+            regexp = /^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i,
+            errors = this.state.errors.filter((el) => el.errorCode !== 2);
 
         if(regexp.test(val))
-            this.setState({isEmailValid: true, email : val});
-        else this.setState({isEmailValid: false, email : val});
+            this.setState({isEmailValid: true, email : val, errors: errors});
+        else this.setState({isEmailValid: false, email : val, errors: errors});
     }
 
     onLoginChange(e) {
         let val = e.target.value,
-            regexp = /^[a-zA-Z][a-zA-Z0-9-_\.]{4,20}$/;
+            regexp = /^[a-zA-Z][a-zA-Z0-9-_\.]{4,20}$/,
+            errors = this.state.errors.filter((el) => el.errorCode !== 1);
 
         if(regexp.test(val))
-            this.setState({isLoginValid: true, login : val});
-        else this.setState({isLoginValid: false, login : val});
+            this.setState({isLoginValid: true, login : val, errors: errors});
+        else this.setState({isLoginValid: false, login : val, errors: errors});
     }
 
     onPasswordChange(e) {
@@ -105,9 +107,11 @@ class Registration extends React.Component {
                     body: JSON.stringify(obj)
                 })
                 .then(response => response.json()).then(function (data) {
-                if(data.errorMessage !== null)
-                    context.setState({errorMessage : data.errorMessage});
-                else alert('Good!');
+                if(data[0].errorCode !== 0) {
+                    $('.info-block').addClass('open');
+                    context.setState({errors : data});
+                }
+                else window.location.href = '/login';
             })
                 .catch(function (err) {
                     console.log('EXP: ', err);
@@ -131,6 +135,10 @@ class Registration extends React.Component {
             'border': '1px solid #CF3F3B'
         };
 
+        let errorMessages = {
+            'color' : '#CF3F3B'
+        };
+
         return (
             <div className='login-container'>
                 <div className='login-block'>
@@ -147,11 +155,19 @@ class Registration extends React.Component {
                                         and have a length of at least 5 characters</li>
                                     <li>The password can consist only of letters of the Latin alphabet and numbers
                                         and have a length of at least 6 characters</li>
+                                    {this.state.errors.length > 0 ? <br/> : ''}
+                                    {
+                                        this.state.errors.map(function(error){
+                                            return <li style={errorMessages}>{error.errorMessage}</li>
+                                        })
+                                    }
                                 </ul>
                             </div>
                         </div>
                         <input id='login' type='text' placeholder='Login' name='login' maxLength={20}
-                               style={this.state.isLoginValid === false ? unValid : null}
+                               style={this.state.isLoginValid === false ||
+                               this.state.errors.filter((el) => el.errorCode === 1).length > 0
+                                   ? unValid : null}
                                onChange={this.onLoginChange}/> <br/>
                         <label htmlFor='password'>Password:</label>
                         <input id='password' type='password' placeholder='Password' name='password' maxLength={25}
@@ -164,7 +180,9 @@ class Registration extends React.Component {
                                onChange={this.onConfirmChange}/> <br/>
                         <label htmlFor='email'>E-mail:</label>
                         <input id='email' type='text' placeholder='E-mail' name='email' maxLength={50}
-                               style={this.state.isEmailValid === false ? unValid : null}
+                               style={this.state.isEmailValid === false ||
+                               this.state.errors.filter((el) => el.errorCode === 2).length > 0
+                                   ? unValid : null}
                                onChange={this.onEmailChange}/> <br/>
                         <input type='submit' name='type' value='Registration' style={style}/>
                     </form>

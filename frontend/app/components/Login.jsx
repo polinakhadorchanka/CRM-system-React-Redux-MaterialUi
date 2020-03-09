@@ -10,6 +10,7 @@ class Login extends React.Component {
             isPasswordValid: true,
             login: '',
             password: '',
+            errors: []
         };
 
         this.onLoginChange = this.onLoginChange.bind(this);
@@ -22,8 +23,8 @@ class Login extends React.Component {
             regexp = /^[a-zA-Z][a-zA-Z0-9-_\.]{4,20}$/;
 
         if(regexp.test(val))
-            this.setState({isLoginValid: true, login : val});
-        else this.setState({isLoginValid: false, login : val});
+            this.setState({isLoginValid: true, login : val, errors: []});
+        else this.setState({isLoginValid: false, login : val, errors: []});
     }
 
     onPasswordChange(e) {
@@ -31,55 +32,55 @@ class Login extends React.Component {
             regexp = /^[a-zA-Z0-9-_\.]{6,25}$/;
 
         if(regexp.test(val))
-            this.setState({isPasswordValid: true, password : val});
-        else this.setState({isPasswordValid: false, password : val});
+            this.setState({isPasswordValid: true, password : val, errors: []});
+        else this.setState({isPasswordValid: false, password : val, errors: []});
     }
 
     handleSubmit(e) {
-        if(e.target.value === 'Login') {
-            e.preventDefault();
-            let login = this.state.login,
-                password = this.state.password,
-                confirmPassword = this.state.confirmPassword,
-                email = this.state.email;
+        e.preventDefault();
+        let login = this.state.login,
+            password = this.state.password;
 
-            if (login === '' || password === '' || confirmPassword === '' || email === '') {
-                this.setState({
-                    isLoginValid: login !== '',
-                    isPasswordValid: password !== '',
-                    isConfirmPasswordValid: confirmPassword !== '',
-                    isEmailValid: email !== '',
-                    errorMessage: 'Неверно заполнены данные'
-                });
-                $('.info-block').addClass('open');
-            } else if (!this.state.isLoginValid || !this.state.isPasswordValid ||
-                !this.state.isConfirmPasswordValid || !this.state.isEmailValid) {
-                this.setState({errorMessage: 'Неверно заполнены данные'});
-                $('.info-block').addClass('open');
-            } else {
-                let context = this,
-                    obj = {
-                        login: e.target.login.value,
-                        password: e.target.password.value
-                    };
-                fetch(`/login`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                    .then(response => response.json()).then(function (data) {
-                    if (data.errorMessage !== null)
-                        context.setState({errorMessage: data.errorMessage});
-                    else alert('Good!');
+        if (login === '' || password === '') {
+            console.log('1');
+            this.setState({
+                isLoginValid: login !== '',
+                isPasswordValid: password !== ''
+            });
+            $('.info-block').addClass('open');
+        } else if (!this.state.isLoginValid || !this.state.isPasswordValid) {
+            console.log('2');
+            $('.info-block').addClass('open');
+        } else {
+            let context = this,
+                obj = {
+                    login: e.target.login.value,
+                    password: e.target.password.value
+                };
+            fetch(`/login`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
                 })
-                    .catch(function (err) {
-                        console.log('EXP: ', err);
-                    });
-            }
+                .then(response => response.json()).then(function (data) {
+                    console.log(data);
+                if (data[0] && data[0].errorMessage !== null) {
+                    context.setState({errors: data});
+                    $('.info-block').addClass('open');
+                }
+                else {
+                    //context.props.setUser(data);
+                    localStorage.setItem('user', data);
+                    window.location.href = `/${data.login}`;
+                }
+            })
+                .catch(function (err) {
+                    console.log('EXP: ', err);
+                });
         }
     }
 
@@ -104,11 +105,15 @@ class Login extends React.Component {
             'margin-top' : '-205px'
         };
 
+        let errorMessages = {
+            'color' : '#CF3F3B'
+        };
+
         return (
             <div className='login-container'>
                 <div className='login-block' style={formStyle}>
                     <h2>Login</h2>
-                    <form className='login-form' action='/login' method='post'
+                    <form className='login-form'
                           onSubmit={this.handleSubmit}>
                         <div className='info'>
                             <label htmlFor='login'>Login:</label>
@@ -121,6 +126,12 @@ class Login extends React.Component {
                                         and have a length of at least 5 characters</li>
                                     <li>The password can consist only of letters of the Latin alphabet and numbers
                                         and have a length of at least 6 characters</li>
+                                    {this.state.errors.length > 0 ? <br/> : ''}
+                                    {
+                                        this.state.errors.map(function(error){
+                                            return <li style={errorMessages}>{error.errorMessage}</li>
+                                        })
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -133,7 +144,8 @@ class Login extends React.Component {
                                onChange={this.onPasswordChange}/> <br/>
                         <input type='submit' name='type' value='Login' style={style}/><br/><br/>
                         <span className='or-element'>or</span> <br/>
-                        <input type='submit' name='type' value='Registration'/>
+                        <input type='button' name='type' value='Registration'
+                               onClick={() => window.location.href = '/registration'}/>
                     </form>
                 </div>
             </div>

@@ -20,4 +20,11 @@ let changeNewVacanciesCount = function (count) {
     }
 };
 
-module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount};
+let setUser = function(user) {
+    return {
+        type: 'ADD_USER',
+        user
+    }
+};
+
+module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser};
