@@ -29,11 +29,12 @@ class KanbanBoard extends React.Component {
     }
 
     deleteCard(e, project) {
-        let vacancies = this.props.store.boardVacancies.filter((el) => el.vacancyId !== project.vacancyId);
+        let vacancies = this.props.store.boardVacancies.filter((el) => el.VacancyId !== project.VacancyId),
+            userId = this.props.store.user.ClientId;
         this.props.addVacancy(vacancies, 'board');
 
-        project.boardStatus = null;
-        fetch(`/api/vacancy-status`,
+        project.BoardStatus = null;
+        fetch(`/api/vacancy-status?userId=${userId}`,
             {
                 method: 'PUT',
                 headers: {
@@ -61,7 +62,9 @@ class KanbanBoard extends React.Component {
         project.isViewed = true;
         this.props.changeVacancy(project);
 
-        fetch(`/api/vacancy-status`,
+        let userId = this.props.store.user.ClientId;
+
+        fetch(`/api/vacancy-status?userId=${userId}`,
             {
                 method: 'PUT',
                 headers: {
@@ -91,11 +94,12 @@ class KanbanBoard extends React.Component {
     //this is called when a Kanban card dropped over a column (called by card)
     handleOnDragEnd(e, project) {
         const updatedProjects = this.props.store.boardVacancies.slice(0);
-        updatedProjects.find((projectObject) => {return projectObject.vacancyId === project.vacancyId;}).boardStatus = this.state.draggedOverCol;
+        updatedProjects.find((projectObject) => {return projectObject.VacancyId === project.VacancyId;}).BoardStatus = this.state.draggedOverCol;
         this.props.addVacancy(updatedProjects, 'board');
 
+        let userId = this.props.store.user.ClientId;
 
-        fetch(`/api/vacancy-status`,
+        fetch(`/api/vacancy-status?userId=${userId}`,
             {
                 method: 'PUT',
                 headers: {
@@ -129,7 +133,7 @@ class KanbanBoard extends React.Component {
                         <KanbanColumn
                             name={ column.name }
                             stage={ column.stage }
-                            projects={ this.props.store.boardVacancies.filter((project) => {return project.boardStatus === column.name;}) }
+                            projects={ this.props.store.boardVacancies.filter((project) => {return project.BoardStatus === column.name;}) }
                             onDragEnter={ this.handleOnDragEnter }
                             onDragEnd={ this.handleOnDragEnd }
                             deleteCard = { this.deleteCard }
@@ -213,35 +217,35 @@ class KanbanCard extends React.Component {
                      onClick={(e) => e.stopPropagation()}>
                     <div className='flex-block'>
                         <div>
-                            <span className='vacancy-name'>{vacancy.position}</span> <br/>
-                            <a href={vacancy.website} target='_blank'>
-                            <span className={vacancy.companyName ? 'company-name' : 'hide'}>
-                                {vacancy.companyName}
+                            <span className='vacancy-name'>{vacancy.Position}</span> <br/>
+                            <a href={vacancy.Website} target='_blank'>
+                            <span className={vacancy.CompanyName ? 'company-name' : 'hide'}>
+                                {vacancy.CompanyName}
                             </span>
                             </a>
-                            <span className={vacancy.country ? 'company-country' : 'hide'}>
-                                {' / ' + vacancy.country}
+                            <span className={vacancy.Country ? 'company-country' : 'hide'}>
+                                {' / ' + vacancy.Country}
                             </span>
                             <span className='tech-stack'>stack</span> <br/>
-                            <span className={vacancy.location ? 'location' : 'hide'}>
-                                Location: {vacancy.location}
+                            <span className={vacancy.Location ? 'location' : 'hide'}>
+                                Location: {vacancy.Location}
                             </span>
-                            <span className={vacancy.contacts ? 'contacts' : 'hide'}>
-                                Contacts: {vacancy.contacts}
+                            <span className={vacancy.Contacts ? 'contacts' : 'hide'}>
+                                Contacts: {vacancy.Contacts}
                             </span>
                         </div>
                         <div>
-                            <a href={vacancy.url} target='_blank'
+                            <a href={vacancy.Url} target='_blank'
                                onClick={(e) => e.stopPropagation()}>
                                 <input type='button' value='View' title='view vacancy'/>
                             </a>
                             <div className='date'>
-                                {vacancy.siteAddingDate}
+                                {vacancy.SiteAddingDate}
                             </div>
                         </div>
                     </div>
-                    <div  id={vacancy.url + 'board'} className='description'
-                          dangerouslySetInnerHTML = {{__html:vacancy.description}} />
+                    <div  id={vacancy.Url + 'board'} className='description'
+                          dangerouslySetInnerHTML = {{__html:vacancy.Description}} />
                 </div>
             </div>
         );
@@ -255,9 +259,9 @@ class KanbanCard extends React.Component {
                  onClick={this.handleDescription}>
                 <div className='container'>
                     <div>
-                        <span className='vacancy-name'>{this.props.project.position}</span> <br/>
-                        <span className={this.props.project.companyName ? 'company-name' : 'hide'}>
-                    {this.props.project.companyName}
+                        <span className='vacancy-name'>{this.props.project.Position}</span> <br/>
+                        <span className={this.props.project.CompanyName ? 'company-name' : 'hide'}>
+                    {this.props.project.CompanyName}
                 </span>
                     </div>
                     <div className='delete-button'

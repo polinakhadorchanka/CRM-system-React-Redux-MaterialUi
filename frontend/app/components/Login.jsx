@@ -72,7 +72,7 @@ class Login extends React.Component {
                 }
                 else {
                     sessionStorage.setItem('user', JSON.stringify(data));
-                    window.location.href = `/${data.login}`;
+                    window.location.href = `/${data.Login}`;
                 }
             })
                 .catch(function (err) {

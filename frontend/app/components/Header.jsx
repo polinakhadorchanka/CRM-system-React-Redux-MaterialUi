@@ -7,6 +7,8 @@ class Header extends React.Component {
         super(props);
 
         this.logOut = this.logOut.bind(this);
+        if(sessionStorage.getItem('user'))
+            props.setUser(JSON.parse(sessionStorage.getItem('user')));
     }
 
     handleAccountList(e) {
@@ -18,7 +20,6 @@ class Header extends React.Component {
     }
 
     logOut() {
-        console.log('logout');
         this.props.setUser(null);
         sessionStorage.removeItem('user');
         window.location.href = '/login';
@@ -31,7 +32,7 @@ class Header extends React.Component {
                     My Account
                 </div>
                 <div className='my-account-list'>
-                    <span onClick={() => window.location.href = `/${this.props.store.user.login}/settings`}>
+                    <span onClick={() => window.location.href = `/settings`}>
                         My settings
                     </span>
                     <span onClick={this.logOut}>Log out</span>
@@ -54,7 +55,9 @@ class Header extends React.Component {
         if(this.props.store.user) {
             return (
                 <header>
-                    <div className='system-name'>CRM System</div>
+                    <div className='system-name' onClick={(e) => window.location.href = '/'}>
+                        CRM System
+                    </div>
                     {this.myAccount()}
                 </header>
             );

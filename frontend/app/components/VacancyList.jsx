@@ -27,9 +27,10 @@ class VacancyList extends React.Component {
             : this.props.store.unviewedVacancies,
             context = this,
             id = positions[positions.length-1] ?
-                positions[positions.length-1].vacancyId : undefined;
+                positions[positions.length-1].VacancyId : undefined,
+            userId = this.props.store.user.ClientId;
 
-        await fetch(`/api/vacancies/next?id=${id}&filter=${context.state.filter}`)
+        await fetch(`/api/vacancies/next?userId=${userId}&id=${id}&filter=${context.state.filter}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -53,11 +54,10 @@ class VacancyList extends React.Component {
             positions = context.state.filter === 'all' ? context.props.store.allVacancies
             : context.props.store.unviewedVacancies,
             id = positions[positions.length-1] ?
-                positions[positions.length-1].vacancyId : undefined;
+                positions[positions.length-1].VacancyId : undefined,
+            userId = this.props.store.user.ClientId;
 
-        console.log(`/api/vacancies?id=${id}&` +
-            `count=${this.state.nextCount}&filter=${this.state.filter}`);
-        await fetch(`/api/vacancies?id=${id}&` +
+        await fetch(`/api/vacancies?userId=${userId}&id=${id}&` +
             `count=${this.state.nextCount}&filter=${this.state.filter}`)
             .then(
                 function(response) {
@@ -82,7 +82,7 @@ class VacancyList extends React.Component {
         let timerId = await setTimeout(function request() {
             let positions = context.state.filter === 'all' ? context.props.store.allVacancies
                 : context.props.store.unviewedVacancies,
-                id = positions[0] ? positions[0].vacancyId : undefined;
+                id = positions[0] ? positions[0].VacancyId : undefined;
 
             console.log(`/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`);
             fetch(  `/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`)
@@ -110,7 +110,7 @@ class VacancyList extends React.Component {
         let context = this,
             allPositions = context.props.store.allVacancies,
             unviewedPositions = context.props.store.unviewedVacancies,
-            id = allPositions[0] ? allPositions[0].vacancyId : undefined;
+            id = allPositions[0] ? allPositions[0].VacancyId : undefined;
 
         $('.description').addClass('description-hide');
 

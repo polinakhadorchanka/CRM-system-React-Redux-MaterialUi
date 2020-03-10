@@ -21,20 +21,21 @@ class Tabs extends React.Component {
     }
 
     async setStartVacancies() {
-        await this.showNextVacancies('all');
-        await this.showNextVacancies('unviewed');
-        await this.showNextVacancies('board');
+        await this.props.setUser(JSON.parse(sessionStorage.getItem('user')));
+        await this.showNextVacancies('all', this.props.store.user.ClientId);
+        await this.showNextVacancies('unviewed', this.props.store.user.ClientId);
+        await this.showNextVacancies('board', this.props.store.user.ClientId);
 
         this.props.addVacancy(startVacancies.all, 'all');
         this.props.addVacancy(startVacancies.unviewed, 'unviewed');
         this.props.addVacancy(startVacancies.board, 'board');
-
-        this.props.setUser(JSON.parse(sessionStorage.getItem('user')));
     }
 
-    async showNextVacancies(filter) {
-        await fetch(`/api/vacancies?id=undefined&` + `count=10&filter=${filter}`)
+    async showNextVacancies(filter, userId) {
+        await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
+            `count=10&filter=${filter}`)
             .then(response => response.json()).then(function (data) {
+                console.log(data);
                 switch(filter) {
                     case 'all':
                         startVacancies.all = data; break;
@@ -50,36 +51,38 @@ class Tabs extends React.Component {
     }
 
     render() {
-        console.log(JSON.parse(sessionStorage.getItem('user')));
-        console.log(this.props.store.user);
-
-        return <div>
-            <Header/>
-            <ul className="nav nav-tabs">
-                <li className="nav-item">
-                    <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
-                </li>
-                <li className="nav-item">
-                    <a id='unviewed'
-                       className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
-                </li>
-                <li className="nav-item">
-                    <a id='board'
-                       className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
-                </li>
-            </ul>
-            <div className="tab-content">
-                <div className="tab-pane fade show active" id="l-all">
-                    <VacancyList filter='all' ref='l-all'/>
+        if (!sessionStorage.getItem('user') ||
+            this.props.match.params.userLogin !== JSON.parse(sessionStorage.getItem('user')).Login) {
+            return <h1>error 404</h1>;
+        } else {
+            return <div>
+                <Header/>
+                <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
+                    </li>
+                    <li className="nav-item">
+                        <a id='unviewed'
+                           className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
+                    </li>
+                    <li className="nav-item">
+                        <a id='board'
+                           className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
+                    </li>
+                </ul>
+                <div className="tab-content">
+                    <div className="tab-pane fade show active" id="l-all">
+                        <VacancyList filter='all' ref='l-all'/>
+                    </div>
+                    <div className="tab-pane fade show" id="l-unviewed">
+                        <VacancyList filter='unviewed' ref='l-unviewed'/>
+                    </div>
+                    <div className="tab-pane fade" id="board-tab">
+                        <Board/>
+                    </div>
                 </div>
-                <div className="tab-pane fade show" id="l-unviewed">
-                    <VacancyList filter='unviewed' ref='l-unviewed'/>
-                </div>
-                <div className="tab-pane fade" id="board-tab">
-                    <Board/>
-                </div>
-            </div>
-        </div>;
+            </div>;
+        }
     }
 
 }

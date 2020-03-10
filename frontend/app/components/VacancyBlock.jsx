@@ -20,8 +20,8 @@ class VacancyBlock extends React.Component {
         this.setState({isOpening: true});
     }
 
-    changeStatus(vacancy) {
-        fetch(`/api/vacancy-status`,
+    changeStatus(vacancy, userId) {
+        fetch(`/api/vacancy-status?userId=${userId}`,
             {
                 method: 'PUT',
                 headers: {
@@ -50,16 +50,16 @@ class VacancyBlock extends React.Component {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies;
 
-        if(!positions[this.props.index].isViewed || positions[this.props.index].isViewed === 0) {
+        if(!positions[this.props.index].IsViewed || positions[this.props.index].IsViewed === 0) {
             let vacancy = positions[this.props.index];
-            vacancy.isViewed = 1;
+            vacancy.IsViewed = 1;
 
             this.props.changeVacancy(vacancy);
 
-            this.changeStatus(vacancy);
+            this.changeStatus(vacancy, this.props.store.user.ClientId);
         }
 
-        let description = document.getElementById(positions[this.props.index].url + this.state.filter);
+        let description = document.getElementById(positions[this.props.index].Url + this.state.filter);
         description.classList.toggle('description-hide');
     }
 
@@ -70,13 +70,13 @@ class VacancyBlock extends React.Component {
             : this.props.store.unviewedVacancies,
             vacancy = positions[this.props.index];
 
-        if (!positions[this.props.index].isRemoved || positions[this.props.index].isRemoved === 0) {
-            vacancy.isRemoved = 1;
-        } else vacancy.isRemoved = 0;
+        if (!positions[this.props.index].IsRemoved || positions[this.props.index].IsRemoved === 0) {
+            vacancy.IsRemoved = 1;
+        } else vacancy.IsRemoved = 0;
 
         this.props.changeVacancy(vacancy);
 
-        this.changeStatus(vacancy);
+        this.changeStatus(vacancy, this.props.store.user.ClientId);
     }
 
     static handleStatusList(e) {
@@ -95,25 +95,25 @@ class VacancyBlock extends React.Component {
 
         switch(e.target.innerText) {
             case 'new':
-                vacancy.boardStatus = 'new';
+                vacancy.BoardStatus = 'new';
                 break;
             case 'in the process':
-                vacancy.boardStatus = 'in the process';
+                vacancy.BoardStatus = 'in the process';
                 break;
             case 'completed':
-                vacancy.boardStatus = 'completed';
+                vacancy.BoardStatus = 'completed';
                 break;
             case 'deferred':
-                vacancy.boardStatus = 'deferred';
+                vacancy.BoardStatus = 'deferred';
                 break;
         }
 
-        if(this.props.store.boardVacancies.filter((e) => e.vacancyId === vacancy.vacancyId).length === 0)
+        if(this.props.store.boardVacancies.filter((e) => e.VacancyId === vacancy.VacancyId).length === 0)
             this.props.addVacancy(this.props.store.boardVacancies.concat(vacancy), 'board');
 
         this.props.changeVacancy(vacancy);
 
-        this.changeStatus(vacancy);
+        this.changeStatus(vacancy, this.props.store.user.ClientId);
 
         e.stopPropagation();
     }
@@ -122,46 +122,45 @@ class VacancyBlock extends React.Component {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies;
 
-        return <div className={positions[this.props.index].isRemoved == 1 ||
-        (positions[this.props.index].isFavorite == 0 && this.props.filter === 'favorites') ? 'hide' : ''}>
+        return <div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
                 <div className='vacancy-status'>
-                    <img src={positions[this.props.index].isViewed == 1 ?
-                        (positions[this.props.index].isFavorite == 1 ? 'images/status-favorite.png' :
-                            (positions[this.props.index].isRemoved == 1 ? 'images/status-removed.png' :
+                    <img src={positions[this.props.index].IsViewed == 1 ?
+                        (positions[this.props.index].IsFavorite == 1 ? 'images/status-favorite.png' :
+                            (positions[this.props.index].IsRemoved == 1 ? 'images/status-removed.png' :
                                 'images/status-viewed.png')) :
-                        (positions[this.props.index].isFavorite == 1 ? 'images/status-favorite.png' :
+                        (positions[this.props.index].IsFavorite == 1 ? 'images/status-favorite.png' :
                             'images/status-unviewed.png')}
-                         title={positions[this.props.index].isViewed == 1 ?
-                             (positions[this.props.index].isFavorite == 1 ? 'favorite' :
-                                 (positions[this.props.index].isRemoved == 1 ? 'removed' :
+                         title={positions[this.props.index].IsViewed == 1 ?
+                             (positions[this.props.index].IsFavorite == 1 ? 'favorite' :
+                                 (positions[this.props.index].IsRemoved == 1 ? 'removed' :
                                      'viewed')) :
-                             (positions[this.props.index].isFavorite == 1 ? 'favorite' : 'unviewed')}/>
+                             (positions[this.props.index].IsFavorite == 1 ? 'favorite' : 'unviewed')}/>
                 </div>
                 <div className='vacancy-information'>
-                    <span className='vacancy-name'>{positions[this.props.index].position}</span> <br/>
-                    <a href={positions[this.props.index].website} target='_blank'
+                    <span className='vacancy-name'>{positions[this.props.index].Position}</span> <br/>
+                    <a href={positions[this.props.index].Website} target='_blank'
                        onClick={VacancyBlock.stopPropagation}>
-                    <span className={positions[this.props.index].companyName ? 'company-name' : 'hide'}>
-                        {positions[this.props.index].companyName}
+                    <span className={positions[this.props.index].CompanyName ? 'company-name' : 'hide'}>
+                        {positions[this.props.index].CompanyName}
                     </span>
                     </a>
-                    <span className={positions[this.props.index].country ? 'company-country' : 'hide'}>
-                    {' / ' + positions[this.props.index].country}
+                    <span className={positions[this.props.index].Country ? 'company-country' : 'hide'}>
+                    {' / ' + positions[this.props.index].Country}
                 </span>
                     <span className='tech-stack'>stack</span> <br/>
-                    <span className={positions[this.props.index].location ? 'location' : 'hide'}>
-                    Location: {positions[this.props.index].location}
+                    <span className={positions[this.props.index].Location ? 'location' : 'hide'}>
+                    Location: {positions[this.props.index].Location}
                 </span>
-                    <span className={positions[this.props.index].contacts ? 'contacts' : 'hide'}>
-                    Contacts: {positions[this.props.index].contacts}
+                    <span className={positions[this.props.index].Contacts ? 'contacts' : 'hide'}>
+                    Contacts: {positions[this.props.index].Contacts}
                 </span>
                 </div>
                 <div className='date'>
-                    {positions[this.props.index].siteAddingDate}
+                    {positions[this.props.index].SiteAddingDate}
                 </div>
                 <div className='vacancy-actions'>
-                    <a href={positions[this.props.index].url} target='_blank'
+                    <a href={positions[this.props.index].Url} target='_blank'
                        onClick={(e) => e.stopPropagation()}>
                         <input type='button' value='View' title='view vacancy'/>
                     </a> <br/>
@@ -180,8 +179,8 @@ class VacancyBlock extends React.Component {
                     </div>
                 </div>
             </div>
-            <div  id={positions[this.props.index].url + this.state.filter} className='description description-hide'
-                  dangerouslySetInnerHTML = {{__html:positions[this.props.index].description}} />
+            <div  id={positions[this.props.index].Url + this.state.filter} className='description description-hide'
+                  dangerouslySetInnerHTML = {{__html:positions[this.props.index].Description}} />
         </div>;
     }
 }

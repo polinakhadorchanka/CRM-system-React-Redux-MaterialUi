@@ -19,7 +19,9 @@ app.get("/api/vacancies", function(req, res){
     let vacancies;
     let id = req.query.id;
     let filter = req.query.filter;
-    mod.getData(id, filter).then(function(result) {
+    let userId = req.query.userId;
+    mod.getData(id, filter, userId).then(function(result) {
+        console.log(result);
         res.send(result);
     });
 });
@@ -48,14 +50,15 @@ app.get("/api/vacancies/new/count", function(req, res){
 app.get("/api/vacancies/next", function(req, res){
     let filter = req.query.filter;
     let id = req.query.id;
-    mod.getAmountLeft(id, filter).then(function(result) {
+    let userId = req.query.userId;
+    mod.getAmountLeft(id, filter,userId).then(function(result) {
         res.send(result);
     });
 });
 
 //функция изменения статуса записи
 app.put("/api/vacancy-status", function (req, res) {
-    mod.updateState(req.body.vacancyId,+req.body.isViewed,+req.body.isFavorite,+req.body.isRemoved,req.body.boardStatus, req.body.position).then(function(result){
+    mod.updateState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,req.body.BoardStatus).then(function(result){
         let message = result;
         res.send(message);
     });
@@ -109,7 +112,8 @@ app.get("/login", function(req, res){
 });
 
 app.post("/login", function(req, res) {
-    let login = req.body.login,
+    let type = req.body.type,
+        login = req.body.login,
         password = req.body.password;
 
     mod.LogInValidation(login,password).then(function (result) {

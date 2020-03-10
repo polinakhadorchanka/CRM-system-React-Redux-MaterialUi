@@ -642,6 +642,7 @@ header .system-name {
     color: #e1e1e1;
 
     user-select: none;
+    cursor: pointer;
 }
 
 header .button {
@@ -657,16 +658,23 @@ header .button {
     cursor: pointer;
 }
 
-header .button:hover {
+header .button:hover, header .button:focus {
     color: #7f9fd5;
     border: 1px solid #7f9fd5;
+    outline: none;
+    user-select: none;
+}
+
+header .button:focus {
+    color: #e1e1e1;
+    border: 1px solid #e1e1e1;
 }
 
 #my-account-list:after {
     content: ' \2228';
 }
 
-#my-account-list:focus:after {
+#my-account-list.inFocus:after {
     content: ' \2227';
 }
 
@@ -679,6 +687,7 @@ header .button:hover {
     color: #7f9fd5;
     border: 1px solid #7f9fd5;
     border-bottom: none;
+    user-select: none;
 }
 
 .my-account-list {
@@ -712,4 +721,61 @@ header .button:hover {
 
 .my-account-list span:hover {
     color: #7f9fd5;
+}
+
+.settings {
+    display: flex;
+    flex-direction: row;
+    color: #e1e1e1;
+}
+
+.settings nav {
+    min-width: 250px;
+    border-right: 1px solid #e1e1e1;
+}
+
+.settings nav ul {
+    margin-left: 10px;
+    padding: 0;
+}
+
+.settings nav li {
+    list-style-type: none;
+    padding-left: 10px;
+
+    height: 40px;
+    line-height: 40px;
+
+    cursor: pointer;
+}
+
+.settings nav li.active {
+    padding-left: 0;
+    color: #7f9fd5;
+    border: 1px solid;
+    border-image: linear-gradient(#7f9fd5, #1e1e1e);
+}
+
+.settings nav li.active:before {
+    content: '';
+    display: block;
+    margin-right: 10px;
+    float: left;
+    width: 10px;
+    height: 100%;
+    background-color: #7f9fd5;
+}
+
+.settings nav li.active:after {
+    content: '';
+    display: block;
+    margin-right: 10px;
+    float: left;
+    width: 10px;
+    height: 100%;
+    background-color: #7f9fd5;
+}
+
+.settings main {
+    margin-left: 10px;
 }

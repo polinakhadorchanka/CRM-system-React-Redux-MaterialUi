@@ -3,7 +3,7 @@ const initialUserState = {
     unviewedVacancies: [],
     boardVacancies: [],
     newVacanciesCount: 0,
-    user: {login: 'asevery', password: 'qwerty', email: 'aa@mail.ru', userId: 'q1q1q1'}
+    user: null
 };
 
 const reducer = function(state = initialUserState, action) {
@@ -23,17 +23,17 @@ const reducer = function(state = initialUserState, action) {
                 unviewedVacancies = state.unviewedVacancies,
                 boardVacancies = state.boardVacancies;
 
-            let el = allVacancies.filter((el) => el.vacancyId === action.vacancy.vacancyId)[0];
+            let el = allVacancies.filter((el) => el.VacancyId === action.vacancy.VacancyId)[0];
             if(allVacancies.indexOf(el) >= 0) {
                 allVacancies[allVacancies.indexOf(el)] = action.vacancy;
             }
 
-            el = unviewedVacancies.filter((el) => el.vacancyId === action.vacancy.vacancyId)[0];
+            el = unviewedVacancies.filter((el) => el.VacancyId === action.vacancy.VacancyId)[0];
             if(unviewedVacancies.indexOf(el) >= 0) {
                 unviewedVacancies[unviewedVacancies.indexOf(el)] = action.vacancy;
             }
 
-            el = boardVacancies.filter((el) => el.vacancyId === action.vacancy.vacancyId)[0];
+            el = boardVacancies.filter((el) => el.VacancyId === action.vacancy.VacancyId)[0];
             if(boardVacancies.indexOf(el) >= 0) {
                 boardVacancies[boardVacancies.indexOf(el)] = action.vacancy;
             }
