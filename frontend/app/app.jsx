@@ -16,10 +16,9 @@ getStartVacancies();
 
 async function getStartVacancies() {
     //localStorage.removeItem('user');
-    console.log(localStorage.getItem('user').login);
     if (document.location.pathname === '/') {
         if (localStorage.getItem('user')) {
-            window.location.href = `/${localStorage.getItem('user').login}`;
+            window.location.href = `/${JSON.parse(localStorage.getItem('user')).login}`;
         } else window.location.href = '/login';
     }
 

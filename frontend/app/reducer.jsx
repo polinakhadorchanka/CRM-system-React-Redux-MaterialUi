@@ -3,7 +3,7 @@ const initialUserState = {
     unviewedVacancies: [],
     boardVacancies: [],
     newVacanciesCount: 0,
-    user: null
+    user: {login: 'asevery', password: 'qwerty', email: 'aa@mail.ru', userId: 'q1q1q1'}
 };
 
 const reducer = function(state = initialUserState, action) {

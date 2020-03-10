@@ -5,17 +5,36 @@ let actions = require("../actions.jsx");
 class Header extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+
+        this.logOut = this.logOut.bind(this);
+    }
+
+    handleAccountList(e) {
+        if(e.type === 'click') {
+            $('#my-account-list').toggleClass('inFocus');
+            $('.my-account-list').toggleClass('open');
+            e.stopPropagation();
+        }
+    }
+
+    logOut() {
+        console.log('logout');
+        this.props.setUser(null);
+        sessionStorage.removeItem('user');
+        window.location.href = '/login';
     }
 
     myAccount() {
         return (
             <div className='my-account'>
-                <input type='button' id='my-account-list' value='My Account'/>
-                <div className='my-account-list hide'>
-                    <span>My settings</span>
-                    <span>Log out</span>
+                <div tabIndex='0' className='button' id='my-account-list' onClick={this.handleAccountList}>
+                    My Account
+                </div>
+                <div className='my-account-list'>
+                    <span onClick={() => window.location.href = `/${this.props.store.user.login}/settings`}>
+                        My settings
+                    </span>
+                    <span onClick={this.logOut}>Log out</span>
                 </div>
             </div>
         );
@@ -24,7 +43,9 @@ class Header extends React.Component {
     logIn() {
         return (
         <div>
-            <input type='button' id='login' value='Log In' onClick={function() {window.location.href = '/login'}}/>
+            <div  tabIndex='0' className='button' id='login'onClick={function() {window.location.href = '/login'}}>
+                Log In
+            </div>
         </div>
         );
     }

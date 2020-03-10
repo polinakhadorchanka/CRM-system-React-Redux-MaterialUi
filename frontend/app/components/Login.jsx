@@ -42,14 +42,12 @@ class Login extends React.Component {
             password = this.state.password;
 
         if (login === '' || password === '') {
-            console.log('1');
             this.setState({
                 isLoginValid: login !== '',
                 isPasswordValid: password !== ''
             });
             $('.info-block').addClass('open');
         } else if (!this.state.isLoginValid || !this.state.isPasswordValid) {
-            console.log('2');
             $('.info-block').addClass('open');
         } else {
             let context = this,
@@ -73,8 +71,7 @@ class Login extends React.Component {
                     $('.info-block').addClass('open');
                 }
                 else {
-                    //context.props.setUser(data);
-                    localStorage.setItem('user', data);
+                    sessionStorage.setItem('user', JSON.stringify(data));
                     window.location.href = `/${data.login}`;
                 }
             })
