@@ -2,6 +2,7 @@ const initialUserState = {
     allVacancies: [],
     unviewedVacancies: [],
     boardVacancies: [],
+    parsers: [],
     newVacanciesCount: 0,
     user: null
 };
@@ -46,6 +47,7 @@ const reducer = function(state = initialUserState, action) {
             if(action.user) localStorage.setItem('user', action.user);
             else localStorage.removeItem('user');
             return Object.assign({}, state, { user: action.user });
+        case 'ADD_PARSERS': return Object.assign({}, state, { parsers: action.parsers });
         default: return state;
     }
 };

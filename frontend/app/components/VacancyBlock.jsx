@@ -140,7 +140,7 @@ class VacancyBlock extends React.Component {
                 <div className='vacancy-information'>
                     <span className='vacancy-name'>{positions[this.props.index].Position}</span> <br/>
                     <a href={positions[this.props.index].Website} target='_blank'
-                       onClick={VacancyBlock.stopPropagation}>
+                       onClick={(e) => e.stopPropagation()}>
                     <span className={positions[this.props.index].CompanyName ? 'company-name' : 'hide'}>
                         {positions[this.props.index].CompanyName}
                     </span>

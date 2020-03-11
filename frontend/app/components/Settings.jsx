@@ -173,7 +173,6 @@ class Settings extends React.Component {
         } else {
             return (
                 <div>
-                    <Header/>
                     <div className='settings'>
                         <nav>
                             <ul>

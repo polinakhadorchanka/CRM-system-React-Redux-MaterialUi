@@ -11,8 +11,15 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
-    // workWithParseHub('td_sN-PPvfKs', 'tUZFnFRVqZcc');
-    // workWithParseHub('td_sN-PPvfKs', 'tD5N71CEUTDe');
+    mod.getListOfParsers().then(function (result) {
+        console.log(result);//length чтобы узнать сколько элементов нам вернулось
+        result.forEach(function (element) {
+            console.log(element.ParserId);
+            //TODO: написать проверку состояния если состояние 1 запустить парсер
+        });
+    })
+    /*workWithParseHub('td_sN-PPvfKs', 'tUZFnFRVqZcc');
+    workWithParseHub('td_sN-PPvfKs', 'tD5N71CEUTDe');*/
 });
 
 app.get("/api/vacancies", function(req, res){
@@ -21,7 +28,6 @@ app.get("/api/vacancies", function(req, res){
     let filter = req.query.filter;
     let userId = req.query.userId;
     mod.getData(id, filter, userId).then(function(result) {
-        console.log(result);
         res.send(result);
     });
 });
@@ -39,8 +45,7 @@ app.get("/api/vacancies/new", function(req, res){
 // Получение количества новых вакансий++
 app.get("/api/vacancies/new/count", function(req, res){
     let id = req.query.id;
-    let filter = req.query.filter;
-    mod.getAmount(id, filter).then(function(result) {
+    mod.getAmount(id).then(function(result) {
         res.send(result);
     });
 });
@@ -71,25 +76,25 @@ function workWithParseHub(key,token){
             console.log(result);
             console.log(result.status);
             console.log(result.pages)
-            result.end_time = result.end_time.substr(0, 10);
-            if(+(result.pages)==0){//++
+            if(+(result.pages)==0 && result.status != 'queued'){//++
                 console.log("У нас 0 страниц перезапустим ка мы пармер");
-                //parseH.runParseHubFunction(key, token);
+                parseH.runParseHubFunction(key, token);
             }
-            else if(result.status == 'queued ' || result.status == 'initialized ' || result.status == 'running ')//++
+            else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
                 return;
             else if((result.status == 'cancelled' || result.status == 'complete') && +(result.pages)>0){//TODO: сделать внутри функцию сравнения  ++
                 mod.getLastNoteDate().then(function (resultD) {
+                    result.end_time = result.end_time.substr(0, 10);
                     let a = new Date();
                     let b = dateFormat(a,"isoDate");
                     if(Date.parse(result.end_time) < Date.parse(b)) {// дата поселеднего парсинга меньше сегодня => запустить парсер ++
-                        //parseH.runParseHubFunction(key, token);
+                        parseH.runParseHubFunction(key, token);
                         console.log(result.status + " " + "Надо бы запустить парсерочек");
                     }
                     else if(Date.parse(result.end_time) > Date.parse(resultD.DbAddingDate)){// дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД++
-                        /*parseH.getDataFromParseHub(key, token).then(function (result) {
+                        parseH.getDataFromParseHub(key, token).then(function (result) {
                             mod.insertVacations(JSON.stringify(result));
-                        });*/
+                        });
                         console.log("дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД");
                     }
                     else if(Date.parse(result.end_time) == Date.parse(resultD.DbAddingDate)){// дата добавления в бд равне дате парсера => return ++
@@ -123,6 +128,7 @@ app.post("/login", function(req, res) {
             res.send([{errorCode: 3, errorMessage: "Login failed"}]);
         }
     })
+
 });
 
 app.get("/registration", function(req, res){

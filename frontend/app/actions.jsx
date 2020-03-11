@@ -27,4 +27,11 @@ let setUser = function(user) {
     }
 };
 
-module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser};
+let addParsers = function (parsers) {
+    return {
+        type: "ADD_PARSERS",
+        parsers
+    }
+};
+
+module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser, addParsers};

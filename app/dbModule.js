@@ -15,15 +15,14 @@ module.exports.getData = async function(id, filter, userId) {
 		// filter ++
 		sql.connect(config).then(function() {
 			if(id == 'undefined') {
-				usQuery = `select * from testF0('${userId}','${filter}')`;
+				usQuery = `select * from testF0('${userId}','${filter}') order by DbAddingDate DESC, Url, position`;
 			} else{
-				usQuery = `select * from testF1('${id}','${userId}','${filter}')`
+				usQuery = `select * from testF1('${id}','${userId}','${filter}') order by DbAddingDate DESC, Url, position`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function (result) {
 				sql.close(function (err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve(result.recordset);
 					console.log("Подключение закрыто");
@@ -42,18 +41,11 @@ module.exports.getAmount = async function(id, filter) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		sql.connect(config).then(function() {
-			if(filter == `all`){
-				usQuery = `select dbo.testF3 (\'${id}\',\'all\') as count`;
-			} else if(filter == `unviewed`) {
-				usQuery = `select dbo.testF3 (\'${id}\',\'unviewed\') as count`;
-			} else if(filter == `isFavorite`) {
-				usQuery = `select dbo.testF3 (\'${id}\',\'favorite\') as count`;
-			}
+			usQuery = `select dbo.testF3 ('${id}') as count`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve(result.recordset);
 					console.log("Подключение закрыто");
@@ -89,24 +81,15 @@ module.exports.getAmountLeft = async function(vacId,filter,userId) {
 	})
 };
 
-module.exports.getNewData = async function(id,filter) {
+module.exports.getNewData = async function(id) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		sql.connect(config).then(function() {
-			if(filter == `all`){
-				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 order by DBAddingTime DESC, url, position`;
-				console.log(usQuery + "usQUery");
-			} else if(filter == `unviewed`) {
-				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 and isViewed = 0 order by DBAddingTime DESC, url, position`;
-			} else if(filter == `isFavorite`){
-				usQuery = `select * from testF4(\'${id}\') where isRemoved = 0 and isFavorite = 1 order by DBAddingTime DESC, url, position`;
-			}
-			console.log(usQuery + "usQUery");
+			usQuery = `select * from dbo.testF4('${id}') order by DbAddingDate DESC, Position, Url`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve(result.recordset);
 					console.log("Подключение закрыто");
@@ -128,7 +111,6 @@ module.exports.updateState = async function(vacancyID,clientId,isViewed,isRemove
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve("Данные успешно обновлены/добавлены.");
 					console.log("Подключение закрыто");
@@ -145,12 +127,11 @@ module.exports.updateState = async function(vacancyID,clientId,isViewed,isRemove
 module.exports.getLastNoteDate = async function() {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = "select top(1) convert(nvarchar(10),DbAddingDate,126) as DbAddingDate from Vacancy order by DbAddingDate DESC";
+			let usQuery = "select top(1) convert(nvarchar(10),DbAddingDate,126) as DbAddingDate from Vacancy order by DbAddingDate DESC, Position, Url";
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve(result.recordset[0]);
 					console.log("Подключение закрыто");
@@ -248,9 +229,29 @@ module.exports.insertNewClient = async function(login,password,email) {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
-						reject("Ошибка: " + err.message);
 					}
 					resolve("Клиент успешно добавлен.");
+					console.log("Подключение закрыто");
+				});
+			}).catch(function(err) {
+				console.dir(err);
+			});
+		}).catch(function(err) {
+			console.dir(err);
+		});
+	})
+};
+
+module.exports.getListOfParsers = async function() {
+	return new Promise(function(resolve, reject) {
+		sql.connect(config).then(function() {
+			let usQuery = `select * from Parsers where ParserState = 1`;
+			let obj = new sql.Request().query(usQuery).then(function(result) {
+				sql.close(function(err) {
+					if (err) {
+						return console.log("Ошибка: " + err.message);
+					}
+					resolve(result.recordset);
 					console.log("Подключение закрыто");
 				});
 			}).catch(function(err) {

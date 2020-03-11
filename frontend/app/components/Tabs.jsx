@@ -4,12 +4,13 @@ let actions = require("../actions.jsx");
 
 let VacancyList = require('./VacancyList.jsx');
 let Board = require('./Board.jsx');
-let Header = require('./Header.jsx');
+let ParsersTable = require('./ParsersTable.jsx');
 
 let startVacancies = {
     all : [],
     unviewed: [],
-    board : []
+    board : [],
+    parsers: []
 };
 
 class Tabs extends React.Component {
@@ -22,16 +23,28 @@ class Tabs extends React.Component {
 
     async setStartVacancies() {
         await this.props.setUser(JSON.parse(sessionStorage.getItem('user')));
-        await this.showNextVacancies('all', this.props.store.user.ClientId);
-        await this.showNextVacancies('unviewed', this.props.store.user.ClientId);
-        await this.showNextVacancies('board', this.props.store.user.ClientId);
+        await this.getVacancies('all', this.props.store.user.ClientId);
+        await this.getVacancies('unviewed', this.props.store.user.ClientId);
+        await this.getVacancies('board', this.props.store.user.ClientId);
+        await this.getParsers();
 
         this.props.addVacancy(startVacancies.all, 'all');
         this.props.addVacancy(startVacancies.unviewed, 'unviewed');
         this.props.addVacancy(startVacancies.board, 'board');
+        this.props.addParsers(startVacancies.parsers);
     }
 
-    async showNextVacancies(filter, userId) {
+    async getParsers() {
+        await fetch(`/api/parsers`)
+            .then(response => response.json()).then(function (data) {
+                startVacancies.parsers = data;
+            })
+            .catch(function (err) {
+                console.log('EXP: ', err);
+            });
+    }
+
+    async getVacancies(filter, userId) {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
             `count=10&filter=${filter}`)
             .then(response => response.json()).then(function (data) {
@@ -56,7 +69,6 @@ class Tabs extends React.Component {
             return <h1>error 404</h1>;
         } else {
             return <div>
-                <Header/>
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
@@ -69,6 +81,10 @@ class Tabs extends React.Component {
                         <a id='board'
                            className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
                     </li>
+                    <li className="nav-item">
+                        <a id='Parsers'
+                           className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
+                    </li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane fade show active" id="l-all">
@@ -79,6 +95,9 @@ class Tabs extends React.Component {
                     </div>
                     <div className="tab-pane fade" id="board-tab">
                         <Board/>
+                    </div>
+                    <div className="tab-pane fade" id="parsers-tab">
+                        <ParsersTable/>
                     </div>
                 </div>
             </div>;
