@@ -1,5 +1,4 @@
 const sql = require('mssql');
-let fs = require("fs");
 
 const config= {
 	user: 'nodejs',
@@ -103,7 +102,7 @@ module.exports.getNewData = async function(id) {
 	})
 };
 
-module.exports.updateState = async function(vacancyID,clientId,isViewed,isRemoved,boardStatus) {
+module.exports.updateVacancyState = async function(vacancyID,clientId,isViewed,isRemoved,boardStatus) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
 			let usQuery = `exec updateStateClientVacancy '${clientId}','${vacancyID}',${isViewed},${isRemoved},${boardStatus}`
@@ -242,16 +241,57 @@ module.exports.insertNewClient = async function(login,password,email) {
 	})
 };
 
-module.exports.getListOfParsers = async function() {
+module.exports.getListOfParsers = async function(filter) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = `select * from Parsers where ParserState = 1`;
+			let usQuery;
+			if(filter == 'all')
+				usQuery = `select * from Parsers`;
+			else
+				usQuery = `select * from Parsers where ParserState = 1`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
 					}
 					resolve(result.recordset);
+					console.log("Подключение закрыто");
+				});
+			}).catch(function(err) {
+				console.dir(err);
+			});
+		}).catch(function(err) {
+			console.dir(err);
+		});
+	})
+};
+
+module.exports.insertNewParser = function(token, apiKey, state, description) {
+	return new Promise(function(resolve, reject) {
+		sql.connect(config).then(function() {
+			new sql.Request().query(`exec ParsersInsert '${token}', '${apiKey}', ${state}, '${description}'`).then(function() {
+				resolve([{errorCode: 0}]);
+			}).catch(function(err) {
+				console.log('Сюдой мы попали из-за исключения');
+				resolve([{errorCode: 4, errorMessage: "DB token adding error"}]);
+			});
+		}).catch(function(err) {
+			console.dir(err);
+			resolve([{errorCode: 4, errorMessage: "DB token adding error"}]);
+		});
+	})
+};
+
+module.exports.updateParserState = async function(parserId,state) {
+	return new Promise(function(resolve, reject) {
+		sql.connect(config).then(function() {
+			let usQuery = `exec ParsersUpdate '${parserId}',${state}`
+			let obj = new sql.Request().query(usQuery).then(function() {
+				sql.close(function(err) {
+					if (err) {
+						return console.log("Ошибка: " + err.message);
+					}
+					resolve("Данные успешно обновлены/добавлены.");
 					console.log("Подключение закрыто");
 				});
 			}).catch(function(err) {

@@ -1,9 +1,9 @@
 let request = require('request');
 
-module.exports.getDataFromParseHub = async function(key, tocken) {
+module.exports.getDataFromParseHub = async function(key, token) {
     return new Promise(function(resolve, reject) {
         request({
-            uri: `https://parsehub.com/api/v2/projects/${tocken}/last_ready_run/data`,
+            uri: `https://parsehub.com/api/v2/projects/${token}/last_ready_run/data`,
             method: 'GET',
             gzip: true,
             qs: {
@@ -16,15 +16,15 @@ module.exports.getDataFromParseHub = async function(key, tocken) {
             else
                 reject(err);
         });
-        }).catch(function(err) {
-            console.dir(err);
-        });
+    }).catch(function(err) {
+        console.dir(err);
+    });
 };
 
-module.exports.getStateFromParseHub = async function(key, tocken) {
+module.exports.getStateFromParseHub = async function(key, token) {
     return new Promise(function(resolve, reject) {
         request({
-            uri: `https://parsehub.com/api/v2/projects/${tocken}`,
+            uri: `https://parsehub.com/api/v2/projects/${token}`,
             method: 'GET',
             qs: {
                 api_key: key,
@@ -32,7 +32,6 @@ module.exports.getStateFromParseHub = async function(key, tocken) {
                 include_options: "1"
             }
         }, function(err, resp, body) {
-            //console.log((JSON.parse(body))['run_list'])//end time
             if(body){
                 let obj = {"status": (JSON.parse(body))['run_list'][0].status, "end_time":(JSON.parse(body))['run_list'][0].end_time, "pages":(JSON.parse(body))['run_list'][0].pages};
                 resolve(obj);
@@ -45,10 +44,10 @@ module.exports.getStateFromParseHub = async function(key, tocken) {
     });
 };
 
-module.exports.runParseHubFunction = async function(key, tocken) {
+module.exports.runParseHubFunction = async function(key, token) {
     return new Promise(function(resolve, reject) {
         request({
-            uri: `https://parsehub.com/api/v2/projects/${tocken}/run`,
+            uri: `https://parsehub.com/api/v2/projects/${token}/run`,
             method: 'POST',
             form: {
                 api_key: key,
@@ -57,6 +56,28 @@ module.exports.runParseHubFunction = async function(key, tocken) {
         }, function(err, resp, body) {
             if(body)
                 resolve(body);
+            else
+                reject(err);
+        });
+    }).catch(function(err) {
+        console.dir(err);
+    });
+};
+
+module.exports.getListOfParsersByKey = async function(key, token) {
+    return new Promise(function(resolve, reject) {
+        request({
+            uri: 'https://www.parsehub.com/api/v2/projects',
+            method: 'GET',
+            qs: {
+                api_key: "td_sN-PPvfKs",
+                offset: "0",
+                limit: "20",
+                include_options: "1"
+            }
+        }, function(err, resp, body) {
+            if(body)
+                resolve(JSON.parse(body));
             else
                 reject(err);
         });

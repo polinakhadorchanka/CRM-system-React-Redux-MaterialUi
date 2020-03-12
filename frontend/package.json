@@ -6,12 +6,13 @@
     "build": "webpack"
   },
   "dependencies": {
+    "bootstrap4-toggle": "^3.6.1",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "react-redux": "^5.0.7",
+    "react-router-dom": "^5.0.0",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0",
-    "react-router-dom": "^5.0.0"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

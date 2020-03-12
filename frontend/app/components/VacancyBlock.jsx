@@ -64,7 +64,7 @@ class VacancyBlock extends React.Component {
     }
 
     async removeVacancy(e) {
-        VacancyBlock.stopPropagation();
+        e.stopPropagation();
 
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies,
@@ -126,10 +126,10 @@ class VacancyBlock extends React.Component {
             <div className='vacancy-block' onClick={this.openDescription}>
                 <div className='vacancy-status'>
                     <img src={positions[this.props.index].IsViewed == 1 ?
-                        (positions[this.props.index].IsFavorite == 1 ? 'images/status-favorite.png' :
+                        (positions[this.props.index].BoardStatus !== null ? 'images/status-favorite.png' :
                             (positions[this.props.index].IsRemoved == 1 ? 'images/status-removed.png' :
                                 'images/status-viewed.png')) :
-                        (positions[this.props.index].IsFavorite == 1 ? 'images/status-favorite.png' :
+                        (positions[this.props.index].BoardStatus !== null ? 'images/status-favorite.png' :
                             'images/status-unviewed.png')}
                          title={positions[this.props.index].IsViewed == 1 ?
                              (positions[this.props.index].IsFavorite == 1 ? 'favorite' :

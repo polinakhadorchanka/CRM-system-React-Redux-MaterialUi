@@ -94,7 +94,7 @@ class Header extends React.Component {
     myAccount() {
         let spanStyle = {
                 'margin-right': '10px',
-                'padding':' 1px 10px 0',
+                'padding':' 0 10px',
                 'height': '30px',
                 'background': 'none',
                 'outline': 'none',
@@ -105,7 +105,7 @@ class Header extends React.Component {
             },
             spanFocusStyle = {
                 'margin-right': '10px',
-                'padding':' 1px 10px 0',
+                'padding':' 0 10px',
                 'height': '30px',
                 'background': 'none',
                 'outline': 'none',

@@ -37,6 +37,7 @@ class Tabs extends React.Component {
     async getParsers() {
         await fetch(`/api/parsers`)
             .then(response => response.json()).then(function (data) {
+                console.log(data);
                 startVacancies.parsers = data;
             })
             .catch(function (err) {
@@ -48,7 +49,6 @@ class Tabs extends React.Component {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
             `count=10&filter=${filter}`)
             .then(response => response.json()).then(function (data) {
-                console.log(data);
                 switch(filter) {
                     case 'all':
                         startVacancies.all = data; break;

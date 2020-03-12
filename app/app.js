@@ -11,13 +11,14 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
-    mod.getListOfParsers().then(function (result) {
+//TODO: доделать
+    /*mod.getListOfParsers('launched').then(function (result) {
         console.log(result);//length чтобы узнать сколько элементов нам вернулось
         result.forEach(function (element) {
             console.log(element.ParserId);
-            //TODO: написать проверку состояния если состояние 1 запустить парсер
+            //TODO: написать проверку состояния если состояние 1 запустить парсер(дописать это в функции работы с парсером)
         });
-    })
+    });*/
     /*workWithParseHub('td_sN-PPvfKs', 'tUZFnFRVqZcc');
     workWithParseHub('td_sN-PPvfKs', 'tD5N71CEUTDe');*/
 });
@@ -63,7 +64,7 @@ app.get("/api/vacancies/next", function(req, res){
 
 //функция изменения статуса записи
 app.put("/api/vacancy-status", function (req, res) {
-    mod.updateState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,req.body.BoardStatus).then(function(result){
+    mod.updateVacancyState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,req.body.BoardStatus).then(function(result){
         let message = result;
         res.send(message);
     });
@@ -75,7 +76,7 @@ function workWithParseHub(key,token){
         parseH.getStateFromParseHub(key, token).then(function (result) {
             console.log(result);
             console.log(result.status);
-            console.log(result.pages)
+            console.log(result.pages);
             if(+(result.pages)==0 && result.status != 'queued'){//++
                 console.log("У нас 0 страниц перезапустим ка мы пармер");
                 parseH.runParseHubFunction(key, token);
@@ -98,16 +99,18 @@ function workWithParseHub(key,token){
                         console.log("дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД");
                     }
                     else if(Date.parse(result.end_time) == Date.parse(resultD.DbAddingDate)){// дата добавления в бд равне дате парсера => return ++
+                        //TODO: записать в БД в таблицу парсеров дату выгрузки и с ней сравнивать
                         return;
                     }
 
                 })
             }
+        }).catch(function(err) {
+            console.dir(err);
         });
     },20000);//900000
 }
 
-//TODO: тут новое
 app.get("/vacancies", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -154,6 +157,46 @@ app.post("/registration", function(req, res){
             else if(loginCount > 0 && emailCount > 0)
                 res.send([{errorCode: 1, errorMessage: "Reserved login"},{errorCode: 2, errorMessage: "Reserved email"}]);
         });
+    });
+});
+
+//todo: вернуть таблицу парсеров
+app.get('/api/parsers',function (req,res) {
+    mod.getListOfParsers('all').then(function (result) {
+        res.send(result);
+    })
+});
+//todo: написать проверку существования парсера
+app.post('/api/parsers',function (req,res) {
+    let token = req.body.ParserToken,
+        apiKey = req.body.ParserKey,
+        state = req.body.ParserState,
+        description  = req.body.ParserDescription;
+    parseH.getListOfParsersByKey(apiKey).then(function (result) {
+        let check = +0;
+        result.projects.forEach(function (element) {
+            if(element.token == token)
+                check++;
+        });
+        if(check == 0){
+            res.send([{errorCode: 5, errorMessage: "Wrong token"}]);
+        } else{
+            mod.insertNewParser(token, apiKey, state, description).then(function (result) {
+                res.send(result);
+            });
+        }
+    }).catch(function(err) {
+        console.dir(err);
+        res.send([{errorCode: 4, errorMessage: "DB token adding error"}]);
+    });
+});
+
+app.put('/api/parsers',function (req,res) {
+    let parserId = req.body.ParserId,
+        state = req.body.ParserState;
+    mod.updateParserState(parserId, state).then(function(result){
+        let message = result;
+        res.send(message);
     });
 });
 
