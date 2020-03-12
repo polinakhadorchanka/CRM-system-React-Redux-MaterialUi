@@ -62,12 +62,13 @@ class Header extends React.Component {
             };
 
         return (
-            <div style={divStyle}>
+            <div id='my-account-list' style={divStyle}>
                 <a style={this.state.settingsState === 'default' ? aStyle : aFocusStyle} href='/settings' name='settings'
                    onMouseOver={this.handleAccountList} onMouseOut={this.handleAccountList}>
                     My settings
                 </a>
-                <a style={this.state.logoutState === 'default' ? aStyle : aFocusStyle} onClick={() => alert('sdds')} href='#' name='logout'
+                <a style={this.state.logoutState === 'default' ? aStyle : aFocusStyle} onClick={this.logOut}
+                   href='/login' name='logout'
                    onMouseOver={this.handleAccountList} onMouseOut={this.handleAccountList}>
                     Log out
                 </a>
@@ -144,10 +145,9 @@ class Header extends React.Component {
         else if(e.type === 'focus')
             this.setState({accountState : 'hover'});
         else if(e.type === 'blur') {
-            let x = event.clientX, y = event.clientY,
-                elementMouseIsOver = await document.elementFromPoint(x, y);
-            console.log(elementMouseIsOver);
-            this.setState({accountState: 'default'});
+            let elements = document.querySelectorAll(':hover');
+            if(!elements[elements.length-2] || elements[elements.length-2].id !== 'my-account-list')
+                this.setState({accountState: 'default'});
         }
     }
 
@@ -228,7 +228,7 @@ class Header extends React.Component {
 
         return (
             <header style={headerStyle}>
-                <div style={systemNameStyle} onClick={(e) => window.location.href = '/'}>
+                <div style={systemNameStyle} onClick={() => window.location.href = '/'}>
                     CRM System
                 </div>
                 {this.props.store.user ? this.myAccount() : this.logIn()}
