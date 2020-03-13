@@ -21,6 +21,24 @@ class ParsersTable extends React.Component {
         this.onKeyChange = this.onKeyChange.bind(this);
         this.onTokenChange = this.onTokenChange.bind(this);
         this.onDescChange = this.onDescChange.bind(this);
+        this.handleCheck = this.handleCheck.bind(this);
+    }
+    
+    handleCheck(e, parser) {
+        parser.ParserState = parser.ParserState === 0 ? 1 : 0;
+	    this.props.changeParser(parser);
+
+        fetch(`/api/parsers`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(parser)
+            }).catch(function (err) {
+            console.log('EXP: ', err);
+        });
     }
 
     onKeyChange(e) {
@@ -169,7 +187,7 @@ class ParsersTable extends React.Component {
                     </tr>
                     {
                         this.props.store.parsers.map(function (parser, index) {
-                            return <Parser parser={parser} index={index}/>
+                            return <Parser parser={parser} index={index} handleCheck={this.handleCheck}/>
                         })
                     }
                 </table>
@@ -214,25 +232,6 @@ class Parser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-
-        this.handleCheck = this.handleCheck.bind(this);
-    }
-
-    handleCheck(e) {
-        let parser = this.props.parser;
-        parser.ParserState = parser.ParserState === 0 ? 1 : 0;
-
-        fetch(`/api/parsers`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(parser)
-            }).catch(function (err) {
-            console.log('EXP: ', err);
-        });
     }
 
     render() {
@@ -258,7 +257,9 @@ class Parser extends React.Component {
                 <td style={tdStyle} width='40%'>{this.props.parser.ParserDescription}</td>
                 <td style={tdStyle} width='10%'>
                     <label className="switch">
-                        <input type="checkbox" onChange={this.handleCheck}/>
+                        {this.props.parser.ParserState === 0 ?
+                            <input type="checkbox" onChange={(e) => this.props.handleCheck(e, this.props.parser)}/> :
+                        <input type="checkbox" cheked onChange={(e) => this.props.handleCheck(e, this.props.parser)}/>}
                         <span className="slider"></span>
                     </label>
                 </td>
