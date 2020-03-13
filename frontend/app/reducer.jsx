@@ -51,7 +51,7 @@ const reducer = function(state = initialUserState, action) {
         case 'CHANGE_PARSER':
             let parsers = state.parsers;
 
-            let el = parsers.filter((el) => el.ParserId === action.parser.ParserId)[0];
+            el = parsers.filter((el) => el.ParserId === action.parser.ParserId)[0];
             if(parsers.indexOf(el) >= 0) {
                 parsers[parsers.indexOf(el)] = action.parser;
             }

@@ -9,18 +9,15 @@ let app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
-//TODO: доделать
-    /*mod.getListOfParsers('launched').then(function (result) {
-        console.log(result);//length чтобы узнать сколько элементов нам вернулось
-        result.forEach(function (element) {
-            console.log(element.ParserId);
-            //TODO: написать проверку состояния если состояние 1 запустить парсер(дописать это в функции работы с парсером)
-        });
-    });*/
-    /*workWithParseHub('td_sN-PPvfKs', 'tUZFnFRVqZcc');
-    workWithParseHub('td_sN-PPvfKs', 'tD5N71CEUTDe');*/
+//TODO: доделать, скорее всего надо 1 глобальное подключение разбить на разные
+//     mod.getListOfParsers('launched').then(function (result) {
+//         result.forEach( function (element) {
+//             setTimeout(workWithParseHub,10000, `'${element.ParserKey}'`, `'${element.ParserToken}'`);
+//         });
+//     });
 });
 
 app.get("/api/vacancies", function(req, res){
@@ -65,15 +62,24 @@ app.get("/api/vacancies/next", function(req, res){
 //функция изменения статуса записи
 app.put("/api/vacancy-status", function (req, res) {
     mod.updateVacancyState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,req.body.BoardStatus).then(function(result){
-        let message = result;
-        res.send(message);
+        res.send(result);
     });
 });
 
-//функция работы с парсером
+//функция работы с парсером TODO: прописать алгоритм завершения функции с интервалом в случае выключения парсера
 function workWithParseHub(key,token){
     let a = setInterval(function () {
-        parseH.getStateFromParseHub(key, token).then(function (result) {
+        //TODO: написать функцию проверки состояние парсера, если 0 то разорвать интервал
+        mod.getParserState(token,key).then(function (result) {
+            if(result == 0){
+                console.log('разрываю таймер');
+                clearInterval(a);
+            } else {
+                console.log('продолжаю тречить');
+            }
+
+        });
+        /*parseH.getStateFromParseHub(key, token).then(function (result) {
             console.log(result);
             console.log(result.status);
             console.log(result.pages);
@@ -107,8 +113,8 @@ function workWithParseHub(key,token){
             }
         }).catch(function(err) {
             console.dir(err);
-        });
-    },20000);//900000
+        });*/
+    },10000);//900000
 }
 
 app.get("/vacancies", function(req, res){
@@ -193,8 +199,17 @@ app.post('/api/parsers',function (req,res) {
 
 app.put('/api/parsers',function (req,res) {
     let parserId = req.body.ParserId,
-        state = req.body.ParserState;
-    mod.updateParserState(parserId, state).then(function(result){
+        state = req.body.ParserState,
+        description = req.body.ParserDescription;
+    mod.updateParserState(parserId, state, description).then(function(result){
+        let message = result;
+        res.send(message);
+    });
+});
+
+app.delete('/api/parsers',function (req,res) {
+    let parserId = req.body.ParserId;
+    mod.deleteParser(parserId).then(function(result){
         let message = result;
         res.send(message);
     });

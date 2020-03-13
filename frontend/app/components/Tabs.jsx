@@ -85,6 +85,11 @@ class Tabs extends React.Component {
                         <a id='Parsers'
                            className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
                     </li>
+                    <li id='update-tab'>
+                        <a href="#update">
+                            <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
+                        </a>
+                    </li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane fade show active" id="l-all">

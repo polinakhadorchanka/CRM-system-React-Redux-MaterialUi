@@ -21,24 +21,41 @@ class ParsersTable extends React.Component {
         this.onKeyChange = this.onKeyChange.bind(this);
         this.onTokenChange = this.onTokenChange.bind(this);
         this.onDescChange = this.onDescChange.bind(this);
-        this.handleCheck = this.handleCheck.bind(this);
+        this.changeParser = this.changeParser.bind(this);
     }
-    
-    handleCheck(e, parser) {
-        parser.ParserState = parser.ParserState === 0 ? 1 : 0;
-	    this.props.changeParser(parser);
 
-        fetch(`/api/parsers`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(parser)
-            }).catch(function (err) {
-            console.log('EXP: ', err);
-        });
+    changeParser(parser, type) {
+        switch(type) {
+            case 'change':
+                this.props.changeParser(parser);
+                fetch(`/api/parsers`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(parser)
+                    }).catch(function (err) {
+                    console.log('EXP: ', err);
+                });
+                break;
+            case 'delete':
+                this.props.addParsers(this.props.store.parsers.filter((el) => el.ParserId !== parser.ParserId));
+
+                fetch(`/api/parsers`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(parser)
+                    }).catch(function (err) {
+                    console.log('EXP: ', err);
+                });
+                break;
+        }
     }
 
     onKeyChange(e) {
@@ -170,12 +187,13 @@ class ParsersTable extends React.Component {
                 'cursor': 'pointer',
                 'outline': 'none'
             },
-            transparent = {
-                'padding-left': '10px',
-                'padding-right': '10px',
-                'background-color': 'transparent'
+            pStyle = {
+                'padding-left': '2px',
+                'padding-right': '2px',
+                'color': '#CF3F3B'
             };
 
+        let context = this;
         return (
             <div style={divStyle}>
                 <table style={tableStyle}>
@@ -183,11 +201,13 @@ class ParsersTable extends React.Component {
                         <th style={thStyle} width='25%'>IP key</th>
                         <th style={thStyle} width='25%'>IP tocken</th>
                         <th style={thStyle} width='40%'>Description</th>
-                        <th style={thStyle} width='10%'/>
+                        <th style={thStyle} width='7%'/>
+                        <th style={thStyle} width='3%'/>
                     </tr>
                     {
                         this.props.store.parsers.map(function (parser, index) {
-                            return <Parser parser={parser} index={index} handleCheck={this.handleCheck}/>
+                            return <Parser parser={parser} index={index}
+                                changeParser = {context.changeParser} />
                         })
                     }
                 </table>
@@ -220,7 +240,7 @@ class ParsersTable extends React.Component {
                     </table>
                 </form>
                 {this.state.errors.map(function (error) {
-                    return (<p>{error.errorMessage}</p>);
+                    return (<p style={pStyle}>{error.errorMessage}</p>);
                 })}
             </div>
         );
@@ -231,7 +251,38 @@ class ParsersTable extends React.Component {
 class Parser extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            descriptionState: 'text',
+            description: props.parser.ParserDescription,
+            isValidDesc: true
+        };
+
+        this.onHandleEditDesc = this.onHandleEditDesc.bind(this);
+        this.changeState = this.changeState.bind(this);
+        this.changeDesc = this.changeDesc.bind(this);
+    }
+
+    changeState() {
+        let parser = this.props.parser;
+        parser.ParserState = parser.ParserState == 0 ? 1 : 0;
+        this.props.changeParser(parser, 'change');
+    }
+
+    onHandleEditDesc(e) {
+        if(e.type === 'click')
+            this.setState({descriptionState : 'input'});
+        else if(e.type === 'blur' && this.state.description === '')
+            this.setState({descriptionState : 'input', isValidDesc : false});
+        else {
+            this.setState({descriptionState : 'text', isValidDesc : true});
+            let parser = this.props.parser;
+            parser.ParserDescription = this.state.description;
+            this.props.changeParser(parser, 'change');
+        }
+    }
+
+    changeDesc(e) {
+        this.setState({description : e.target.value, isValidDesc : true});
     }
 
     render() {
@@ -244,24 +295,46 @@ class Parser extends React.Component {
                 'padding-right': '10px',
                 'background-color': '#383838'
             },
-            transparent = {
-                'padding-left': '10px',
-                'padding-right': '10px',
-                'text-align': 'center'
+            inputTextStyle = {
+                'width': '100%',
+                'background-color': 'transparent',
+                'border': 'none',
+                'border-bottom': '1px solid #e1e1e1',
+                'color': '#e1e1e1',
+                'outline': 'none'
+            },
+            inputTextStyleError = {
+                'width': '100%',
+                'background-color': 'transparent',
+                'border': 'none',
+                'border-bottom': '1px solid #CF3F3B',
+                'color': '#e1e1e1',
+                'outline': 'none'
             };
 
         return (
             <tr style={trStyle}>
                 <td style={tdStyle} width='25%'>{this.props.parser.ParserKey}</td>
                 <td style={tdStyle} width='25%'>{this.props.parser.ParserToken}</td>
-                <td style={tdStyle} width='40%'>{this.props.parser.ParserDescription}</td>
-                <td style={tdStyle} width='10%'>
+                <td style={tdStyle} width='40%'>
+                    {this.state.descriptionState === 'text' ?
+                        <div title='Click to change' onClick={this.onHandleEditDesc}>{this.state.description}</div> :
+                        <input autoFocus={true}
+                                style={this.state.isValidDesc === true ? inputTextStyle : inputTextStyleError}
+                               onBlur={this.onHandleEditDesc} onChange={this.changeDesc}
+                            type='text' value={this.state.description} maxLength='300' />}
+                </td>
+                <td style={tdStyle} width='7%'>
                     <label className="switch">
-                        {this.props.parser.ParserState === 0 ?
-                            <input type="checkbox" onChange={(e) => this.props.handleCheck(e, this.props.parser)}/> :
-                        <input type="checkbox" cheked onChange={(e) => this.props.handleCheck(e, this.props.parser)}/>}
+                        {this.props.parser.ParserState == 0 ?
+                            <input type="checkbox" onChange={this.changeState}/> :
+                        <input type="checkbox" checked onChange={this.changeState}/>}
                         <span className="slider"></span>
                     </label>
+                </td>
+                <td style={tdStyle} width='3%'>
+                    <div className='delete-button' title='Remove parser'
+                         onClick={() => this.props.changeParser(this.props.parser, 'delete')}/>
                 </td>
             </tr>
         );

@@ -7,7 +7,7 @@ const config= {
 	database: 'BORODICH',
 	port: 50100
 };
-//TODO: переделать вес функции под userId
+
 module.exports.getData = async function(id, filter, userId) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
@@ -105,7 +105,7 @@ module.exports.getNewData = async function(id) {
 module.exports.updateVacancyState = async function(vacancyID,clientId,isViewed,isRemoved,boardStatus) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = `exec updateStateClientVacancy '${clientId}','${vacancyID}',${isViewed},${isRemoved},${boardStatus}`
+			let usQuery = `exec updateStateClientVacancy '${clientId}','${vacancyID}',${isViewed},${isRemoved},'${boardStatus}'`;
 			let obj = new sql.Request().query(usQuery).then(function() {
 				sql.close(function(err) {
 					if (err) {
@@ -282,23 +282,72 @@ module.exports.insertNewParser = function(token, apiKey, state, description) {
 	})
 };
 
-module.exports.updateParserState = async function(parserId,state) {
+module.exports.updateParserState = async function(parserId,state,description) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = `exec ParsersUpdate '${parserId}',${state}`
+			let usQuery = `exec ParsersUpdate '${parserId}',${state},'${description}'`;
 			let obj = new sql.Request().query(usQuery).then(function() {
 				sql.close(function(err) {
 					if (err) {
 						return console.log("Ошибка: " + err.message);
 					}
-					resolve("Данные успешно обновлены/добавлены.");
+					resolve("Данные успешно обновлены.");
 					console.log("Подключение закрыто");
 				});
 			}).catch(function(err) {
 				console.dir(err);
+				reject(err);
 			});
 		}).catch(function(err) {
 			console.dir(err);
+			reject(err);
+		});
+	})
+};
+
+module.exports.getParserState = async function(token,key) {
+	return new Promise(function(resolve, reject) {
+		let usQuery;
+		// filter ++
+		sql.connect(config).then(function() {
+			usQuery = `select dbo.getParserState(${token}, ${key}) as state`;
+			console.log(usQuery);
+			let obj = new sql.Request().query(usQuery).then(function (result) {
+				sql.close(function (err) {
+					if (err) {
+						return console.log("Ошибка: " + err.message);
+					}
+					resolve(result.recordset[0].state);
+					console.log("Подключение закрыто");
+				});
+			}).catch(function (err) {
+				console.dir(err);
+			});
+		}).catch(function(err) {
+			console.dir(err);
+		});
+	})
+};
+
+module.exports.deleteParser = async function(parserId) {
+	return new Promise(function(resolve, reject) {
+		sql.connect(config).then(function() {
+			let usQuery = `delete from Parsers where ParserId = '${parserId}'`;
+			let obj = new sql.Request().query(usQuery).then(function() {
+				sql.close(function(err) {
+					if (err) {
+						return console.log("Ошибка: " + err.message);
+					}
+					resolve("Данные успешно обновлены.");
+					console.log("Подключение закрыто");
+				});
+			}).catch(function(err) {
+				console.dir(err);
+				reject(err);
+			});
+		}).catch(function(err) {
+			console.dir(err);
+			reject(err);
 		});
 	})
 };
