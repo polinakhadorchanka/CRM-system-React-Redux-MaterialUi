@@ -48,6 +48,14 @@ const reducer = function(state = initialUserState, action) {
             else localStorage.removeItem('user');
             return Object.assign({}, state, { user: action.user });
         case 'ADD_PARSERS': return Object.assign({}, state, { parsers: action.parsers });
+        case 'CHANGE_PARSER':
+            let parsers = state.parsers;
+
+            let el = parsers.filter((el) => el.ParserId === action.parser.ParserId)[0];
+            if(parsers.indexOf(el) >= 0) {
+                parsers[parsers.indexOf(el)] = action.parser;
+            }
+            return Object.assign({}, state, { parsers: parsers});
         default: return state;
     }
 };
