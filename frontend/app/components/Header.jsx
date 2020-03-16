@@ -224,9 +224,9 @@ class Header extends React.Component {
 
         return (
             <header style={headerStyle}>
-                <div style={systemNameStyle} onClick={() => window.location.href = '/'}>
+                <a style={systemNameStyle} href='/'>
                     CRM System
-                </div>
+                </a>
                 {this.props.store.user ? this.myAccount() : this.logIn()}
             </header>
         );

@@ -16,6 +16,7 @@ class KanbanBoard extends React.Component {
         this.handleOnDragEnd = this.handleOnDragEnd.bind(this);
         this.deleteCard = this.deleteCard.bind(this);
         this.handleOnOpenDescription = this.handleOnOpenDescription.bind(this);
+        this.changeVacancy = this.changeVacancy.bind(this);
 
         this.columns = [
             {name: 'new', stage: 1},
@@ -29,10 +30,28 @@ class KanbanBoard extends React.Component {
         this.setState({ projects: this.props.store.boardVacancies, isLoading: false });
     }
 
+    changeVacancy(project) {
+        this.props.changeVacancy(project);
+        let userId = this.props.store.user.ClientId;
+        fetch(`/api/vacancy-status?userId=${userId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(project)
+            }).catch(function (err) {
+            console.log('EXP: ', err);
+        });
+
+    }
+
     deleteCard(e, project) {
         let vacancies = this.props.store.boardVacancies.filter((el) => el.VacancyId !== project.VacancyId),
             userId = this.props.store.user.ClientId;
         this.props.addVacancy(vacancies, 'board');
+        this.props.changeVacancy(project);
 
         project.BoardStatus = null;
         fetch(`/api/vacancy-status?userId=${userId}`,
@@ -60,31 +79,33 @@ class KanbanBoard extends React.Component {
     }
 
     handleOnOpenDescription(project) {
-        project.isViewed = true;
-        this.props.changeVacancy(project);
+        if(project.IsViewed != true) {
+            project.IsViewed = true;
+            this.props.changeVacancy(project);
 
-        let userId = this.props.store.user.ClientId;
+            let userId = this.props.store.user.ClientId;
 
-        fetch(`/api/vacancy-status?userId=${userId}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(project)
-            })
-            .then(
-                function (response) {
-                    if (response.status !== 200) {
-                        console.log(`/api/vacancy-status` +
-                            response.status);
+            fetch(`/api/vacancy-status?userId=${userId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(project)
+                })
+                .then(
+                    function (response) {
+                        if (response.status !== 200) {
+                            console.log(`/api/vacancy-status` +
+                                response.status);
+                        }
                     }
-                }
-            )
-            .catch(function (err) {
-                console.log('EXP: ', err);
-            });
+                )
+                .catch(function (err) {
+                    console.log('EXP: ', err);
+                });
+        }
     }
 
     //this is called when a Kanban card is dragged over a column (called by column)
@@ -138,6 +159,7 @@ class KanbanBoard extends React.Component {
                             onDragEnter={ this.handleOnDragEnter }
                             onDragEnd={ this.handleOnDragEnd }
                             deleteCard = { this.deleteCard }
+                            changeVacancy = { this.changeVacancy }
                             handleOnOpenDescription = { this.handleOnOpenDescription }
                             key={ column.stage }
                         />
@@ -167,6 +189,7 @@ class KanbanColumn extends React.Component {
                     onDragEnd={this.props.onDragEnd}
                     deleteCard = { this.props.deleteCard }
                     handleOnOpenDescription = { this.props.handleOnOpenDescription }
+                    changeVacancy = { this.props.changeVacancy }
                 />
             );
         });
@@ -190,7 +213,7 @@ class KanbanCard extends React.Component {
             collapsed: true,
             isDescriptionOpen: false,
             commentState: 'text',
-            comment: props.project.UserComment ? props.project.UserComment : 'commnet'
+            comment: props.project.Comment !== null ? props.project.Comment : ''
         };
 
         this.onHandleEditComment = this.onHandleEditComment.bind(this);
@@ -218,13 +241,11 @@ class KanbanCard extends React.Component {
     onHandleEditComment(e) {
         if(e.type === 'click')
             this.setState({commentState : 'input'});
-        else if(e.type === 'blur' && this.state.comment === '')
-            this.setState({commentState : 'input'});
-        else {
+        else if(e.type === 'blur') {
             this.setState({commentState : 'text'});
             let vacancy = this.props.project;
-            vacancy.UserComment = this.state.comment;
-            console.log(vacancy);
+            vacancy.Comment = this.state.comment;
+            this.props.changeVacancy(vacancy);
         }
     }
 
@@ -232,11 +253,11 @@ class KanbanCard extends React.Component {
         return (
             <div className='card-description'>
                 <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
-                    ' back-vacancy-information hide'}
-                     onClick={this.handleDescription}> </div>
+                    ' back-vacancy-information hide'}> </div>
                 <div className={this.state.isDescriptionOpen === true ? 'vacancy-information' :
-                    'vacancy-information hide'}>
-                    <div className='vacancy-block'>
+                    'vacancy-information hide'}
+                     onClick={this.handleDescription}>
+                    <div className='vacancy-block' onClick={(e) => e.stopPropagation()}>
                         <div className='flex-block'>
                             <div>
                                 <span className='vacancy-name'>{vacancy.Position}</span> <br/>
@@ -267,12 +288,18 @@ class KanbanCard extends React.Component {
                         </div>
                         <div  id={vacancy.Url + 'board'} className='description'
                               dangerouslySetInnerHTML = {{__html:vacancy.Description}} />
-                        <div className='user-comment'>
+                        <span className='comment'>
+                            Comments:
+                        </span>
+                        <div className='user-comment'
+                             title={ this.state.commentState === 'text' ? 'Click to change' : undefined}
+                             onClick={this.state.commentState === 'text' ? this.onHandleEditComment : undefined}>
                             {this.state.commentState === 'text' ?
-                                <div title='Click to change' onClick={this.onHandleEditComment}>
-                                    {this.state.comment}
+                                <div>
+                                    {this.state.comment !== '' ? this.state.comment : 'Click to change'}
                                 </div> :
                                 <input autoFocus={true}
+                                       onFocus={(e) => e.target.select()}
                                        onBlur={this.onHandleEditComment} onChange={this.changeComment}
                                        type='text' value={this.state.comment} maxLength='300' />}
                         </div>

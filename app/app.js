@@ -12,12 +12,13 @@ app.use(bodyParser.json());
 
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
-//TODO: доделать, скорее всего надо 1 глобальное подключение разбить на разные
-//     mod.getListOfParsers('launched').then(function (result) {
-//         result.forEach( function (element) {
-//             setTimeout(workWithParseHub,10000, `'${element.ParserKey}'`, `'${element.ParserToken}'`);
-//         });
-//     });
+//TODO: доделать, сделать запуск полученных парсеров
+    mod.getListOfParsers('launched').then(function (result) {
+        result.forEach(function (element) {
+            console.log(element);
+            workWithParseHub(`${element.ParserKey}`,`${element.ParserToken}`);
+        });
+    });
 });
 
 app.get("/api/vacancies", function(req, res){
@@ -30,20 +31,22 @@ app.get("/api/vacancies", function(req, res){
     });
 });
 
-// Получение новых вакансий++
+// Получение новых вакансий++ TODO: idClient
 app.get("/api/vacancies/new", function(req, res){
     let vacancies;
-    let id = req.query.id;
-    let filter = req.query.filter;
-    mod.getNewData(id, filter).then(function(result) {
+    let id = req.query.id,
+        filter = req.query.filter,
+        userId = req.query.userId;
+    mod.getNewData(id, filter, userId).then(function(result) {
         res.send(result);
     });
 });
 
-// Получение количества новых вакансий++
+// Получение количества новых вакансий++ TODO: idClient
 app.get("/api/vacancies/new/count", function(req, res){
-    let id = req.query.id;
-    mod.getAmount(id).then(function(result) {
+    let id = req.query.id,
+        userId = req.query.userId;
+    mod.getAmount(id, userId).then(function(result) {
         res.send(result);
     });
 });
@@ -61,60 +64,58 @@ app.get("/api/vacancies/next", function(req, res){
 
 //функция изменения статуса записи
 app.put("/api/vacancy-status", function (req, res) {
-    mod.updateVacancyState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,req.body.BoardStatus).then(function(result){
+    mod.updateVacancyState(req.body.VacancyId,req.query.userId,+req.body.IsViewed,+req.body.IsRemoved,
+        req.body.BoardStatus,req.body.Comment).then(function(result){
         res.send(result);
     });
 });
 
-//функция работы с парсером TODO: прописать алгоритм завершения функции с интервалом в случае выключения парсера
 function workWithParseHub(key,token){
+    // todo: они уже передаются без ковычек
     let a = setInterval(function () {
-        //TODO: написать функцию проверки состояние парсера, если 0 то разорвать интервал
-        mod.getParserState(token,key).then(function (result) {
-            if(result == 0){
-                console.log('разрываю таймер');
+        mod.getParserState(`${token}`, `${key}`).then(function (result) {
+            if (result == 0) {
                 clearInterval(a);
+                console.log('разрываю таймер');
             } else {
-                console.log('продолжаю тречить');
-            }
-
-        });
-        /*parseH.getStateFromParseHub(key, token).then(function (result) {
-            console.log(result);
-            console.log(result.status);
-            console.log(result.pages);
-            if(+(result.pages)==0 && result.status != 'queued'){//++
-                console.log("У нас 0 страниц перезапустим ка мы пармер");
-                parseH.runParseHubFunction(key, token);
-            }
-            else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
-                return;
-            else if((result.status == 'cancelled' || result.status == 'complete') && +(result.pages)>0){//TODO: сделать внутри функцию сравнения  ++
-                mod.getLastNoteDate().then(function (resultD) {
-                    result.end_time = result.end_time.substr(0, 10);
-                    let a = new Date();
-                    let b = dateFormat(a,"isoDate");
-                    if(Date.parse(result.end_time) < Date.parse(b)) {// дата поселеднего парсинга меньше сегодня => запустить парсер ++
-                        parseH.runParseHubFunction(key, token);
-                        console.log(result.status + " " + "Надо бы запустить парсерочек");
-                    }
-                    else if(Date.parse(result.end_time) > Date.parse(resultD.DbAddingDate)){// дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД++
-                        parseH.getDataFromParseHub(key, token).then(function (result) {
-                            mod.insertVacations(JSON.stringify(result));
-                        });
-                        console.log("дата добавления в бд меньше даты парсера => считать данные из парсера и загрузить их в БД");
-                    }
-                    else if(Date.parse(result.end_time) == Date.parse(resultD.DbAddingDate)){// дата добавления в бд равне дате парсера => return ++
-                        //TODO: записать в БД в таблицу парсеров дату выгрузки и с ней сравнивать
+                parseH.getStateFromParseHub(key, token).then(function (result) {
+                    console.log(result);
+                    console.log(result.status);
+                    console.log(result.pages);
+                    if(+(result.pages)==0 && result.status != 'queued'){//++
+                        console.log("У нас 0 страниц перезапустим ка мы пармер");
+                        //parseH.runParseHubFunction(key, token);
+                    } else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
                         return;
+                    else if((result.status == 'cancelled' || result.status == 'complete') && +(result.pages)>0){
+                        mod.getLastNoteDate().then(function (resultD) {
+                            mod.getParserDate(token,key).then(function (resultP) {
+                                result.end_time = result.end_time.substr(0, 10);
+                                let a = new Date();
+                                let b = dateFormat(a,"isoDate");
+                                if(Date.parse(result.end_time) < Date.parse(b)) {// дата поселеднего парсинга меньше сегодня => запустить парсер ++
+                                    //parseH.runParseHubFunction(key, token);
+                                    console.log(result.status + " " + "Надо бы запустить парсерочек");
+                                } else { //тут пишем код если данные сегодняшние(актуальные)
+                                    if(resultP.ParserLastReadBdDate == null || Date.parse(resultP.ParserLastReadBdDate) //если дата последней считки is null или меньше сегодня считываем и обновляем дату на сегодня
+                                        < Date.parse(b)){
+                                        /* parseH.getDataFromParseHub(key, token).then(function (result) {
+                                             mod.updateParserDate(token,key).then(function (result) {
+                                                 mod.insertVacations(JSON.stringify(result));
+                                             });
+                                         });*/
+                                        console.log('надо считать данные для их актуализации записать сегодняшнюю дату в парсер');
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            });
+                        })
                     }
-
                 })
             }
-        }).catch(function(err) {
-            console.dir(err);
-        });*/
-    },10000);//900000
+        })
+    },25000);
 }
 
 app.get("/vacancies", function(req, res){
@@ -166,13 +167,12 @@ app.post("/registration", function(req, res){
     });
 });
 
-//todo: вернуть таблицу парсеров
 app.get('/api/parsers',function (req,res) {
     mod.getListOfParsers('all').then(function (result) {
         res.send(result);
     })
 });
-//todo: написать проверку существования парсера
+
 app.post('/api/parsers',function (req,res) {
     let token = req.body.ParserToken,
         apiKey = req.body.ParserKey,
@@ -200,9 +200,15 @@ app.post('/api/parsers',function (req,res) {
 app.put('/api/parsers',function (req,res) {
     let parserId = req.body.ParserId,
         state = req.body.ParserState,
-        description = req.body.ParserDescription;
+        description = req.body.ParserDescription,
+        key = req.body.ParserKey,
+        token = req.body.ParserToken;
     mod.updateParserState(parserId, state, description).then(function(result){
         let message = result;
+        if(state == 1){
+            //todo: запустить парсер
+            workWithParseHub(`${key}`,`${token}`);
+        }
         res.send(message);
     });
 });

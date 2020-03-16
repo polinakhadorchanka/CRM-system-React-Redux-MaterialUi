@@ -453,11 +453,11 @@ body {
 }
 
 .card-description .vacancy-block .company-name, .card-description .vacancy-block .company-country ,
-.card-description .vacancy-block .location, .card-description .vacancy-block .contacts {
+.card-description .vacancy-block .location, .card-description .vacancy-block .contacts,
+.card-description .vacancy-block .comment {
     font-size: 14px;
     line-height: 16px;
 }
-
 .card-description .vacancy-block .date {
     font-size: 12px;
     color: #808080;
@@ -466,7 +466,7 @@ body {
     margin: 0;
 }
 
-.card-description .vacancy-block input {
+.card-description .vacancy-block input[type='button'] {
     margin-bottom: 5px;
     width: 80px;
     height: 25px;
@@ -481,13 +481,13 @@ body {
     alignment: right;
 }
 
-.card-description .vacancy-block input:hover {
+.card-description .vacancy-block input[type='button']:hover {
     color: #7f9fd5;
 }
 
 .card-description .vacancy-block .description {
     display: block;
-    margin: 10px 0 0;
+    margin: 10px 0;
     padding: 10px;
     height: 200px;
     max-height: none;
@@ -504,6 +504,32 @@ body {
 
 .card-description .vacancy-block .description h1 {
     font-size: 18px;
+}
+
+.user-comment {
+    width: 100%;
+    padding: 0 10px;
+
+    font-size: 14px;
+    overflow: hidden;
+    overflow: hidden;
+    overflow-y: auto;
+    word-break: break-all;
+}
+
+.user-comment div {
+    border-bottom: 1px solid #383838;
+    cursor: text;
+}
+
+.user-comment input[type='text'], .user-comment input[type='text']:hover {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #383838;
+    color: #383838;
+    outline: none;
+    cursor: default;
 }
 
 /* Autorization */

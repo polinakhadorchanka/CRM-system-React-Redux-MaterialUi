@@ -22,6 +22,7 @@ class Tabs extends React.Component {
     }
 
     async setStartVacancies() {
+        $('.description').addClass('description-hide');
         await this.props.setUser(JSON.parse(sessionStorage.getItem('user')));
         await this.getVacancies('all', this.props.store.user.ClientId);
         await this.getVacancies('unviewed', this.props.store.user.ClientId);

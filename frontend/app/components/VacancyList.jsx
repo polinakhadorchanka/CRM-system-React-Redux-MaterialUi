@@ -82,10 +82,11 @@ class VacancyList extends React.Component {
         let timerId = await setTimeout(function request() {
             let positions = context.state.filter === 'all' ? context.props.store.allVacancies
                 : context.props.store.unviewedVacancies,
-                id = positions[0] ? positions[0].VacancyId : undefined;
+                id = positions[0] ? positions[0].VacancyId : undefined,
+                userId = context.props.store.user.ClientId;
 
-            console.log(`/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`);
-            fetch(  `/api/vacancies/new/count?id=${id}&filter=${context.state.filter}`)
+            console.log(`/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`);
+            fetch(  `/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`)
                 .then(
                     function(response) {
                         if (response.status !== 200) {
@@ -110,12 +111,13 @@ class VacancyList extends React.Component {
         let context = this,
             allPositions = context.props.store.allVacancies,
             unviewedPositions = context.props.store.unviewedVacancies,
-            id = allPositions[0] ? allPositions[0].VacancyId : undefined;
+            id = allPositions[0] ? allPositions[0].VacancyId : undefined,
+            userId = this.props.store.user.ClientId;
 
         $('.description').addClass('description-hide');
 
-        console.log(`api/vacancies/new?id=${id}&filter=${this.state.filter}`);
-        await fetch(`api/vacancies/new?id=${id}&filter=${this.state.filter}`)
+        console.log(`api/vacancies/new?userId=${userId}&id=${id}&filter=${this.state.filter}`);
+        await fetch(`api/vacancies/new?userId=${userId}&id=${id}&filter=${this.state.filter}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
