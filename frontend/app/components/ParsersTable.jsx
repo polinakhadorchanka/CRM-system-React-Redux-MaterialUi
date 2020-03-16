@@ -133,12 +133,13 @@ class ParsersTable extends React.Component {
     render() {
         let divStyle = {
                 'color': '#e1e1e1',
-                'margin': '0 10px'
+                'padding': '0 10px',
+				'min-width': '1000px'
             },
             tableStyle = {
                 'width': '100%',
-                'border-collapse': 'separate',
-                'border-spacing': '1px'
+                'border': '1px solid #1e1e1e',
+				'border-collapse': 'collapse'
             },
             trStyle = {
                 'width': '25%',
@@ -153,7 +154,8 @@ class ParsersTable extends React.Component {
             tdStyle = {
                 'padding-left': '10px',
                 'padding-right': '10px',
-                'background-color': '#383838'
+                'background-color': '#383838',
+                'border': '1px solid #1e1e1e'
             },
             inputTextStyle = {
                 'width': '100%',
@@ -293,7 +295,8 @@ class Parser extends React.Component {
             tdStyle = {
                 'padding-left': '10px',
                 'padding-right': '10px',
-                'background-color': '#383838'
+                'background-color': '#383838',
+                'border': '1px solid #1e1e1e'
             },
             inputTextStyle = {
                 'width': '100%',

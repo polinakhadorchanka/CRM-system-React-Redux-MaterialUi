@@ -39,7 +39,7 @@ class Header extends React.Component {
                 'background-color': '#1e1e1e',
                 'border': '1px solid #7f9fd5',
                 'z-index': '1',
-                'bottom': '-70px',
+                'bottom': '-40px',
                 'right': '10px'
             },
             aStyle = {
@@ -63,10 +63,6 @@ class Header extends React.Component {
 
         return (
             <div id='my-account-list' style={divStyle}>
-                <a style={this.state.settingsState === 'default' ? aStyle : aFocusStyle} href='/settings' name='settings'
-                   onMouseOver={this.handleAccountList} onMouseOut={this.handleAccountList}>
-                    My settings
-                </a>
                 <a style={this.state.logoutState === 'default' ? aStyle : aFocusStyle} onClick={this.logOut}
                    href='/login' name='logout'
                    onMouseOver={this.handleAccountList} onMouseOut={this.handleAccountList}>

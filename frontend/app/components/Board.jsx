@@ -11,6 +11,7 @@ class KanbanBoard extends React.Component {
             draggedOverCol: 0,
         });
 
+
         this.handleOnDragEnter = this.handleOnDragEnter.bind(this);
         this.handleOnDragEnd = this.handleOnDragEnd.bind(this);
         this.deleteCard = this.deleteCard.bind(this);
@@ -187,9 +188,13 @@ class KanbanCard extends React.Component {
         super(props);
         this.state = {
             collapsed: true,
-            isDescriptionOpen: false
+            isDescriptionOpen: false,
+            commentState: 'text',
+            comment: props.project.UserComment ? props.project.UserComment : 'commnet'
         };
 
+        this.onHandleEditComment = this.onHandleEditComment.bind(this);
+        this.changeComment = this.changeComment.bind(this);
         this.handleDescription = this.handleDescription.bind(this);
     }
 
@@ -206,46 +211,72 @@ class KanbanCard extends React.Component {
         e.stopPropagation();
     }
 
+    changeComment(e) {
+        this.setState({comment : e.target.value});
+    }
+
+    onHandleEditComment(e) {
+        if(e.type === 'click')
+            this.setState({commentState : 'input'});
+        else if(e.type === 'blur' && this.state.comment === '')
+            this.setState({commentState : 'input'});
+        else {
+            this.setState({commentState : 'text'});
+            let vacancy = this.props.project;
+            vacancy.UserComment = this.state.comment;
+            console.log(vacancy);
+        }
+    }
+
     vacancyDescription(vacancy) {
         return (
-            <div>
+            <div className='card-description'>
                 <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
                     ' back-vacancy-information hide'}
                      onClick={this.handleDescription}> </div>
                 <div className={this.state.isDescriptionOpen === true ? 'vacancy-information' :
-                    'vacancy-information hide'}
-                     onClick={(e) => e.stopPropagation()}>
-                    <div className='flex-block'>
-                        <div>
-                            <span className='vacancy-name'>{vacancy.Position}</span> <br/>
-                            <a href={vacancy.Website} target='_blank'>
+                    'vacancy-information hide'}>
+                    <div className='vacancy-block'>
+                        <div className='flex-block'>
+                            <div>
+                                <span className='vacancy-name'>{vacancy.Position}</span> <br/>
+                                <a href={vacancy.Website} target='_blank'>
                             <span className={vacancy.CompanyName ? 'company-name' : 'hide'}>
                                 {vacancy.CompanyName}
                             </span>
-                            </a>
-                            <span className={vacancy.Country ? 'company-country' : 'hide'}>
+                                </a>
+                                <span className={vacancy.Country ? 'company-country' : 'hide'}>
                                 {' / ' + vacancy.Country}
-                            </span>
-                            <span className='tech-stack'>stack</span> <br/>
-                            <span className={vacancy.Location ? 'location' : 'hide'}>
+                            </span> <br/>
+                                <span className={vacancy.Location ? 'location' : 'hide'}>
                                 Location: {vacancy.Location}
                             </span>
-                            <span className={vacancy.Contacts ? 'contacts' : 'hide'}>
+                                <span className={vacancy.Contacts ? 'contacts' : 'hide'}>
                                 Contacts: {vacancy.Contacts}
                             </span>
-                        </div>
-                        <div>
-                            <a href={vacancy.Url} target='_blank'
-                               onClick={(e) => e.stopPropagation()}>
-                                <input type='button' value='View' title='view vacancy'/>
-                            </a>
-                            <div className='date'>
-                                {vacancy.SiteAddingDate}
+                            </div>
+                            <div>
+                                <a href={vacancy.Url} target='_blank'
+                                   onClick={(e) => e.stopPropagation()}>
+                                    <input type='button' value='View' title='view vacancy'/>
+                                </a>
+                                <div className='date'>
+                                    {vacancy.SiteAddingDate}
+                                </div>
                             </div>
                         </div>
+                        <div  id={vacancy.Url + 'board'} className='description'
+                              dangerouslySetInnerHTML = {{__html:vacancy.Description}} />
+                        <div className='user-comment'>
+                            {this.state.commentState === 'text' ?
+                                <div title='Click to change' onClick={this.onHandleEditComment}>
+                                    {this.state.comment}
+                                </div> :
+                                <input autoFocus={true}
+                                       onBlur={this.onHandleEditComment} onChange={this.changeComment}
+                                       type='text' value={this.state.comment} maxLength='300' />}
+                        </div>
                     </div>
-                    <div  id={vacancy.Url + 'board'} className='description'
-                          dangerouslySetInnerHTML = {{__html:vacancy.Description}} />
                 </div>
             </div>
         );
@@ -253,19 +284,21 @@ class KanbanCard extends React.Component {
 
     render() {
         return (
-            <div className='boardCard'
-                 draggable={true}
-                 onDragEnd={(e) => {this.props.onDragEnd(e, this.props.project);}}
-                 onClick={this.handleDescription}>
-                <div className='container'>
-                    <div>
-                        <span className='vacancy-name'>{this.props.project.Position}</span> <br/>
-                        <span className={this.props.project.CompanyName ? 'company-name' : 'hide'}>
+            <div>
+                <div className='boardCard'
+                     draggable={true}
+                     onDragEnd={(e) => {this.props.onDragEnd(e, this.props.project);}}
+                     onClick={this.handleDescription}>
+                    <div className='container'>
+                        <div>
+                            <span className='vacancy-name'>{this.props.project.Position}</span> <br/>
+                            <span className={this.props.project.CompanyName ? 'company-name' : 'hide'}>
                     {this.props.project.CompanyName}
                 </span>
+                        </div>
+                        <div className='delete-button'
+                             onClick={(e) => this.props.deleteCard(e, this.props.project)}/>
                     </div>
-                    <div className='delete-button'
-                         onClick={(e) => this.props.deleteCard(e, this.props.project)}/>
                 </div>
                 {this.vacancyDescription(this.props.project)}
             </div>
