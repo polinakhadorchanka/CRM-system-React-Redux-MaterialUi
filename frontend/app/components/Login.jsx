@@ -13,6 +13,8 @@ class Login extends React.Component {
             errors: []
         };
 
+        document.title = document.title + ' - Login';
+
         this.onLoginChange = this.onLoginChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -65,13 +67,12 @@ class Login extends React.Component {
                     body: JSON.stringify(obj)
                 })
                 .then(response => response.json()).then(function (data) {
-                    console.log(data);
                 if (data[0] && data[0].errorMessage !== null) {
                     context.setState({errors: data});
                     $('.info-block').addClass('open');
                 }
                 else {
-                    sessionStorage.setItem('user', JSON.stringify(data));
+                    context.props.setUser(data);
                     window.location.href = `/${data.Login}`;
                 }
             })

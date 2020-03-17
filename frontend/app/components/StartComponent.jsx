@@ -1,38 +1,41 @@
 let React = require('react');
 let connect = require("react-redux").connect;
 let actions = require("../actions.jsx");
-let Header = require('./Header.jsx');
 
 class StartComponent extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        let divStyle = {
-                'display' : 'flex',
-                'flex-direction' : 'row',
-                'justify-content' : 'center',
-                'padding' : '10px'
-            },
-            imgStyle = {
-                'width' : '500px',
-                'height' : '800px',
-                'border' : '1px solid #e1e1e1'
+        let imgStyle = {
+                'width' : '100%',
+                'min-width': '1000px',
+                'opacity': '0.7',
+                'user-select': 'none',
+                'pointer-events': 'none'
             },
             pStyle = {
-                'margin-left' : '20px',
-                'max-width' : '650px',
+                'position': 'absolute',
+                'top': '150px',
+                'margin-left' : '60px',
+                'width' : '35%',
+                'min-width' : '370px',
                 'color' : '#e1e1e1',
-                'text-align' : 'justify'
+                'font-size': '14px',
+                'text-align' : 'justify',
+                'opacity': '0.9'
             };
 
         return (
-            <div style={divStyle}>
+            <div>
                 <div>
-                    <img style={imgStyle} alt='Тут какая-нибудь картинка'/>
+                    <img style={imgStyle} src='images/img.png'/>
                 </div>
-                <div>
-                    <p style={pStyle}>А тут какое-то описание</p>
+                <div style={pStyle}>
+                    <p>А тут наверняка будет какой-нибудь текст,
+                    жаль только, что я понятия не имею, что тут писать. Поэтому пока что тут
+                    будет это, чтобы посмотреть, как это будет смотреться.</p>
+                    <p>А тут второй абзац текста, чтобы его было больше. Вот так вот.</p>
                 </div>
             </div>
         );

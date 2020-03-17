@@ -114,7 +114,6 @@ class ParsersTable extends React.Component {
                     context.setState({errors: data});
                 }
                 else {
-                    console.log('ok');
                     context.setState({
                         ipKey: '',
                         ipToken: '',
@@ -202,9 +201,9 @@ class ParsersTable extends React.Component {
                     <tr style={trStyle}>
                         <th style={thStyle} width='25%'>IP key</th>
                         <th style={thStyle} width='25%'>IP tocken</th>
-                        <th style={thStyle} width='40%'>Description</th>
-                        <th style={thStyle} width='7%'/>
-                        <th style={thStyle} width='3%'/>
+                        <th style={thStyle}>Description</th>
+                        <th style={thStyle} width='100'/>
+                        <th style={thStyle} width='42'/>
                     </tr>
                     {
                         this.props.store.parsers.map(function (parser, index) {
@@ -226,12 +225,12 @@ class ParsersTable extends React.Component {
                                        type='text' placeholder='IP token' name='ipTocken' maxLength={12}
                                        onChange={this.onTokenChange}/>
                             </td>
-                            <td style={tdStyle} width='40%'>
+                            <td style={tdStyle}>
                                 <input style={this.state.isValidDescription === true ? inputTextStyle : inputTextStyleError}
                                        type='text' placeholder='Description' name='comment' maxLength={300}
                                        onChange={this.onDescChange}/>
                             </td>
-                            <td style={tdStyle} width='10%'>
+                            <td style={tdStyle} width='142'>
                                 <input style={this.state.submitState === 'default' ?
                                     inputSubmitStyle : inputSubmitStyleFocus}
                                        onMouseOver={this.handleSubmitBtn} onMouseOut={this.handleSubmitBtn}
@@ -319,7 +318,7 @@ class Parser extends React.Component {
             <tr style={trStyle}>
                 <td style={tdStyle} width='25%'>{this.props.parser.ParserKey}</td>
                 <td style={tdStyle} width='25%'>{this.props.parser.ParserToken}</td>
-                <td style={tdStyle} width='40%'>
+                <td style={tdStyle}>
                     {this.state.descriptionState === 'text' ?
                         <div title='Click to change' onClick={this.onHandleEditDesc}>{this.state.description}</div> :
                         <input autoFocus={true}
@@ -327,7 +326,7 @@ class Parser extends React.Component {
                                onBlur={this.onHandleEditDesc} onChange={this.changeDesc}
                             type='text' value={this.state.description} maxLength='300' />}
                 </td>
-                <td style={tdStyle} width='7%'>
+                <td style={tdStyle} width='100'>
                     <label className="switch">
                         {this.props.parser.ParserState == 0 ?
                             <input type="checkbox" onChange={this.changeState}/> :
@@ -335,7 +334,7 @@ class Parser extends React.Component {
                         <span className="slider"></span>
                     </label>
                 </td>
-                <td style={tdStyle} width='3%'>
+                <td style={tdStyle} width='42'>
                     <div className='delete-button' title='Remove parser'
                          onClick={() => this.props.changeParser(this.props.parser, 'delete')}/>
                 </td>

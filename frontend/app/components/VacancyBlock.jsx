@@ -44,9 +44,6 @@ class VacancyBlock extends React.Component {
     }
 
     async openDescription() {
-        $('.dropdown-content').removeClass('open');
-        $('.dropbtn').removeClass('open');
-
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies;
 
@@ -80,8 +77,17 @@ class VacancyBlock extends React.Component {
     }
 
     static handleStatusList(e) {
-        e.target.classList.toggle('open');
-        $(e.target).next().toggleClass('open');
+        if(e.type === 'click') {
+            e.target.classList.toggle('open');
+            $(e.target).next().toggleClass('open');
+        }
+        else if(e.type === 'blur') {
+            let elements = document.querySelectorAll(':hover');
+            if(elements[elements.length-2].id !== 'dropdown-content') {
+                e.target.classList.toggle('open');
+                $(e.target).next().toggleClass('open');
+            }
+        }
         e.stopPropagation();
     }
 
@@ -147,8 +153,7 @@ class VacancyBlock extends React.Component {
                     </a>
                     <span className={positions[this.props.index].Country ? 'company-country' : 'hide'}>
                     {' / ' + positions[this.props.index].Country}
-                </span>
-                    <span className='tech-stack'>stack</span> <br/>
+                </span> <br/>
                     <span className={positions[this.props.index].Location ? 'location' : 'hide'}>
                     Location: {positions[this.props.index].Location}
                 </span>
@@ -162,20 +167,21 @@ class VacancyBlock extends React.Component {
                 <div className='vacancy-actions'>
                     <a href={positions[this.props.index].Url} target='_blank'
                        onClick={(e) => e.stopPropagation()}>
-                        <input type='button' value='View' title='view vacancy'/>
+                        <input tabIndex='-1' type='button' value='View' title='View vacancy'/>
                     </a> <br/>
                     <div className='buttons'>
                         <div className="dropdown">
-                            <button className="dropbtn" onClick={VacancyBlock.handleStatusList}/>
-                            <div className="dropdown-content" onClick={this.handleChooseStatus}>
+                            <button className="dropbtn" onClick={VacancyBlock.handleStatusList}
+                                    onBlur={VacancyBlock.handleStatusList}
+                                    title='Add to board'/>
+                            <div  id='dropdown-content' className="dropdown-content" onClick={this.handleChooseStatus}>
                                 <span className='status-element'>new</span>
                                 <span className='status-element'>in the process</span>
                                 <span className='status-element'>completed</span>
                                 <span className='status-element'>deferred</span>
                             </div>
                         </div>
-                        <img id='remove' src='images/delete.png'
-                             title='remove vacancy' onClick={this.removeVacancy}/>
+                        <button id='remove' title='Remove' onClick={this.removeVacancy}/>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,6 @@ let React = require('react');
 let Tabs = require('./components/Tabs.jsx');
 let Login = require('./components/Login.jsx');
 let Registration = require('./components/Registration.jsx');
-let Settings = require('./components/Settings.jsx');
 let StartComponent = require('./components/StartComponent.jsx');
 let Header = require('./components/Header.jsx');
 let redux = require("redux");
@@ -15,13 +14,12 @@ import thunk from 'redux-thunk';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 let store = redux.createStore(reducer, applyMiddleware(thunk));
-
 getStartVacancies();
 
 async function getStartVacancies() {
     if (document.location.pathname === '/') {
-        if (sessionStorage.getItem('user'))
-            window.location.href = `/${JSON.parse(sessionStorage.getItem('user')).Login}`;
+        if (localStorage.getItem('user') !== null)
+            window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
     }
 
     ReactDOM.render(
@@ -33,7 +31,6 @@ async function getStartVacancies() {
                         <Route exact path="/" component={StartComponent}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/registration" component={Registration}/>
-                        <Route exact path="/settings" component={Settings} />
                         <Route exact path="/:userLogin" component={Tabs} />
                     </Switch>
                 </div>

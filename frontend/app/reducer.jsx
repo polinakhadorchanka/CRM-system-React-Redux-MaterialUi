@@ -44,7 +44,7 @@ const reducer = function(state = initialUserState, action) {
                 boardVacancies: boardVacancies});
         case 'CHANGE_COUNT': return Object.assign({}, state, { newVacanciesCount: action.count });
         case 'ADD_USER':
-            if(action.user) localStorage.setItem('user', action.user);
+            if(action.user) localStorage.setItem('user', JSON.stringify(action.user));
             else localStorage.removeItem('user');
             return Object.assign({}, state, { user: action.user });
         case 'ADD_PARSERS': return Object.assign({}, state, { parsers: action.parsers });

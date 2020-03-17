@@ -1,11 +1,11 @@
 const sql = require('mssql');
 
 const config = {
-	user: 'nodejs',
-	password: 'nodejs',
-	server: 'DBServer1',
+	user: 'user001',
+	password: '12345',
+	server: 'localhost',
 	database: 'BORODICH',
-	port: 50100
+	port: 1433
 };
 
 module.exports.getData = async function(id, filter, userId) {

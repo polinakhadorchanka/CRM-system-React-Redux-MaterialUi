@@ -17,6 +17,8 @@ class Registration extends React.Component {
             errors: []
         };
 
+        document.title = document.title + ' - Registration';
+
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onLoginChange = this.onLoginChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);

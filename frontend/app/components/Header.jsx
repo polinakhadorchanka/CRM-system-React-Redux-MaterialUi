@@ -9,142 +9,76 @@ class Header extends React.Component {
         this.state = {
             loginState: 'default',
             registrationState: 'default',
-            accountState: 'default',
-            settingsState: 'default',
             logoutState: 'default'
         };
 
         this.logOut = this.logOut.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleRegistration = this.handleRegistration.bind(this);
-        this.handleAccount = this.handleAccount.bind(this);
-        this.handleAccountList = this.handleAccountList.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
 
-        if(sessionStorage.getItem('user'))
-            props.setUser(JSON.parse(sessionStorage.getItem('user')));
+        if(localStorage.getItem('user'))
+            props.setUser(JSON.parse(localStorage.getItem('user')));
+    }
+
+    handleLogin(e) {
+        if(e.type === 'mouseover' || e.type === 'focus')
+            this.setState({loginState : 'focus'});
+        else this.setState({loginState: 'default'})
+    }
+
+    handleRegistration(e) {
+        if(e.type === 'mouseover' || e.type === 'focus')
+            this.setState({registrationState : 'focus'});
+        else this.setState({registrationState: 'default'})
+    }
+
+    handleLogout(e) {
+        if(e.type === 'mouseover' || e.type === 'focus')
+            this.setState({logoutState : 'focus'});
+        else this.setState({logoutState: 'default'})
     }
 
     logOut() {
-        this.props.setUser(null);
-        sessionStorage.removeItem('user');
-        window.location.href = '/login';
-    }
-
-    accountList() {
         let divStyle = {
-                'display': 'block',
-                'position': 'absolute',
-                'min-width':' 130px',
-                'padding-bottom': '5px',
-                'background-color': '#1e1e1e',
-                'border': '1px solid #7f9fd5',
-                'z-index': '1',
-                'bottom': '-40px',
-                'right': '10px'
+                'display' : 'flex',
+                'flex-direction' : 'row'
             },
             aStyle = {
-                'display': 'block',
-                'padding':'5px 10px 0',
-                'color': '#e1e1e1',
-                'font-size': '15px',
-                'text-decoration': 'none',
-                'text-align': 'left',
-                'cursor': 'pointer'
-            },
-            aFocusStyle = {
-                'display': 'block',
-                'padding':'5px 10px 0',
-                'color': '#7f9fd5',
-                'font-size': '15px',
-                'text-decoration': 'none',
-                'text-align': 'left',
-                'cursor': 'pointer'
-            };
-
-        return (
-            <div id='my-account-list' style={divStyle}>
-                <a style={this.state.logoutState === 'default' ? aStyle : aFocusStyle} onClick={this.logOut}
-                   href='/login' name='logout'
-                   onMouseOver={this.handleAccountList} onMouseOut={this.handleAccountList}>
-                    Log out
-                </a>
-            </div>
-        );
-    }
-
-    handleAccountList(e) {
-        switch (e.target.name) {
-            case 'settings':
-                if(e.type === 'mouseover')
-                    this.setState({settingsState : 'focus'});
-                else this.setState({settingsState : 'default'});
-                break;
-            case 'logout':
-                if(e.type === 'mouseover')
-                    this.setState({logoutState : 'focus'});
-                else this.setState({logoutState : 'default'});
-                break;
-        }
-    }
-
-    myAccount() {
-        let spanStyle = {
                 'margin-right': '10px',
-                'padding':' 0 10px',
+                'padding':' 1px 10px 0',
                 'height': '30px',
                 'background': 'none',
                 'outline': 'none',
                 'color': '#e1e1e1',
-                'border': '1px solid #e1e1e1',
-                'cursor': 'pointer',
-                'user-select': 'none'
+                'border': '1px solid #e1e1e1'
             },
-            spanFocusStyle = {
+            aFocusStyle = {
                 'margin-right': '10px',
-                'padding':' 0 10px',
+                'padding':' 1px 10px 0',
                 'height': '30px',
                 'background': 'none',
                 'outline': 'none',
                 'color': '#7f9fd5',
                 'border': '1px solid #7f9fd5',
-                'text-decoration' : 'none',
-                'cursor': 'pointer',
-                'user-select': 'none'
+                'text-decoration' : 'none'
             },
-            divStyle = {
-                'position' : 'relative'
+            spanStyle = {
+                'color': '#e1e1e1',
+                'margin': '2px 10px 0 0'
             };
 
         return (
             <div style={divStyle}>
-                <span style={this.state.accountState === 'default' ? spanStyle : spanFocusStyle}
-                      tabIndex='0' id='my-account-list' onClick={this.handleAccount} onBlur={this.handleAccount}
-                      onMouseOver={this.handleAccount} onMouseOut={this.handleAccount}
-                      onFocus={this.handleAccount}>
-                    My Account
-                </span>
-                {this.state.accountState === 'focus' ? this.accountList() : undefined}
+                <span style={spanStyle}>{this.props.store.user.Login}</span>
+                <a style={this.state.logoutState === 'default' ? aStyle : aFocusStyle} href='/login'
+                   onClick={() => localStorage.removeItem('user')}
+                   onMouseOver={this.handleLogout} onMouseOut={this.handleLogout}
+                   onFocus={this.handleLogout} onBlur={this.handleLogout}>
+                    Log out
+                </a>
             </div>
         );
-    }
-
-    async handleAccount(e) {
-        if(e.type === 'click' && this.state.accountState === 'hover' ||
-            e.type === 'click' && this.state.accountState === 'default')
-            this.setState({accountState : 'focus'});
-        else if(e.type === 'click' && this.state.accountState === 'focus')
-            this.setState({accountState : 'default'});
-        else if(e.type === 'mouseover' &&  this.state.accountState === 'default')
-            this.setState({accountState : 'hover'});
-        else if(e.type === 'mouseout' &&  this.state.accountState === 'hover')
-            this.setState({accountState : 'default'});
-        else if(e.type === 'focus')
-            this.setState({accountState : 'hover'});
-        else if(e.type === 'blur') {
-            let elements = document.querySelectorAll(':hover');
-            if(!elements[elements.length-2] || elements[elements.length-2].id !== 'my-account-list')
-                this.setState({accountState: 'default'});
-        }
     }
 
     logIn() {
@@ -177,7 +111,7 @@ class Header extends React.Component {
                 <a style={this.state.loginState === 'default' ? aStyle : aFocusStyle} id='login' href='/login'
                    onMouseOver={this.handleLogin} onMouseOut={this.handleLogin}
                    onFocus={this.handleLogin} onBlur={this.handleLogin}>
-                    Login
+                    Log in
                 </a>
                 <a style={this.state.registrationState === 'default' ? aStyle : aFocusStyle} id='login'
                    href='/registration'
@@ -187,18 +121,6 @@ class Header extends React.Component {
                 </a>
             </div>
         );
-    }
-
-    handleLogin(e) {
-        if(e.type === 'mouseover' || e.type === 'focus')
-            this.setState({loginState : 'focus'});
-        else this.setState({loginState: 'default'})
-    }
-
-    handleRegistration(e) {
-        if(e.type === 'mouseover' || e.type === 'focus')
-            this.setState({registrationState : 'focus'});
-        else this.setState({registrationState: 'default'})
     }
 
     render() {
@@ -227,7 +149,7 @@ class Header extends React.Component {
                 <a style={systemNameStyle} href='/'>
                     CRM System
                 </a>
-                {this.props.store.user ? this.myAccount() : this.logIn()}
+                {this.props.store.user ? this.logOut() : this.logIn()}
             </header>
         );
     }

@@ -44,7 +44,6 @@ class KanbanBoard extends React.Component {
             }).catch(function (err) {
             console.log('EXP: ', err);
         });
-
     }
 
     deleteCard(e, project) {

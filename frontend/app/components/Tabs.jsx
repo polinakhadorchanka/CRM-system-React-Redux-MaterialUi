@@ -16,14 +16,13 @@ let startVacancies = {
 class Tabs extends React.Component {
     constructor(props) {
         super(props);
-
         this.setStartVacancies = this.setStartVacancies.bind(this);
         this.setStartVacancies();
     }
 
     async setStartVacancies() {
         $('.description').addClass('description-hide');
-        await this.props.setUser(JSON.parse(sessionStorage.getItem('user')));
+        await this.props.setUser(JSON.parse(localStorage.getItem('user')));
         await this.getVacancies('all', this.props.store.user.ClientId);
         await this.getVacancies('unviewed', this.props.store.user.ClientId);
         await this.getVacancies('board', this.props.store.user.ClientId);
@@ -38,7 +37,6 @@ class Tabs extends React.Component {
     async getParsers() {
         await fetch(`/api/parsers`)
             .then(response => response.json()).then(function (data) {
-                console.log(data);
                 startVacancies.parsers = data;
             })
             .catch(function (err) {
@@ -65,8 +63,8 @@ class Tabs extends React.Component {
     }
 
     render() {
-        if (!sessionStorage.getItem('user') ||
-            this.props.match.params.userLogin !== JSON.parse(sessionStorage.getItem('user')).Login) {
+        if (!localStorage.getItem('user') ||
+            this.props.match.params.userLogin !== JSON.parse(localStorage.getItem('user')).Login) {
             return <h1>error 404</h1>;
         } else {
             return <div>
@@ -87,7 +85,7 @@ class Tabs extends React.Component {
                            className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
                     </li>
                     <li id='update-tab'>
-                        <a href="#update">
+                        <a href='#'>
                             <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
                         </a>
                     </li>
