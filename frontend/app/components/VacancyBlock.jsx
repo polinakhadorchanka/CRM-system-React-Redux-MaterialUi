@@ -14,6 +14,8 @@ class VacancyBlock extends React.Component {
         this.openDescription = this.openDescription.bind(this);
         this.removeVacancy = this.removeVacancy.bind(this);
         this.handleChooseStatus = this.handleChooseStatus.bind(this);
+        this.confirmDeletion = this.confirmDeletion.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     onClickView() {
@@ -60,9 +62,7 @@ class VacancyBlock extends React.Component {
         description.classList.toggle('description-hide');
     }
 
-    async removeVacancy(e) {
-        e.stopPropagation();
-
+    async removeVacancy() {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies,
             vacancy = positions[this.props.index];
@@ -80,12 +80,14 @@ class VacancyBlock extends React.Component {
         if(e.type === 'click') {
             e.target.classList.toggle('open');
             $(e.target).next().toggleClass('open');
+            if(!$(e.target).hasClass('open'))
+                e.target.blur();
         }
         else if(e.type === 'blur') {
             let elements = document.querySelectorAll(':hover');
             if(elements[elements.length-2].id !== 'dropdown-content') {
-                e.target.classList.toggle('open');
-                $(e.target).next().toggleClass('open');
+                e.target.classList.remove('open');
+                $(e.target).next().removeClass('open');
             }
         }
         e.stopPropagation();
@@ -124,9 +126,38 @@ class VacancyBlock extends React.Component {
         e.stopPropagation();
     }
 
+    handleRemove(e) {
+        if(e.type === 'click') {
+            e.target.classList.toggle('open');
+            $(e.target).next().toggleClass('open');
+            if(!$(e.target).hasClass('open'))
+                e.target.blur();
+        }
+        else if(e.type === 'blur') {
+            let elements = document.querySelectorAll(':hover');
+            if((elements[elements.length-3].id  && elements[elements.length-3].id !== 'dropdown-content2') ||
+            !elements[elements.length-3].id) {
+                e.target.classList.remove('open');
+                $(e.target).next().removeClass('open');
+            }
+        }
+        e.stopPropagation();
+    }
+
+    confirmDeletion(e) {
+        if(e.target.name === 'yes') {
+            this.removeVacancy();
+        }
+        $('#dropdown-content2').removeClass('open');
+        $('.dropbtn').removeClass('open');
+        e.stopPropagation();
+    }
+
     render() {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
-            : this.props.store.unviewedVacancies;
+            : this.props.store.unviewedVacancies,
+            stack = positions[this.props.index].Technologies ?
+                positions[this.props.index].Technologies.split(' // ') : undefined;
 
         return <div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
@@ -153,7 +184,11 @@ class VacancyBlock extends React.Component {
                     </a>
                     <span className={positions[this.props.index].Country ? 'company-country' : 'hide'}>
                     {' / ' + positions[this.props.index].Country}
-                </span> <br/>
+                </span>
+                    {stack ? stack.map(function (el) {
+                        return <div className='tech-stack'>{el}</div>;
+                    }) : undefined}
+                    <br/>
                     <span className={positions[this.props.index].Location ? 'location' : 'hide'}>
                     Location: {positions[this.props.index].Location}
                 </span>
@@ -181,7 +216,17 @@ class VacancyBlock extends React.Component {
                                 <span className='status-element'>deferred</span>
                             </div>
                         </div>
-                        <button id='remove' title='Remove' onClick={this.removeVacancy}/>
+                        <div className="dropdown">
+                        <button id='remove' title='Remove' onBlur={this.handleRemove} onClick={this.handleRemove}/>
+                            <div  id='dropdown-content2' className="dropdown-content"
+                                  onClick={(e) => e.stopPropagation()}>
+                                <p>Are you sure?</p>
+                                <div>
+                                    <input type='button' value='Yes' name='yes' onClick={this.confirmDeletion}/>
+                                    <input type='button' value='Cancel' name='cancel' onClick={this.confirmDeletion}/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

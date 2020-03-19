@@ -17,25 +17,26 @@ let store = redux.createStore(reducer, applyMiddleware(thunk));
 getStartVacancies();
 
 async function getStartVacancies() {
-    if (document.location.pathname === '/') {
-        if (localStorage.getItem('user') !== null)
+    if ((document.location.pathname === '/login' || document.location.pathname === '/registration'
+        || document.location.pathname === '/')
+        && localStorage.getItem('user') !== null) {
             window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
+    } else {
+        ReactDOM.render(
+            <Provider store={store}>
+                <Router>
+                    <Header/>
+                    <div>
+                        <Switch>
+                            <Route exact path="/" component={StartComponent}/>
+                            <Route exact path="/login" component={Login}/>
+                            <Route exact path="/registration" component={Registration}/>
+                            <Route exact path="/:userLogin" component={Tabs}/>
+                        </Switch>
+                    </div>
+                </Router>
+            </Provider>,
+            document.getElementById("container")
+        );
     }
-
-    ReactDOM.render(
-        <Provider store={store}>
-            <Router>
-                <Header/>
-                <div>
-                    <Switch>
-                        <Route exact path="/" component={StartComponent}/>
-                        <Route exact path="/login" component={Login}/>
-                        <Route exact path="/registration" component={Registration}/>
-                        <Route exact path="/:userLogin" component={Tabs} />
-                    </Switch>
-                </div>
-            </Router>
-        </Provider>,
-        document.getElementById("container")
-    );
 }

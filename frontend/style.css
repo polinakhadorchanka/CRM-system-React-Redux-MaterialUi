@@ -130,7 +130,7 @@ body {
     width: 25px;
     height: 25px;
 
-    background: url("images/delete.png");
+    background: url("public/images/delete.png");
     background-size: 23px 23px;
     border: 1px solid #1e1e1e;
     user-select: none;
@@ -139,7 +139,7 @@ body {
 }
 
 #remove:hover, #remove .active, #remove:focus {
-    background-image: url("images/delete-active.png");
+    background-image: url("public/images/delete-active.png");
     outline: none;
 }
 
@@ -225,7 +225,7 @@ body {
     width: 25px;
     height: 25px;
 
-    background: url("images/add-favorites.png");
+    background: url("public/images/add-favorites.png");
     background-size: 23px 23px;
     border: 1px solid #1e1e1e;
 
@@ -233,7 +233,7 @@ body {
 }
 
 .dropbtn:hover, .dropbtn.open, .dropbtn:focus {
-    background: url("images/add-favorites-active.png");
+    background: url("public/images/add-favorites-active.png");
     background-size: 23px 23px;
     outline: none;
 }
@@ -365,7 +365,7 @@ body {
     width: 20px;
     height: 20px;
     filter: invert(100%);
-    background-image: url("images/del.png");
+    background-image: url("public/images/del.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 10px 10px;
@@ -619,7 +619,7 @@ body {
     display: block;
     width: 12px;
     height: 12px;
-    background-image: url("images/info.png");
+    background-image: url("public/images/info.png");
     background-size: 12px 12px;
 }
 
@@ -717,7 +717,7 @@ tr .delete-button {
     width: 20px;
     height: 20px;
     filter: invert(100%);
-    background-image: url("images/del.png");
+    background-image: url("public/images/del.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 15px 15px;
@@ -729,7 +729,7 @@ tr .delete-button {
     width: 20px;
     height: 20px;
     filter: invert(100%);
-    background-image: url("images/update.png");
+    background-image: url("public/images/update.png");
     background-size: 20px 20px;
     opacity: 0.3;
 }

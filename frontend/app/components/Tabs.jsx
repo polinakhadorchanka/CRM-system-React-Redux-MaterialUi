@@ -5,6 +5,7 @@ let actions = require("../actions.jsx");
 let VacancyList = require('./VacancyList.jsx');
 let Board = require('./Board.jsx');
 let ParsersTable = require('./ParsersTable.jsx');
+let FilterInput = require('./FilterInput.jsx');
 
 let startVacancies = {
     all : [],
@@ -65,10 +66,10 @@ class Tabs extends React.Component {
     render() {
         if (!localStorage.getItem('user') ||
             this.props.match.params.userLogin !== JSON.parse(localStorage.getItem('user')).Login) {
-            return <h1>error 404</h1>;
+            return <div className='error'>404 - Not found</div>;
         } else {
             return <div>
-                <ul className="nav nav-tabs">
+                <ul className="nav nav-tabs" style={{'position': 'relative'}}>
                     <li className="nav-item">
                         <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
                     </li>
@@ -89,6 +90,7 @@ class Tabs extends React.Component {
                             <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
                         </a>
                     </li>
+                    <FilterInput/>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane fade show active" id="l-all">

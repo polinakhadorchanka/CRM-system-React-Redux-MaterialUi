@@ -1,9 +1,31 @@
+@font-face {
+    font-family: "Titillium Web";
+    src: url("fonts/TitilliumWeb-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Bangers";
+    src: url("fonts/Bangers-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
 body {
     padding: 0;
     margin: 0;
 
     background-color: #1e1e1e;
     font-family: 'Titillium Web', sans-serif;
+}
+
+.error {
+    margin-top: 50px;
+    width: 100%;
+    text-align: center;
+    color: #e1e1e1;
+    opacity: 0.3;
 }
 
 /* ALL, UNVIEWED */
@@ -161,6 +183,11 @@ body {
     transition: 0.2s ease-out;
 }
 
+.description h1, .description h2,
+.description h3, .description h4 {
+    font-size: 18px;
+}
+
 .description-hide {
     margin-bottom: 0;
     padding-top: 0;
@@ -276,6 +303,23 @@ body {
 .dropdown-content .status-element:hover {
     color: #7f9fd5;
     text-decoration: none;
+}
+
+.dropdown-content p {
+    margin: 10px 0;
+    text-align: center;
+    color: #e1e1e1;
+    font-size: 14px;
+}
+
+.dropdown-content div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.dropdown-content input[type="button"] {
+    margin: 0;
 }
 
 /* TABS */
@@ -497,7 +541,10 @@ body {
     overflow-y: auto;
 }
 
-.card-description .vacancy-block .description h1 {
+.card-description .vacancy-block .description h1,
+.card-description .vacancy-block .description h2,
+.card-description .vacancy-block .description h3,
+.card-description .vacancy-block .description h4 {
     font-size: 18px;
 }
 
@@ -736,4 +783,53 @@ tr .delete-button {
 
 #update-item:hover {
     opacity: 0.5;
+}
+
+/* Search filter */
+
+.searchFilter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    left: 335px
+}
+
+.searchFilter input[type='text'] {
+    width: 300px;
+    height: 30px;
+    background: none;
+    border : none;
+    border-bottom: 1px solid #b1b1b1;
+    color: #b1b1b1;
+    padding: 0 10px;
+}
+
+.searchFilter input[type='text']:focus {
+    outline: none;
+    border-bottom: 1px solid #e1e1e1;
+    color: #e1e1e1;
+}
+
+.searchFilter input[type='submit'] {
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+
+    background-color: transparent;
+    background-image: url("images/search.png");
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: invert(100%);
+    opacity: 0.3;
+
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.searchFilter input[type='submit']:hover, .searchFilter input[type='submit']:active {
+    opacity: 0.7;
 }
