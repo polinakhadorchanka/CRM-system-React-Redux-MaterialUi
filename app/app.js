@@ -100,7 +100,8 @@ function workWithParseHub(key,token){
                                     //parseH.runParseHubFunction(key, token);
                                     console.log(result.status + " " + "Надо бы запустить парсерочек");
                                 } else { //тут пишем код если данные сегодняшние(актуальные)
-                                    resultP.ParserLastReadBdDate = dateFormat(resultP.ParserLastReadBdDate,"isoDate");
+                                    if(resultP.ParserLastReadBdDate != null)
+                                        resultP.ParserLastReadBdDate = dateFormat(resultP.ParserLastReadBdDate,"isoDate");
                                     if(resultP.ParserLastReadBdDate == null || (Date.parse(resultP.ParserLastReadBdDate) < Date.parse(b))){
                                         parseH.getDataFromParseHub(key, token).then(function (result) {
                                             mod.updateParserDate(token,key).then(async function (res) {
