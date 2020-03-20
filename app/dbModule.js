@@ -8,15 +8,15 @@ const config = {
 	port: 50100
 };
 
-module.exports.getData = async function(id, filter, userId) {
+module.exports.getData = async function(id, filter, userId, techFilter) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
-		// filter ++
+		// filter ++ TODO: если нам передали тек фильтр то вызвать функцию с ним, когда у нас 1 вывод записей идёт, могут применить фильтр и надо выдать список
 		sql.connect(config).then(function() {
 			if(id == 'undefined') {
-				usQuery = `select * from testF0('${userId}','${filter}') order by DbAddingDate DESC, Url, position`;
+				usQuery = `select * from testF0('${userId}','${filter}','${techFilter}') order by DbAddingDate DESC, Url, position`;
 			} else{
-				usQuery = `select * from testF1('${id}','${userId}','${filter}') order by DbAddingDate DESC, Url, position`;
+				usQuery = `select * from testF1('${id}','${userId}','${filter}','${techFilter}') order by DbAddingDate DESC, Url, position`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function (result) {
 				resolve(result.recordset);
@@ -43,11 +43,11 @@ module.exports.getAmount = async function(id, userId) {
 	})
 };
 
-module.exports.getAmountLeft = async function(vacId,filter,userId) {
+module.exports.getAmountLeft = async function(vacId,filter,userId, techFilter) {
 	// filter
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = `select dbo.testF2 ('${vacId}','${filter}','${userId}') as count`;
+			let usQuery = `select dbo.testF2 ('${vacId}','${filter}','${userId}','${techFilter}') as count`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
 			}).catch(function(err) {
@@ -63,7 +63,7 @@ module.exports.getNewData = async function(id, userId) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		sql.connect(config).then(function() {
-			usQuery = `select * from dbo.testF4('${id}', '${userId}') order by DbAddingDate DESC, Position, Url`;
+			usQuery = `select * from dbo.testF4('${id}','${userId}') order by DbAddingDate DESC, Position, Url`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
 			}).catch(function(err) {
@@ -266,7 +266,6 @@ module.exports.deleteParser = async function(parserId) {
 	})
 };
 
-//TODO: метод записи даты в парсерочек после выгрузки из бд
 module.exports.updateParserDate = async function(token, key) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
@@ -291,7 +290,7 @@ module.exports.getParserDate = async function(token,key) {
 		sql.connect(config).then(function() {
 			usQuery = `select ParserLastReadBdDate from Parsers where ParserToken = '${token}' and ParserKey = '${key}'`;
 			let obj = new sql.Request().query(usQuery).then(function (result) {
-				resolve(result.recordset[0].state);
+				resolve(result.recordset[0]);
 			}).catch(function (err) {
 				console.dir(err);
 			});

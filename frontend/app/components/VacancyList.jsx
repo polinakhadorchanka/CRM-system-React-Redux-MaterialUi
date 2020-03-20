@@ -28,9 +28,11 @@ class VacancyList extends React.Component {
             context = this,
             id = positions[positions.length-1] ?
                 positions[positions.length-1].VacancyId : undefined,
-            userId = this.props.store.user.ClientId;
+            userId = this.props.store.user.ClientId,
+            techFilter = document.getElementById('techFilter').value;
 
-        await fetch(`/api/vacancies/next?userId=${userId}&id=${id}&filter=${context.state.filter}`)
+        await fetch(`/api/vacancies/next?userId=${userId}&id=${id}&filter=${context.state.filter}` +
+            `&techFilter=${techFilter !== '' ? techFilter : undefined}`)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -55,10 +57,12 @@ class VacancyList extends React.Component {
             : context.props.store.unviewedVacancies,
             id = positions[positions.length-1] ?
                 positions[positions.length-1].VacancyId : undefined,
-            userId = this.props.store.user.ClientId;
+            userId = this.props.store.user.ClientId,
+            techFilter = document.getElementById('techFilter').value;
 
         await fetch(`/api/vacancies?userId=${userId}&id=${id}&` +
-            `count=${this.state.nextCount}&filter=${this.state.filter}`)
+            `count=${this.state.nextCount}&filter=${this.state.filter}` +
+            `&techFilter=${techFilter !== '' ? techFilter : undefined}`)
             .then(
                 function(response) {
                     if (response.status !== 200) {
@@ -85,59 +89,68 @@ class VacancyList extends React.Component {
                 id = positions[0] ? positions[0].VacancyId : undefined,
                 userId = context.props.store.user.ClientId;
 
-            console.log(`/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`);
-            fetch(  `/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`)
+            if(document.getElementById('techFilter').value === '') {
+                fetch(`/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`)
+                    .then(
+                        function (response) {
+                            if (response.status !== 200) {
+                                console.log('ERR: /api/vacancies/new/count : ' +
+                                    response.status);
+                                return;
+                            }
+
+                            response.json().then(function (data) {
+                                context.changeStore('CHANGE_COUNT', data[0].count);
+                                context.getNewVacanciesCount(context);
+                            });
+                        }
+                    )
+                    .catch(function (err) {
+                        console.log('EXP: ', err);
+                    });
+            } else {
+                context.changeStore('CHANGE_COUNT', 0);
+                context.getNewVacanciesCount(context);
+            }
+        }, 10000);
+    }
+
+    async showNewVacancies(e) {
+        if(document.getElementById('techFilter').value !== '') {
+            let context = this,
+                allPositions = context.props.store.allVacancies,
+                unviewedPositions = context.props.store.unviewedVacancies,
+                id = allPositions[0] ? allPositions[0].VacancyId : undefined,
+                userId = this.props.store.user.ClientId;
+
+            $('.description').addClass('description-hide');
+
+            await fetch(`api/vacancies/new?userId=${userId}&id=${id}&filter=${this.state.filter}`)
                 .then(
-                    function(response) {
+                    function (response) {
                         if (response.status !== 200) {
-                            console.log('ERR: /api/vacancies/new/count : ' +
+                            console.log('ERR: /api/vacancies/new : ' +
                                 response.status);
                             return;
                         }
 
-                        response.json().then(function(data) {
-                            context.changeStore('CHANGE_COUNT', data[0].count);
-                            context.getNewVacanciesCount(context);
+                        response.json().then(function (data) {
+                            context.changeStore('CHANGE_COUNT', 0);
+                            context.changeStore('ADD_VACANCY', data.concat(allPositions), 'all');
+                            context.changeStore('ADD_VACANCY', data.concat(unviewedPositions), 'unviewed');
+
+                            window.scrollTo(0, 0);
                         });
                     }
                 )
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log('EXP: ', err);
                 });
-        }, 30000);
-    }
-
-    async showNewVacancies(e) {
-        let context = this,
-            allPositions = context.props.store.allVacancies,
-            unviewedPositions = context.props.store.unviewedVacancies,
-            id = allPositions[0] ? allPositions[0].VacancyId : undefined,
-            userId = this.props.store.user.ClientId;
-
-        $('.description').addClass('description-hide');
-
-        console.log(`api/vacancies/new?userId=${userId}&id=${id}&filter=${this.state.filter}`);
-        await fetch(`api/vacancies/new?userId=${userId}&id=${id}&filter=${this.state.filter}`)
-            .then(
-                function (response) {
-                    if (response.status !== 200) {
-                        console.log('ERR: /api/vacancies/new : ' +
-                            response.status);
-                        return;
-                    }
-
-                    response.json().then(function (data) {
-                        context.changeStore('CHANGE_COUNT', 0);
-                        context.changeStore('ADD_VACANCY', data.concat(allPositions), 'all');
-                        context.changeStore('ADD_VACANCY', data.concat(unviewedPositions), 'unviewed');
-
-                        window.scrollTo(0, 0);
-                    });
-                }
-            )
-            .catch(function (err) {
-                console.log('EXP: ', err);
-            });
+        }
+        else {
+            document.getElementById('techFilter').value = '';
+            document.getElementById('techFilterForm').submit();
+        }
     }
 
     changeStore(type, data, filter) {
@@ -149,9 +162,13 @@ class VacancyList extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         let positions = prevState.filter === 'all' ? prevProps.store.allVacancies : prevProps.store.unviewedVacancies;
-        if(prevState.isLoad === false && positions.length > 0) {
-            this.setState({isLoad: true});
+        if(this.props.store.updateNextCount === true && positions.length > 0) {
+            this.props.setNextCount(false);
             this.getNextCount();
+        }
+        else if(this.props.store.updateNextCount === true && positions.length === 0) {
+            this.props.setNextCount(false);
+            this.setState({nextCount: 0});
         }
     }
 

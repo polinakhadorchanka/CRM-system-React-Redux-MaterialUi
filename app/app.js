@@ -3,50 +3,52 @@ let bodyParser = require('body-parser');
 let mod = require('./dbModule');
 let parseH = require('./parsehubModule')
 let dateFormat = require('dateformat');
-
+//todo: разобраться с сессиями, корзина, докер, мб линкедин
 let app = express();
-
+//TODO: написать чтобы в функции считчки парсера обрабатывалась дата
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
-//TODO: доделать, сделать запуск полученных парсеров
     mod.getListOfParsers('launched').then(function (result) {
         result.forEach(function (element) {
-            console.log(element);
             workWithParseHub(`${element.ParserKey}`,`${element.ParserToken}`);
         });
     });
 });
 
 app.get("/api/vacancies", function(req, res){
-    let vacancies;
-    let id = req.query.id;
-    let filter = req.query.filter;
-    let userId = req.query.userId;
-    mod.getData(id, filter, userId).then(function(result) {
-        res.send(result);
-    });
-});
-
-// Получение новых вакансий++ TODO: idClient
-app.get("/api/vacancies/new", function(req, res){
-    let vacancies;
-    let id = req.query.id,
+    let vacancies,
+        id = req.query.id,
         filter = req.query.filter,
-        userId = req.query.userId;
-    mod.getNewData(id, filter, userId).then(function(result) {
+        userId = req.query.userId,
+        techFilter = req.query.techFilter;
+
+    mod.getData(id, filter, userId, techFilter).then(function(result) {
         res.send(result);
     });
 });
 
-// Получение количества новых вакансий++ TODO: idClient
+// Получение новых вакансий++
+app.get("/api/vacancies/new", function(req, res){
+    let vacancies,
+        id = req.query.id,
+        filter = req.query.filter,
+        userId = req.query.userId,
+        techFilter = req.query.techFilter;
+    mod.getNewData(id, filter, userId, techFilter).then(function(result) {
+        res.send(result);
+    });
+});
+
+// Получение количества новых вакансий++
 app.get("/api/vacancies/new/count", function(req, res){
     let id = req.query.id,
-        userId = req.query.userId;
-    mod.getAmount(id, userId).then(function(result) {
+        userId = req.query.userId,
+        techFilter = req.query.techFilter;
+    mod.getAmount(id, userId, techFilter).then(function(result) {
         res.send(result);
     });
 });
@@ -54,10 +56,11 @@ app.get("/api/vacancies/new/count", function(req, res){
 // Получение количества оставшихся вакансий++
 // Пример вызова `/api/vacancies/next?count=${this.state.nextCount}` , где count - количество отображаемых вакансий
 app.get("/api/vacancies/next", function(req, res){
-    let filter = req.query.filter;
-    let id = req.query.id;
-    let userId = req.query.userId;
-    mod.getAmountLeft(id, filter,userId).then(function(result) {
+    let filter = req.query.filter,
+        id = req.query.id,
+        userId = req.query.userId,
+        techFilter = req.query.techFilter;
+    mod.getAmountLeft(id, filter,userId, techFilter).then(function(result) {
         res.send(result);
     });
 });
@@ -97,13 +100,16 @@ function workWithParseHub(key,token){
                                     //parseH.runParseHubFunction(key, token);
                                     console.log(result.status + " " + "Надо бы запустить парсерочек");
                                 } else { //тут пишем код если данные сегодняшние(актуальные)
-                                    if(resultP.ParserLastReadBdDate == null || Date.parse(resultP.ParserLastReadBdDate) //если дата последней считки is null или меньше сегодня считываем и обновляем дату на сегодня
-                                        < Date.parse(b)){
-                                        /* parseH.getDataFromParseHub(key, token).then(function (result) {
-                                             mod.updateParserDate(token,key).then(function (result) {
-                                                 mod.insertVacations(JSON.stringify(result));
-                                             });
-                                         });*/
+                                    resultP.ParserLastReadBdDate = dateFormat(resultP.ParserLastReadBdDate,"isoDate");
+                                    if(resultP.ParserLastReadBdDate == null || (Date.parse(resultP.ParserLastReadBdDate) < Date.parse(b))){
+                                        parseH.getDataFromParseHub(key, token).then(function (result) {
+                                            mod.updateParserDate(token,key).then(async function (res) {
+                                                let r = await parseH.processJSON(JSON.stringify(result));
+                                                return r;
+                                            }).then(function (result) {
+                                                mod.insertVacations(result);
+                                            })
+                                        });
                                         console.log('надо считать данные для их актуализации записать сегодняшнюю дату в парсер');
                                     } else {
                                         return;
@@ -115,7 +121,7 @@ function workWithParseHub(key,token){
                 })
             }
         })
-    },25000);
+    },10000);
 }
 
 app.get("/vacancies", function(req, res){
@@ -206,7 +212,6 @@ app.put('/api/parsers',function (req,res) {
     mod.updateParserState(parserId, state, description).then(function(result){
         let message = result;
         if(state == 1){
-            //todo: запустить парсер
             workWithParseHub(`${key}`,`${token}`);
         }
         res.send(message);

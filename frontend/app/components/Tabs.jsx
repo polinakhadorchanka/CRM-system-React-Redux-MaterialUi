@@ -17,15 +17,18 @@ let startVacancies = {
 class Tabs extends React.Component {
     constructor(props) {
         super(props);
+
         this.setStartVacancies = this.setStartVacancies.bind(this);
         this.setStartVacancies();
     }
 
-    async setStartVacancies() {
+    async setStartVacancies(e, techFilter) {
         $('.description').addClass('description-hide');
+        if( document.getElementById('techFilter')) document.getElementById('techFilter').value = '';
+
         await this.props.setUser(JSON.parse(localStorage.getItem('user')));
-        await this.getVacancies('all', this.props.store.user.ClientId);
-        await this.getVacancies('unviewed', this.props.store.user.ClientId);
+        await this.getVacancies('all', this.props.store.user.ClientId, techFilter ? techFilter : undefined);
+        await this.getVacancies('unviewed', this.props.store.user.ClientId, techFilter ? techFilter : undefined);
         await this.getVacancies('board', this.props.store.user.ClientId);
         await this.getParsers();
 
@@ -33,6 +36,8 @@ class Tabs extends React.Component {
         this.props.addVacancy(startVacancies.unviewed, 'unviewed');
         this.props.addVacancy(startVacancies.board, 'board');
         this.props.addParsers(startVacancies.parsers);
+
+        this.props.setNextCount(true);
     }
 
     async getParsers() {
@@ -45,9 +50,9 @@ class Tabs extends React.Component {
             });
     }
 
-    async getVacancies(filter, userId) {
+    async getVacancies(filter, userId, techFilter) {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
-            `count=10&filter=${filter}`)
+            `count=10&filter=${filter}&techFilter=${techFilter ? techFilter : undefined}`)
             .then(response => response.json()).then(function (data) {
                 switch(filter) {
                     case 'all':

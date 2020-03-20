@@ -1,5 +1,7 @@
 let request = require('request');
-
+const jsdom = require("jsdom");
+const dateFormat = require('dateformat');
+let abs = dateFormat();
 module.exports.getDataFromParseHub = async function(key, token) {
     return new Promise(function(resolve, reject) {
         request({
@@ -85,3 +87,49 @@ module.exports.getListOfParsersByKey = async function(key, token) {
         console.dir(err);
     });
 };
+
+/* Обработка входных данных */
+
+module.exports.processJSON = async function(data) {
+    data = data.replace(/'/g, "''");
+
+    let obj = JSON.parse(data);
+    obj.positions.forEach(function(element) {
+        element.date = changeDate(element.date);
+        element.technologies = changeTechnologies((element.technologies));
+    });
+
+    return JSON.stringify(obj);
+};
+
+function changeDate(time) {
+    let now = new Date();
+    if(/[0-9]/.test(time)){
+        let num = parseInt(time.replace(/\D+/g,""));
+        let numS = ""+num;
+        switch(time[numS.length]){
+            case "h":
+                now -= num * 1000 * 60 * 60;
+                break;
+            case "d":
+                now -= num  * 1000 * 60 * 60 * 24;
+                break;
+            case "m":
+                now = now.setMonth(now.getMonth() - num);
+                break;
+        }
+    }
+    let date = dateFormat(now,"isoDate");
+    return date;
+}
+
+function changeTechnologies(stack) {
+    const dom = new jsdom.JSDOM(stack);
+    let res = '';
+
+    dom.window.document.querySelectorAll('a').forEach(function (el) {
+        res = res + (el.textContent + ' // ');
+    });
+
+    return res;
+}

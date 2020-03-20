@@ -136,7 +136,7 @@ class VacancyBlock extends React.Component {
         else if(e.type === 'blur') {
             let elements = document.querySelectorAll(':hover');
             if((elements[elements.length-3].id  && elements[elements.length-3].id !== 'dropdown-content2') ||
-            !elements[elements.length-3].id) {
+                !elements[elements.length-3].id) {
                 e.target.classList.remove('open');
                 $(e.target).next().removeClass('open');
             }
@@ -185,10 +185,12 @@ class VacancyBlock extends React.Component {
                     <span className={positions[this.props.index].Country ? 'company-country' : 'hide'}>
                     {' / ' + positions[this.props.index].Country}
                 </span>
-                    {stack ? stack.map(function (el) {
-                        return <div className='tech-stack'>{el}</div>;
-                    }) : undefined}
-                    <br/>
+                    <div class='stackDiv'>
+                        {stack ? stack.map(function (el) {
+                            if(el !== '')
+                                return <div className='tech-stack'>{el}</div>;
+                        }) : undefined}
+                    </div>
                     <span className={positions[this.props.index].Location ? 'location' : 'hide'}>
                     Location: {positions[this.props.index].Location}
                 </span>
@@ -217,7 +219,7 @@ class VacancyBlock extends React.Component {
                             </div>
                         </div>
                         <div className="dropdown">
-                        <button id='remove' title='Remove' onBlur={this.handleRemove} onClick={this.handleRemove}/>
+                            <button id='remove' title='Remove' onBlur={this.handleRemove} onClick={this.handleRemove}/>
                             <div  id='dropdown-content2' className="dropdown-content"
                                   onClick={(e) => e.stopPropagation()}>
                                 <p>Are you sure?</p>

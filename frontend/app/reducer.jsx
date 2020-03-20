@@ -4,11 +4,15 @@ const initialUserState = {
     boardVacancies: [],
     parsers: [],
     newVacanciesCount: 0,
-    user: null
+    user: null,
+    updateNextCount: true
 };
 
 const reducer = function(state = initialUserState, action) {
     switch(action.type) {
+        case 'SET_NEXTCOUNT': {
+            return Object.assign({}, state, { updateNextCount: action.updateNextCount });
+        }
         case 'ADD_VACANCY':
             switch(action.filter) {
                 case 'all':

@@ -41,4 +41,11 @@ let changeParser = function (parser) {
     }
 };
 
-module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser, addParsers, changeParser};
+let setNextCount = function (updateNextCount) {
+    return {
+        type: "SET_NEXTCOUNT",
+        updateNextCount
+    }
+};
+
+module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser, addParsers, changeParser, setNextCount};
