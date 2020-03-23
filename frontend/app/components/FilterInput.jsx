@@ -40,7 +40,6 @@ class FilterInput extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
-        console.log('sdfsdf');
         let value = document.getElementById('techFilter').value;
 
         if((this.state.filter !== '' && this.state.filter !== value) || (this.state.filter === '' && value !== '')) {
@@ -59,7 +58,7 @@ class FilterInput extends React.Component {
         return (
             <form id='techFilterForm' onSubmit={this.handleSubmit} className='searchFilter'>
                 <input id='techFilter' type='text' placeholder='Technology search'/>
-                <input type='submit' value='' />
+                <input id='techFilterSubmit' type='submit' value=''/>
             </form>
         );
     }

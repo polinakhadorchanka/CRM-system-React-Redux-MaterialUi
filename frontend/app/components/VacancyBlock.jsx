@@ -158,7 +158,7 @@ class VacancyBlock extends React.Component {
 
         let value = e.target.id;
         document.getElementById('techFilter').value = value;
-        document.getElementById('techFilterForm').submit();
+        document.getElementById('techFilterSubmit').click();
     }
 
     render() {
@@ -197,7 +197,9 @@ class VacancyBlock extends React.Component {
                     <div class='stackDiv'>
                         {stack ? stack.map(function (el) {
                             if(el !== '')
-                                return <div className='tech-stack' onClick={context.setFilter} id={el}>{el}</div>;
+                                return <div className='tech-stack' onClick={context.setFilter}
+                                            title={'Show vacancies for the selected technology'}
+                                            id={el}>{el}</div>;
                         }) : undefined}
                     </div>
                     <span className={positions[this.props.index].Location ? 'location' : 'hide'}>

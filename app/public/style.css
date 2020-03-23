@@ -125,6 +125,10 @@ body {
     line-height: 14px;
 }
 
+.vacancy-block .tech-stack:hover {
+    color: #243070;
+}
+
 .vacancy-block .date {
     margin-left: auto;
     margin-right: 20px;
