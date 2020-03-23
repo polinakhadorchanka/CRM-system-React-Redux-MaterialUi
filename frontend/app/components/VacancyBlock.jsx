@@ -153,11 +153,20 @@ class VacancyBlock extends React.Component {
         e.stopPropagation();
     }
 
+    setFilter(e) {
+        e.stopPropagation();
+
+        let value = e.target.id;
+        document.getElementById('techFilter').value = value;
+        document.getElementById('techFilterForm').submit();
+    }
+
     render() {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies,
             stack = positions[this.props.index].Technologies ?
-                positions[this.props.index].Technologies.split(' // ') : undefined;
+                positions[this.props.index].Technologies.split(' // ') : undefined,
+                context = this;
 
         return <div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
@@ -188,7 +197,7 @@ class VacancyBlock extends React.Component {
                     <div class='stackDiv'>
                         {stack ? stack.map(function (el) {
                             if(el !== '')
-                                return <div className='tech-stack'>{el}</div>;
+                                return <div className='tech-stack' onClick={context.setFilter} id={el}>{el}</div>;
                         }) : undefined}
                     </div>
                     <span className={positions[this.props.index].Location ? 'location' : 'hide'}>

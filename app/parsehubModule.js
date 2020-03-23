@@ -104,23 +104,26 @@ module.exports.processJSON = async function(data) {
 
 function changeDate(time) {
     let now = new Date();
-    if(/[0-9]/.test(time)){
-        let num = parseInt(time.replace(/\D+/g,""));
-        let numS = ""+num;
-        switch(time[numS.length]){
+    if (/[0-9]/.test(time)) {
+        let timeSpaceless = time.replace(/\s+/g, ''),
+            num = '' + parseInt(time.replace(/\D+/g, "")),
+            indexOfNumber = time.replace(/\s+/g, '').indexOf(num),
+            finalTime = num + timeSpaceless[indexOfNumber + num.length];
+        switch (finalTime[finalTime.length - 1]) {
             case "h":
                 now -= num * 1000 * 60 * 60;
                 break;
             case "d":
-                now -= num  * 1000 * 60 * 60 * 24;
+                now -= num * 1000 * 60 * 60 * 24;
                 break;
             case "m":
                 now = now.setMonth(now.getMonth() - num);
                 break;
         }
     }
-    let date = dateFormat(now,"isoDate");
+    let date = dateFormat(now, "isoDate");
     return date;
+
 }
 
 function changeTechnologies(stack) {

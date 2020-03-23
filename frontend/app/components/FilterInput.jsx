@@ -40,6 +40,7 @@ class FilterInput extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
+        console.log('sdfsdf');
         let value = document.getElementById('techFilter').value;
 
         if((this.state.filter !== '' && this.state.filter !== value) || (this.state.filter === '' && value !== '')) {
