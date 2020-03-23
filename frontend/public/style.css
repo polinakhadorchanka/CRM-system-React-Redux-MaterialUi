@@ -1,9 +1,31 @@
+@font-face {
+    font-family: "Titillium Web";
+    src: url("fonts/TitilliumWeb-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Bangers";
+    src: url("fonts/Bangers-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
 body {
     padding: 0;
     margin: 0;
 
     background-color: #1e1e1e;
     font-family: 'Titillium Web', sans-serif;
+}
+
+.error {
+    margin-top: 50px;
+    width: 100%;
+    text-align: center;
+    color: #e1e1e1;
+    opacity: 0.3;
 }
 
 /* ALL, UNVIEWED */
@@ -70,6 +92,7 @@ body {
 .vacancy-block a {
     color: #243070;
     text-decoration: underline;
+    float: left;
 }
 
 .vacancy-block a:hover {
@@ -82,16 +105,28 @@ body {
     font-size: 14px;
 }
 
+.vacancy-block .stackDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 21px;
+}
+
 .vacancy-block .tech-stack {
     margin-left: 10px;
+    margin-top: 2px;
     padding: 1px 6px;
 
-    background-color: #1e1e1e;
-    color: #e1e1e1;
-    font-size: 10px;
-    line-height: 14px;
+    white-space: nowrap;
 
-    border-radius: 30%;
+    color: #1e1e1e;
+    border: 1px solid #1e1e1e;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.vacancy-block .tech-stack:hover {
+    color: #243070;
 }
 
 .vacancy-block .date {
@@ -126,24 +161,21 @@ body {
     justify-content: space-between;
 }
 
-#add-to-favorites, #remove {
+#remove {
     width: 25px;
     height: 25px;
 
+    background: url("images/delete.png");
+    background-size: 23px 23px;
     border: 1px solid #1e1e1e;
     user-select: none;
+
+    cursor: pointer;
 }
 
-#add-to-favorites:hover {
-    content: url("images/add-favorites-active.png");
-}
-
-.add-to-favorites-active {
-    content: url("images/add-favorites-active.png");
-}
-
-#remove:hover, #remove .active {
-    content: url("images/delete-active.png");
+#remove:hover, #remove .active, #remove:focus {
+    background-image: url("images/delete-active.png");
+    outline: none;
 }
 
 .description {
@@ -162,6 +194,11 @@ body {
     overflow-y: auto;
 
     transition: 0.2s ease-out;
+}
+
+.description h1, .description h2,
+.description h3, .description h4 {
+    font-size: 18px;
 }
 
 .description-hide {
@@ -231,9 +268,14 @@ body {
     background: url("images/add-favorites.png");
     background-size: 23px 23px;
     border: 1px solid #1e1e1e;
-    user-select: none;
 
     cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn.open, .dropbtn:focus {
+    background: url("images/add-favorites-active.png");
+    background-size: 23px 23px;
+    outline: none;
 }
 
 .dropdown {
@@ -276,21 +318,28 @@ body {
     text-decoration: none;
 }
 
-.dropbtn:hover, .dropbtn.open {
-    background: url("images/add-favorites-active.png");
-    background-size: 23px 23px;
-    outline: none;
+.dropdown-content p {
+    margin: 10px 0;
+    text-align: center;
+    color: #e1e1e1;
+    font-size: 14px;
 }
 
-.dropbtn:focus {
-    outline: none;
+.dropdown-content div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
+.dropdown-content input[type="button"] {
+    margin: 0;
+}
 
 /* TABS */
 .nav-tabs {
     margin: 5px 10px 0;
     border-bottom: 3px solid #1e1e1e;
+    min-width: 1000px;
 }
 
 .nav-item, .nav-item a, #update-tab, #update-tab a {
@@ -426,9 +475,12 @@ body {
     margin-left: -300px;
     margin-top: -200px;
 
-    background-color: #e1e1e1;
-    color: #1e1e1e;
+    background-color: #383838;
+    color: #e1e1e1;
+    border: 1px solid #e1e1e1;
     cursor: default;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    z-index: 1;
 }
 
 .card-description .vacancy-block .flex-block {
@@ -442,22 +494,22 @@ body {
 }
 
 .card-description .vacancy-block a {
-    color: #243070;
-    text-decoration: underline;
-}
-
-.card-description .vacancy-block a:hover {
-    color: #1e1e1e;
+    color: #e1e1e1;
     text-decoration: underline;
     cursor: pointer;
 }
 
+.card-description .vacancy-block a:hover {
+    color: #7f9fd5;
+    text-decoration: underline;
+}
+
 .card-description .vacancy-block .company-name, .card-description .vacancy-block .company-country ,
-.card-description .vacancy-block .location, .card-description .vacancy-block .contacts {
+.card-description .vacancy-block .location, .card-description .vacancy-block .contacts,
+.card-description .vacancy-block .comment {
     font-size: 14px;
     line-height: 16px;
 }
-
 .card-description .vacancy-block .date {
     font-size: 12px;
     color: #808080;
@@ -466,7 +518,7 @@ body {
     margin: 0;
 }
 
-.card-description .vacancy-block input {
+.card-description .vacancy-block input[type='button'] {
     margin-bottom: 5px;
     width: 80px;
     height: 25px;
@@ -481,13 +533,13 @@ body {
     alignment: right;
 }
 
-.card-description .vacancy-block input:hover {
+.card-description .vacancy-block input[type='button']:hover {
     color: #7f9fd5;
 }
 
 .card-description .vacancy-block .description {
     display: block;
-    margin: 10px 0 0;
+    margin: 10px 0;
     padding: 10px;
     height: 200px;
     max-height: none;
@@ -502,8 +554,41 @@ body {
     overflow-y: auto;
 }
 
-.card-description .vacancy-block .description h1 {
+.card-description .vacancy-block .description h1,
+.card-description .vacancy-block .description h2,
+.card-description .vacancy-block .description h3,
+.card-description .vacancy-block .description h4 {
     font-size: 18px;
+}
+
+.user-comment {
+    width: 100%;
+    padding: 0 10px;
+
+    font-size: 14px;
+    overflow: hidden;
+    overflow-y: auto;
+    word-break: break-all;
+}
+
+.user-comment div {
+    border-bottom: 1px solid #e1e1e1;
+    cursor: text;
+}
+
+.user-comment div:hover {
+    border-bottom: 1px solid #7f9fd5;
+    color: #7f9fd5;
+}
+
+.user-comment input[type='text'], .user-comment input[type='text']:hover {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #7f9fd5;
+    color: #7f9fd5;
+    outline: none;
+    cursor: default;
 }
 
 /* Autorization */
@@ -711,4 +796,53 @@ tr .delete-button {
 
 #update-item:hover {
     opacity: 0.5;
+}
+
+/* Search filter */
+
+.searchFilter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    left: 335px
+}
+
+.searchFilter input[type='text'] {
+    width: 300px;
+    height: 30px;
+    background: none;
+    border : none;
+    border-bottom: 1px solid #b1b1b1;
+    color: #b1b1b1;
+    padding: 0 10px;
+}
+
+.searchFilter input[type='text']:focus {
+    outline: none;
+    border-bottom: 1px solid #e1e1e1;
+    color: #e1e1e1;
+}
+
+.searchFilter input[type='submit'] {
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+
+    background-color: transparent;
+    background-image: url("images/search.png");
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: invert(100%);
+    opacity: 0.3;
+
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.searchFilter input[type='submit']:hover, .searchFilter input[type='submit']:active {
+    opacity: 0.7;
 }
