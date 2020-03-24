@@ -77,17 +77,14 @@ function workWithParseHub(key,token){
     // todo: они уже передаются без ковычек
     let a = setInterval(function () {
         mod.getParserState(`${token}`, `${key}`).then(function (result) {
-            if (result == 0) {
+            console.log(result);
+            if (result == 0 || result == null) {
                 clearInterval(a);
-                console.log('разрываю таймер');
             } else {
                 parseH.getStateFromParseHub(key, token).then(function (result) {
-                    console.log(result);
-                    console.log(result.status);
-                    console.log(result.pages);
                     if(+(result.pages)==0 && result.status != 'queued'){//++
                         console.log("У нас 0 страниц перезапустим ка мы пармер");
-                        //parseH.runParseHubFunction(key, token);
+                        parseH.runParseHubFunction(key, token);
                     } else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
                         return;
                     else if((result.status == 'cancelled' || result.status == 'complete') && +(result.pages)>0){
@@ -97,8 +94,7 @@ function workWithParseHub(key,token){
                                 let a = new Date();
                                 let b = dateFormat(a,"isoDate");
                                 if(Date.parse(result.end_time) < Date.parse(b)) {// дата поселеднего парсинга меньше сегодня => запустить парсер ++
-                                    //parseH.runParseHubFunction(key, token);
-                                    console.log(result.status + " " + "Надо бы запустить парсерочек");
+                                    parseH.runParseHubFunction(key, token);
                                 } else { //тут пишем код если данные сегодняшние(актуальные)
                                     if(resultP.ParserLastReadBdDate != null)
                                         resultP.ParserLastReadBdDate = dateFormat(resultP.ParserLastReadBdDate,"isoDate");
@@ -111,7 +107,6 @@ function workWithParseHub(key,token){
                                                 mod.insertVacations(result);
                                             })
                                         });
-                                        console.log('надо считать данные для их актуализации записать сегодняшнюю дату в парсер');
                                     } else {
                                         return;
                                     }
@@ -153,7 +148,6 @@ app.get("/registration", function(req, res){
 });
 
 app.post("/registration", function(req, res){
-    console.log(req.body);
     let loginCount = +0,
         emailCount = +0;
     mod.registrationValidationEmail(req.body.email).then(function (resultE) {

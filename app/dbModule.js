@@ -1,11 +1,14 @@
 const sql = require('mssql');
+const parser = require('mssql-connection-string');
 
+const connectionString = process.argv[2];
+const knexDb = parser(connectionString);
 const config = {
-	user: 'nodejs',
-	password: 'nodejs',
-	server: 'DBServer1',
-	database: 'BORODICH',
-	port: 50100
+	user: knexDb.user,
+	password: knexDb.password,
+	server: knexDb.server,
+	database: knexDb.database,
+	port: +knexDb.options.port
 };
 
 module.exports.getData = async function(id, filter, userId, techFilter) {

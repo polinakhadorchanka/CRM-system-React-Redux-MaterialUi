@@ -122,6 +122,7 @@ body {
     color: #1e1e1e;
     border: 1px solid #1e1e1e;
     font-size: 12px;
+    font-size: 12px;
     line-height: 14px;
 }
 
@@ -773,7 +774,7 @@ input:checked + .slider:before {
     color: #7f9fd5;
 }
 
-tr .delete-button {
+tr #remove {
     width: 20px;
     height: 20px;
     filter: invert(100%);
@@ -781,7 +782,30 @@ tr .delete-button {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 15px 15px;
+    border: none;
     opacity: 0.3;
+}
+
+tr #remove:hover, tr #remove:active, tr #remove:focus {
+    background-image: url("images/del.png");
+    opacity: 0.5;
+}
+
+tr input[type='button'] {
+    margin-bottom: 10px;
+    width: 80px;
+    height: 25px;
+
+    font-size: 14px;
+
+    background-color: #1e1e1e;
+    color: #e1e1e1;
+    border: none;
+    cursor: pointer;
+}
+
+tr input[type='button']:hover {
+    color: #7f9fd5;
 }
 
 #update-item {
