@@ -22,7 +22,7 @@
 		 }
 		}
 	- также в стеше найти Docker Desktop перейти в раздел resources->proxies включить и настроить
-4. Создать базу данных. Скрип находится в папке Database.
+4. Создать базу данных. Скрипт находится в папке Database.
 5. Запускаем образ на сервере через консоль:
 	docker run -p 8080:3000 jav3927/crm-system:0.0.4 - запуск со стандартным конфигом(встроенным)
 	docker run -p 8080:3000 -e config="Server=DBServer1,50100;Initial Catalog=BORODICH;User Id=nodejs@DBServer1;Password=nodejs;" jav3927/crm-system:0.0.4 - запуск с кастомным конфигом      
