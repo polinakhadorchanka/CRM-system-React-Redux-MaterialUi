@@ -9,6 +9,19 @@ let redux = require("redux");
 let Provider = require("react-redux").Provider;
 let reducer = require("./reducer.jsx");
 
+import { styled } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const MyButton = styled(Button)({
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    border: 0,
+    borderRadius: 3,
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    color: 'white',
+    height: 48,
+    padding: '0 30px',
+});
+
 import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -23,20 +36,39 @@ async function getStartVacancies() {
             window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
     } else {
         ReactDOM.render(
-            <Provider store={store}>
-                <Router>
-                    <Header/>
-                    <div>
-                        <Switch>
-                            <Route exact path="/" component={StartComponent}/>
-                            <Route exact path="/login" component={Login}/>
-                            <Route exact path="/registration" component={Registration}/>
-                            <Route exact path="/:userLogin" component={Tabs}/>
-                        </Switch>
-                    </div>
-                </Router>
-            </Provider>,
+            <div>
+                <Button variant="outlined">Default</Button>
+                <Button variant="outlined" color="primary">
+                    Primary
+                </Button>
+                <Button variant="outlined" color="secondary">
+                    Secondary
+                </Button>
+                <Button variant="outlined" disabled>
+                    Disabled
+                </Button>
+                <Button variant="outlined" color="primary" href="#outlined-buttons">
+                    Link
+                </Button>
+            </div>,
             document.getElementById("container")
         );
+
+        // ReactDOM.render(
+        //     <Provider store={store}>
+        //         <Router>
+        //             <Header/>
+        //             <div>
+        //                 <Switch>
+        //                     <Route exact path="/" component={StartComponent}/>
+        //                     <Route exact path="/login" component={Login}/>
+        //                     <Route exact path="/registration" component={Registration}/>
+        //                     <Route exact path="/:userLogin" component={Tabs}/>
+        //                 </Switch>
+        //             </div>
+        //         </Router>
+        //     </Provider>,
+        //     document.getElementById("container")
+        // );
     }
 }

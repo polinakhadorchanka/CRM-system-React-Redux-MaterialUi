@@ -6,18 +6,21 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@material/react-button": "^0.15.0",
     "bootstrap4-toggle": "^3.6.1",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "@material/ripple": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
+    "@material-ui/core": "^4.9.7",
     "babel-loader": "^8.0.0",
     "babel-polyfill": "^6.26.0",
     "webpack": "^4.20.0",
