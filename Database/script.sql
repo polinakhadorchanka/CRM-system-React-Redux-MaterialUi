@@ -1,6 +1,3 @@
-USE [master]
-GO
-
 create function [dbo].[getParserState](@token nvarchar(30), @apiKey nvarchar(30))
 returns int
 as
