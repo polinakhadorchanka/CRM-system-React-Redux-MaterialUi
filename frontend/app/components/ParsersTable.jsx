@@ -1,6 +1,6 @@
-let React = require('react');
-let connect = require("react-redux").connect;
-let actions = require("../actions.jsx");
+import React from 'react';
+import { connect } from 'react-redux';
+import actions from "../actions.jsx";
 
 class ParsersTable extends React.Component {
     constructor(props) {
@@ -349,4 +349,12 @@ function mapStateToProps(state) {
     };
 }
 
-module.exports = connect(mapStateToProps, actions)(ParsersTable);
+const Connected = connect(mapStateToProps, actions) (ParsersTable);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;

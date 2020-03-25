@@ -1,6 +1,8 @@
-let React = require('react');
-let connect = require("react-redux").connect;
-let actions = require("../actions.jsx");
+import React from 'react';
+import { connect } from 'react-redux';
+import actions from "../actions.jsx";
+
+import Button from "@material-ui/core/Button";
 
 class Login extends React.Component {
     constructor() {
@@ -157,4 +159,12 @@ function mapStateToProps(state) {
     };
 }
 
-module.exports = connect(mapStateToProps, actions)(Login);
+const Connected = connect(mapStateToProps, actions) (Login);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;

@@ -1,11 +1,11 @@
-let React = require('react');
-let connect = require("react-redux").connect;
-let actions = require("../actions.jsx");
+import React from 'react';
+import { connect } from 'react-redux';
+import actions from "../actions.jsx";
 
-let VacancyList = require('./VacancyList.jsx');
-let Board = require('./Board.jsx');
-let ParsersTable = require('./ParsersTable.jsx');
-let FilterInput = require('./FilterInput.jsx');
+import VacancyList from "./VacancyList.jsx";
+import Board from "./Board.jsx";
+import ParsersTable from "./ParsersTable.jsx";
+import FilterInput from "./FilterInput.jsx";
 
 let startVacancies = {
     all : [],
@@ -123,4 +123,12 @@ function mapStateToProps(state) {
     };
 }
 
-module.exports = connect(mapStateToProps, actions)(Tabs);
+const Connected = connect(mapStateToProps, actions) (Tabs);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;

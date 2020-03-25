@@ -63,4 +63,4 @@ const reducer = function(state = initialUserState, action) {
     }
 };
 
-module.exports = reducer;
+export default reducer;

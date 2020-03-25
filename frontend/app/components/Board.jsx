@@ -1,6 +1,6 @@
-let React = require('react');
-let connect = require("react-redux").connect;
-let actions = require("../actions.jsx");
+import React from 'react';
+import { connect } from 'react-redux';
+import actions from "../actions.jsx";
 
 class KanbanBoard extends React.Component {
     constructor(props) {
@@ -338,4 +338,12 @@ function mapStateToProps(state) {
     };
 }
 
-module.exports = connect(mapStateToProps, actions)(KanbanBoard);
+const Connected = connect(mapStateToProps, actions) (KanbanBoard);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;

@@ -6,7 +6,7 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@material/react-button": "^0.15.0",
+    "@material-ui/styles": "^4.9.6",
     "bootstrap4-toggle": "^3.6.1",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
@@ -14,7 +14,8 @@
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "@material/ripple": "latest"
+    "typeface-roboto": "0.0.75",
+    "webpack-material-ui": "0.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

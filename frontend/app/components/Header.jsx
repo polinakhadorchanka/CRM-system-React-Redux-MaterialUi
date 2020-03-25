@@ -1,6 +1,8 @@
-let React = require('react');
-let connect = require("react-redux").connect;
-let actions = require("../actions.jsx");
+import React from 'react';
+import { connect } from 'react-redux';
+import actions from "../actions.jsx";
+
+import Button from "@material-ui/core/Button";
 
 class Header extends React.Component {
     constructor(props) {
@@ -85,40 +87,12 @@ class Header extends React.Component {
         let divStyle = {
                 'display' : 'flex',
                 'flex-direction' : 'row'
-            },
-            aStyle = {
-                'margin-right': '10px',
-                'padding':' 1px 10px 0',
-                'height': '30px',
-                'background': 'none',
-                'outline': 'none',
-                'color': '#e1e1e1',
-                'border': '1px solid #e1e1e1'
-            },
-            aFocusStyle = {
-                'margin-right': '10px',
-                'padding':' 1px 10px 0',
-                'height': '30px',
-                'background': 'none',
-                'outline': 'none',
-                'color': '#7f9fd5',
-                'border': '1px solid #7f9fd5',
-                'text-decoration' : 'none'
             };
 
         return (
             <div style={divStyle}>
-                <a style={this.state.loginState === 'default' ? aStyle : aFocusStyle} id='login' href='/login'
-                   onMouseOver={this.handleLogin} onMouseOut={this.handleLogin}
-                   onFocus={this.handleLogin} onBlur={this.handleLogin}>
-                    Log in
-                </a>
-                <a style={this.state.registrationState === 'default' ? aStyle : aFocusStyle} id='login'
-                   href='/registration'
-                   onMouseOver={this.handleRegistration} onMouseOut={this.handleRegistration}
-                   onFocus={this.handleRegistration} onBlur={this.handleRegistration}>
-                    Registration
-                </a>
+                <Button  href='/login' variant="outlined" color={"secondary"}>Log in</Button>
+                <Button href='/registration' variant="outlined" color={"secondary"}>Registration</Button>
             </div>
         );
     }
@@ -161,4 +135,12 @@ function mapStateToProps(state) {
     };
 }
 
-module.exports = connect(mapStateToProps, actions)(Header);
+const Connected = connect(mapStateToProps, actions) (Header);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;
