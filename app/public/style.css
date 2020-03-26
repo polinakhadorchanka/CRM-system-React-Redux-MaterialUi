@@ -609,7 +609,6 @@ body {
     left: 50%;
     top: 50%;
     width: 500px;
-    height: 450px;
     margin-left: -250px;
     margin-top: -225px;
 
@@ -628,42 +627,6 @@ body {
     padding: 10px;
 }
 
-.login-block form input[type="text"], .login-block form input[type="password"] {
-    width: 100%;
-    height: 30px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border: 1px solid #1e1e1e;
-    margin-bottom: 15px;
-
-    font-size: 14px;
-}
-
-.login-block label {
-    margin-bottom: 2px;
-    font-weight: bold;
-}
-
-.login-block form input[type="text"]:focus, .login-block form input[type="password"]:focus {
-    background-color: #f9f9f9;
-
-    outline: none;
-}
-
-.login-block form input[type="submit"], .login-block form input[type="button"] {
-    width: 100%;
-    height: 35px;
-    background-color: #1e1e1e;
-    color: #e1e1e1;
-
-    border: none;
-    cursor: pointer;
-}
-
-.login-block form input[type="submit"]:hover, .login-block form input[type="button"]:hover {
-    color: #7f9fd5;
-}
-
 .login-block form .or-element {
     display: block;
     text-align: center;
@@ -673,7 +636,8 @@ body {
 .login-block .info {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
+    margin-bottom: 10px;
 }
 
 .login-block .info-symbol {

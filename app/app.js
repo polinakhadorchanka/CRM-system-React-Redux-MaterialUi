@@ -9,7 +9,7 @@ let app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-
+//TODO: переписать на получение count количества записей
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
     mod.getListOfParsers('launched').then(function (result) {
@@ -24,9 +24,10 @@ app.get("/api/vacancies", function(req, res){
         id = req.query.id,
         filter = req.query.filter,
         userId = req.query.userId,
-        techFilter = req.query.techFilter;
+        techFilter = req.query.techFilter,
+        count = req.query.count;
 
-    mod.getData(id, filter, userId, techFilter).then(function(result) {
+    mod.getData(id, filter, userId, techFilter,count).then(function(result) {
         res.send(result);
     });
 });
@@ -77,13 +78,11 @@ function workWithParseHub(key,token){
     // todo: они уже передаются без ковычек
     let a = setInterval(function () {
         mod.getParserState(`${token}`, `${key}`).then(function (result) {
-            console.log(result);
             if (result == 0 || result == null) {
                 clearInterval(a);
-            } else {
+            } else { //TODO: завтра чтобы он считал убрать проверку на дату!node app.js "Server=DBServer1,50100;Initial Catalog=BORODICH;User Id=nodejs@DBServer1;Password=nodejs;"
                 parseH.getStateFromParseHub(key, token).then(function (result) {
                     if(+(result.pages)==0 && result.status != 'queued'){//++
-                        console.log("У нас 0 страниц перезапустим ка мы пармер");
                         parseH.runParseHubFunction(key, token);
                     } else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
                         return;
