@@ -198,12 +198,11 @@ app.post('/api/parsers',function (req,res) {
 });
 
 app.put('/api/parsers',function (req,res) {
-    let parserId = req.body.ParserId,
-        state = req.body.ParserState,
+    let state = req.body.ParserState,
         description = req.body.ParserDescription,
         key = req.body.ParserKey,
         token = req.body.ParserToken;
-    mod.updateParserState(parserId, state, description).then(function(result){
+    mod.updateParserState(key, token, state, description).then(function(result){
         let message = result;
         if(state == 1){
             workWithParseHub(`${key}`,`${token}`);

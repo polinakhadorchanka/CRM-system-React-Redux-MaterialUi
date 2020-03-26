@@ -219,10 +219,10 @@ module.exports.insertNewParser = function(token, apiKey, state, description) {
 	})
 };
 
-module.exports.updateParserState = async function(parserId,state,description) {
+module.exports.updateParserState = async function(key,token,state,description) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
-			let usQuery = `exec ParsersUpdate '${parserId}',${state},'${description}'`;
+			let usQuery = `exec ParsersUpdate '${key}','${token}',${state},'${description}'`;
 			let obj = new sql.Request().query(usQuery).then(function() {
 				resolve("Данные успешно обновлены.");
 			}).catch(function(err) {
