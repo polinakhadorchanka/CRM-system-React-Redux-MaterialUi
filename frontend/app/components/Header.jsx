@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
 import Button from "@material-ui/core/Button";
+import Hook from "./Material/Buttons.jsx";
 
 class Header extends React.Component {
     constructor(props) {
@@ -85,14 +86,14 @@ class Header extends React.Component {
 
     logIn() {
         let divStyle = {
-                'display' : 'flex',
-                'flex-direction' : 'row'
-            };
+            'display' : 'flex',
+            'flex-direction' : 'row'
+        };
 
         return (
             <div style={divStyle}>
-                <Button  href='/login' variant="outlined" color={"secondary"}>Log in</Button>
-                <Button href='/registration' variant="outlined" color={"secondary"}>Registration</Button>
+                    <Hook href='/login' label='Login'/>
+                    <Hook href='/registration' label='Registration'/>
             </div>
         );
     }
