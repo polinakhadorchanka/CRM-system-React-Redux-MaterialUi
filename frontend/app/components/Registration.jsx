@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
+import LoginTextField from "./material/LoginTextField.jsx";
+import LoginButton from "./material/LoginButton.jsx";
+
 class Registration extends React.Component {
     constructor() {
         super();
@@ -54,7 +57,7 @@ class Registration extends React.Component {
             this.setState({isPasswordValid: true, password : val});
         else this.setState({isPasswordValid: false, password : val});
 
-        let val2 = document.getElementById('confirmPassword').value;
+        let val2 = document.getElementById('confirmTextField').value;
 
         if(regexp.test(val2) && val2 === val)
             this.setState({isConfirmPasswordValid: true, confirmPassword : val2});
@@ -129,25 +132,12 @@ class Registration extends React.Component {
     }
 
     render() {
-        let style = {
-            'margin-top' : '5px'
-        };
-
-        let unValid = {
-            'border': '1px solid #CF3F3B'
-        };
-
-        let errorMessages = {
-            'color' : '#CF3F3B'
-        };
-
         return (
             <div className='login-container'>
                 <div className='login-block'>
                     <h2>Registration</h2>
                     <form className='login-form' onSubmit={this.handleSubmit}>
                         <div className='info'>
-                            <label htmlFor='login'>Login:</label>
                             <div className='info-symbol' onMouseOver={this.handleToolTip}
                                  onMouseOut={this.handleToolTip}/>
                             <div className='info-block'>
@@ -157,36 +147,30 @@ class Registration extends React.Component {
                                         and have a length of at least 5 characters</li>
                                     <li>The password can consist only of letters of the Latin alphabet and numbers
                                         and have a length of at least 6 characters</li>
-                                    {this.state.errors.length > 0 ? <br/> : ''}
-                                    {
-                                        this.state.errors.map(function(error){
-                                            return <li style={errorMessages}>{error.errorMessage}</li>
-                                        })
-                                    }
                                 </ul>
                             </div>
                         </div>
-                        <input id='login' type='text' placeholder='Login' name='login' maxLength={20}
-                               style={this.state.isLoginValid === false ||
-                               this.state.errors.filter((el) => el.errorCode === 1).length > 0
-                                   ? unValid : null}
-                               onChange={this.onLoginChange}/> <br/>
-                        <label htmlFor='password'>Password:</label>
-                        <input id='password' type='password' placeholder='Password' name='password' maxLength={25}
-                               style={this.state.isPasswordValid === false ? unValid : null}
-                               onChange={this.onPasswordChange}/> <br/>
-                        <label htmlFor='confirmPassword'>Confirm password:</label>
-                        <input id='confirmPassword' type='password' placeholder='Confirm password' maxLength={25}
-                               name='confirmPassword'
-                               style={this.state.isConfirmPasswordValid === false ? unValid : null}
-                               onChange={this.onConfirmChange}/> <br/>
-                        <label htmlFor='email'>E-mail:</label>
-                        <input id='email' type='text' placeholder='E-mail' name='email' maxLength={50}
-                               style={this.state.isEmailValid === false ||
-                               this.state.errors.filter((el) => el.errorCode === 2).length > 0
-                                   ? unValid : null}
-                               onChange={this.onEmailChange}/> <br/>
-                        <input type='submit' name='type' value='Registration' style={style}/>
+                        <LoginTextField label='Login' id='loginTextField' maxLength='20' required={true} name='login'
+                                        type='text' handleChange={this.onLoginChange}
+                                        error={this.state.errors.filter((el) => el.errorCode === 1).length > 0 || !this.state.isLoginValid}
+                                        helperText={this.state.errors.filter((el) => el.errorCode === 1).length > 0 ?
+                                            this.state.errors.filter((el) => el.errorCode === 1)[0].errorMessage : undefined}/>
+                        <br/>
+                        <LoginTextField label='password' id='passwordTextField' maxLength='25' required={true} name='password'
+                                        type='password' handleChange={this.onPasswordChange}
+                                        error={!this.state.isPasswordValid}/>
+                        <br/>
+                        <LoginTextField label='Confirm password' id='confirmTextField' maxLength='25' required={true} name='confirmPassword'
+                                        type='password' handleChange={this.onConfirmChange}
+                                        error={!this.state.isConfirmPasswordValid}/>
+                        <br/>
+                        <LoginTextField label='email' id='emailTextField' maxLength='50' required={true} name='email'
+                                        type='text' handleChange={this.onEmailChange}
+                                        error={this.state.errors.filter((el) => el.errorCode === 2).length > 0 || !this.state.isEmailValid}
+                                        helperText={this.state.errors.filter((el) => el.errorCode === 2).length > 0 ?
+                                            this.state.errors.filter((el) => el.errorCode === 2)[0].errorMessage : undefined}/>
+                        <br/>
+                        <LoginButton type='submit' label='Registration'/>
                     </form>
                 </div>
             </div>

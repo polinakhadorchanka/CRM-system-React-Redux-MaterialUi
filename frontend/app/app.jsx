@@ -31,10 +31,10 @@ async function getStartVacancies() {
                     <Header/>
                     <div>
                         <Switch>
-                            <Route exact path="/" component={StartComponent}/>
                             <Route exact path="/login" component={Login}/>
                             <Route exact path="/registration" component={Registration}/>
                             <Route exact path="/:userLogin" component={Tabs}/>
+                            <Route exact path="/" component={StartComponent}/>
                         </Switch>
                     </div>
                 </Router>

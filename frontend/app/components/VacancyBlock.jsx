@@ -259,7 +259,7 @@ const Connected = connect(mapStateToProps, actions) (VacancyBlock);
 
 class Export extends React.Component {
     render(){
-        return (<Connected/>);
+        return (<Connected position={this.props.position} filter={this.props.filter} index={this.props.index}/>);
     }
 }
 

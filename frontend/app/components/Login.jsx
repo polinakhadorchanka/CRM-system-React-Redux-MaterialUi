@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
-import Button from "@material-ui/core/Button";
+import LoginTextField from "./material/LoginTextField.jsx";
+import LoginButton from "./material/LoginButton.jsx";
 
 class Login extends React.Component {
     constructor() {
@@ -92,31 +93,13 @@ class Login extends React.Component {
     }
 
     render() {
-        let style = {
-            'margin-top' : '5px'
-        };
-
-        let unValid = {
-            'border': '1px solid #CF3F3B'
-        };
-
-        let formStyle = {
-            'height' : '410px',
-            'margin-top' : '-205px'
-        };
-
-        let errorMessages = {
-            'color' : '#CF3F3B'
-        };
-
         return (
             <div className='login-container'>
-                <div className='login-block' style={formStyle}>
+                <div className='login-block'>
                     <h2>Login</h2>
                     <form className='login-form'
                           onSubmit={this.handleSubmit}>
                         <div className='info'>
-                            <label htmlFor='login'>Login:</label>
                             <div className='info-symbol' onMouseOver={this.handleToolTip}
                                  onMouseOut={this.handleToolTip}/>
                             <div className='info-block'>
@@ -126,26 +109,21 @@ class Login extends React.Component {
                                         and have a length of at least 5 characters</li>
                                     <li>The password can consist only of letters of the Latin alphabet and numbers
                                         and have a length of at least 6 characters</li>
-                                    {this.state.errors.length > 0 ? <br/> : ''}
-                                    {
-                                        this.state.errors.map(function(error){
-                                            return <li style={errorMessages}>{error.errorMessage}</li>
-                                        })
-                                    }
                                 </ul>
                             </div>
                         </div>
-                        <input id='login' type='text' placeholder='Login' name='login' maxLength={20}
-                               style={this.state.isLoginValid === false ? unValid : null}
-                               onChange={this.onLoginChange}/> <br/>
-                        <label htmlFor='password'>Password:</label>
-                        <input id='password' type='password' placeholder='Password' name='password' maxLength={25}
-                               style={this.state.isPasswordValid === false ? unValid : null}
-                               onChange={this.onPasswordChange}/> <br/>
-                        <input type='submit' name='type' value='Login' style={style}/><br/><br/>
+                        <LoginTextField label='Login' id='loginTextField' maxLength='20' required={true} name='login'
+                                        type='text' handleChange={this.onLoginChange}
+                                        error={this.state.errors.length > 0 || !this.state.isLoginValid}/>
+                        <br/>
+                        <LoginTextField label='Password' id='PasswordTextField' maxLength='25' required={true} name='password'
+                                        type='password' handleChange={this.onPasswordChange}
+                                        error={this.state.errors.length > 0 || !this.state.isPasswordValid}
+                                        helperText={this.state.errors.length > 0 ? this.state.errors[0].errorMessage : undefined}/>
+                        <br/>
+                        <LoginButton type='submit' label='Login'/><br/><br/>
                         <span className='or-element'>or</span> <br/>
-                        <input type='button' name='type' value='Registration'
-                               onClick={() => window.location.href = '/registration'}/>
+                        <LoginButton label='Registration' href='/registration'/>
                     </form>
                 </div>
             </div>

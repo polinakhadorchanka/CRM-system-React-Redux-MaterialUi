@@ -22,7 +22,7 @@ class FilterInput extends React.Component {
 
     async getVacancies(filter, userId, techFilter) {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
-            `count=10&filter=${filter}&techFilter=${techFilter ? techFilter : undefined}`)
+            `count=9&filter=${filter}&techFilter=${techFilter ? techFilter : undefined}`)
             .then(response => response.json()).then(function (data) {
                 switch(filter) {
                     case 'all':

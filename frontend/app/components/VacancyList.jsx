@@ -41,8 +41,8 @@ class VacancyList extends React.Component {
                     }
 
                     response.json().then(function (data) {
-                        data[0].count <= 10 ? context.setState({nextCount: data[0].count}) :
-                            context.setState({nextCount: 10});
+                        data[0].count <= 9 ? context.setState({nextCount: data[0].count}) :
+                            context.setState({nextCount: 9});
                     });
                 }
             )
@@ -206,7 +206,7 @@ const Connected = connect(mapStateToProps, actions) (VacancyList);
 
 class Export extends React.Component {
     render(){
-        return (<Connected/>);
+        return (<Connected filter={this.props.filter}/>);
     }
 }
 
