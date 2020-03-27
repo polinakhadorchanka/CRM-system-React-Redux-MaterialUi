@@ -352,7 +352,7 @@ class Parser extends React.Component {
                 <td style={tdStyle} width='25%'>{this.props.parser.ParserToken}</td>
                 <td style={tdStyle}>
                     {this.state.descriptionState === 'text' ?
-                        <div title='Click to change' onClick={this.onHandleEditDesc}>{this.state.description}</div> :
+                        <div title='Click to change' onClick={this.onHandleEditDesc}>{this.props.parser.ParserDescription}</div> :
                         <input autoFocus={true}
                                style={this.state.isValidDesc === true ? inputTextStyle : inputTextStyleError}
                                onBlur={this.onHandleEditDesc} onChange={this.changeDesc}
@@ -363,7 +363,7 @@ class Parser extends React.Component {
                         {this.props.parser.ParserState == 0 ?
                             <input type="checkbox" onChange={this.changeState}/> :
                             <input type="checkbox" checked onChange={this.changeState}/>}
-                        <span className="slider"></span>
+                        <span className="slider"/>
                     </label>
                 </td>
                 <td style={tdStyle} width='42'>
