@@ -5,7 +5,7 @@ import { createStore } from 'redux'
 import { applyMiddleware } from 'redux';
 import { Provider } from "react-redux";
 import thunk from 'redux-thunk';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import Tabs from './components/Tabs.jsx';
 import Login from './components/Login.jsx';

@@ -20,6 +20,10 @@ body {
     font-family: 'Titillium Web', sans-serif;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .error {
     margin-top: 50px;
     width: 100%;

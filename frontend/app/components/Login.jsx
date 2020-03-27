@@ -4,6 +4,7 @@ import actions from "../actions.jsx";
 
 import LoginTextField from "./material/LoginTextField.jsx";
 import LoginButton from "./material/LoginButton.jsx";
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 class Login extends React.Component {
     constructor() {
@@ -76,6 +77,7 @@ class Login extends React.Component {
                 }
                 else {
                     context.props.setUser(data);
+                    //context.props.history.push(`/${data.Login}`);
                     window.location.href = `/${data.Login}`;
                 }
             })
@@ -123,7 +125,7 @@ class Login extends React.Component {
                         <br/>
                         <LoginButton type='submit' label='Login'/><br/><br/>
                         <span className='or-element'>or</span> <br/>
-                        <LoginButton label='Registration' href='/registration'/>
+                        <Link to='/registration'><LoginButton label='Registration'/></Link>
                     </form>
                 </div>
             </div>

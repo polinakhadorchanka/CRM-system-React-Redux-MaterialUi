@@ -77,11 +77,13 @@ app.put("/api/vacancy-status", function (req, res) {
 function workWithParseHub(key,token){
     // todo: они уже передаются без ковычек
     let a = setInterval(function () {
+
         mod.getParserState(`${token}`, `${key}`).then(function (result) {
             if (result == 0 || result == null) {
                 clearInterval(a);
             } else { //TODO: завтра чтобы он считал убрать проверку на дату!node app.js "Server=DBServer1,50100;Initial Catalog=BORODICH;User Id=nodejs@DBServer1;Password=nodejs;"
                 parseH.getStateFromParseHub(key, token).then(function (result) {
+                    mod.updateParserDateStatus(key,token,result.status,result.end_time);
                     if(+(result.pages)==0 && result.status != 'queued'){//++
                         parseH.runParseHubFunction(key, token);
                     } else if(result.status == 'queued' || result.status == 'initialized' || result.status == 'running')//++
@@ -99,7 +101,7 @@ function workWithParseHub(key,token){
                                         resultP.ParserLastReadBdDate = dateFormat(resultP.ParserLastReadBdDate,"isoDate");
                                     if(resultP.ParserLastReadBdDate == null || (Date.parse(resultP.ParserLastReadBdDate) < Date.parse(b))){
                                         parseH.getDataFromParseHub(key, token).then(function (result) {
-                                            mod.updateParserDate(token,key).then(async function (res) {
+                                            mod.updateParserReadDate(token,key).then(async function (res) {
                                                 let r = await parseH.processJSON(JSON.stringify(result));
                                                 return r;
                                             }).then(function (result) {
@@ -168,9 +170,10 @@ app.post("/registration", function(req, res){
 });
 
 app.get('/api/parsers',function (req,res) {
+    let counter = +0;
     mod.getListOfParsers('all').then(function (result) {
         res.send(result);
-    })
+    });
 });
 
 app.post('/api/parsers',function (req,res) {

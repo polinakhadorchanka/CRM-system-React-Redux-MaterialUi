@@ -270,7 +270,7 @@ module.exports.deleteParser = async function(parserId) {
 	})
 };
 
-module.exports.updateParserDate = async function(token, key) {
+module.exports.updateParserReadDate = async function(token, key) {
 	return new Promise(function(resolve, reject) {
 		sql.connect(config).then(function() {
 			let usQuery = `update Parsers set ParserLastReadBdDate = getdate() where ParserToken = '${token}' and ParserKey = '${key}' `;
@@ -285,6 +285,21 @@ module.exports.updateParserDate = async function(token, key) {
 			reject(err);
 		});
 	})
+};
+
+module.exports.updateParserDateStatus = function(key, token, status, date) {
+	sql.connect(config).then(function() {
+		let usQuery;
+		if(date == null)
+			usQuery = `update Parsers set ParserStatus = '${status}',ParserLastDate=${date}  where ParserToken = '${token}' and ParserKey = '${key}' `;
+		else
+			usQuery = `update Parsers set ParserStatus = '${status}',ParserLastDate='${date}'  where ParserToken = '${token}' and ParserKey = '${key}' `;
+		let obj = new sql.Request().query(usQuery).catch(function(err) {
+			console.dir(err);
+		});
+	}).catch(function(err) {
+		console.dir(err);
+	});
 };
 
 module.exports.getParserDate = async function(token,key) {

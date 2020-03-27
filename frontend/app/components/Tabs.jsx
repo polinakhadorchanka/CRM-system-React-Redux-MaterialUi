@@ -76,23 +76,27 @@ class Tabs extends React.Component {
             return <div className='error'>404 - Not found</div>;
         } else {
             return (
-
                 <div>
                     <ul className="nav nav-tabs" style={{'position': 'relative'}}>
                         <li className="nav-item">
-                            <TabButton id='all' href="#l-all" label='All' className="nav-link active" dataToggle="tab"/>
+                            <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
                         </li>
                         <li className="nav-item">
-                            <TabButton id='unviewed' href="#l-unviewed" label='Unviewed' className="nav-link" dataToggle="tab"/>
+                            <a id='unviewed'
+                               className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
                         </li>
                         <li className="nav-item">
-                            <TabButton id='board' href="#board-tab" label='Board' className="nav-link" dataToggle="tab"/>
+                            <a id='board'
+                               className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
                         </li>
                         <li className="nav-item">
-                            <TabButton id='Parsers' href="parsers-tab" label='Parsers' className="nav-link" dataToggle="tab"/>
+                            <a id='Parsers'
+                               className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
                         </li>
                         <li id='update-tab'>
-                            <TabButton className="nav-link" id='update-item' title='Update' handleClick={this.setStartVacancies} startIcon={<UpdateRounded/>}/>
+                            <a href='#'>
+                                <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
+                            </a>
                         </li>
                         <FilterInput/>
                     </ul>
@@ -137,27 +141,19 @@ export default Export;
 <div>
                     <ul className="nav nav-tabs" style={{'position': 'relative'}}>
                         <li className="nav-item">
-                            <TabButton href='#qqq' label='tab'/>
+                            <TabButton id='all' href="#l-all" label='All' className="nav-link active" dataToggle="tab"/>
                         </li>
                         <li className="nav-item">
-                            <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
+                            <TabButton id='unviewed' href="#l-unviewed" label='Unviewed' className="nav-link" dataToggle="tab"/>
                         </li>
                         <li className="nav-item">
-                            <a id='unviewed'
-                               className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
+                            <TabButton id='board' href="#board-tab" label='Board' className="nav-link" dataToggle="tab"/>
                         </li>
                         <li className="nav-item">
-                            <a id='board'
-                               className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
-                        </li>
-                        <li className="nav-item">
-                            <a id='Parsers'
-                               className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
+                            <TabButton id='Parsers' href="parsers-tab" label='Parsers' className="nav-link" dataToggle="tab"/>
                         </li>
                         <li id='update-tab'>
-                            <a href='#'>
-                                <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
-                            </a>
+                            <TabButton className="nav-link" id='update-item' title='Update' handleClick={this.setStartVacancies} startIcon={<UpdateRounded/>}/>
                         </li>
                         <FilterInput/>
                     </ul>

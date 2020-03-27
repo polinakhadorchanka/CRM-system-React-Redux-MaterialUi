@@ -1,6 +1,6 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import actions from "../actions.jsx";
+let React = require('react');
+let connect = require("react-redux").connect;
+let actions = require("../actions.jsx");
 
 class ParsersTable extends React.Component {
     constructor(props) {
@@ -55,6 +55,7 @@ class ParsersTable extends React.Component {
                     console.log('EXP: ', err);
                 });
                 break;
+
         }
     }
 
@@ -133,12 +134,12 @@ class ParsersTable extends React.Component {
         let divStyle = {
                 'color': '#e1e1e1',
                 'padding': '0 10px',
-				'min-width': '1000px'
+                'min-width': '1000px'
             },
             tableStyle = {
                 'width': '100%',
                 'border': '1px solid #1e1e1e',
-				'border-collapse': 'collapse'
+                'border-collapse': 'collapse'
             },
             trStyle = {
                 'width': '25%',
@@ -206,9 +207,8 @@ class ParsersTable extends React.Component {
                         <th style={thStyle} width='42'/>
                     </tr>
                     {
-                        this.props.store.parsers.map(function (parser, index) {
-                            return <Parser parser={parser} index={index}
-                                changeParser = {context.changeParser} />
+                        this.props.store.parsers.map(function (parser) {
+                            return <Parser parser={parser} changeParser = {context.changeParser} />
                         })
                     }
                 </table>
@@ -248,7 +248,6 @@ class ParsersTable extends React.Component {
     }
 }
 
-
 class Parser extends React.Component {
     constructor(props) {
         super(props);
@@ -261,6 +260,8 @@ class Parser extends React.Component {
         this.onHandleEditDesc = this.onHandleEditDesc.bind(this);
         this.changeState = this.changeState.bind(this);
         this.changeDesc = this.changeDesc.bind(this);
+        this.confirmDeletion = this.confirmDeletion.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     changeState() {
@@ -284,6 +285,37 @@ class Parser extends React.Component {
 
     changeDesc(e) {
         this.setState({description : e.target.value, isValidDesc : true});
+    }
+
+    async handleRemove(e) {
+        let target = e.target;
+        if(e.type === 'click') {
+            e.target.classList.toggle('open');
+            $(e.target).next().toggleClass('open');
+            if(!$(e.target).hasClass('open'))
+                e.target.blur();
+        }
+        else if(e.type === 'blur') {
+            let elements = await document.querySelectorAll(':hover'),
+                res = false;
+            elements.forEach(function (el) {
+                if(el.id === 'dropdown-content3') res = true;
+            });
+            if(!res) {
+                $('.remove').removeClass('open');
+                $('.remove').next().removeClass('open');
+            }
+        }
+        e.stopPropagation();
+    }
+
+    confirmDeletion(e) {
+        if(e.target.name === 'yes') {
+            this.props.changeParser(this.props.parser, 'delete');
+        }
+        $('.dropdown-content').removeClass('open');
+        $('.remove').removeClass('open');
+        e.stopPropagation();
     }
 
     render() {
@@ -322,21 +354,30 @@ class Parser extends React.Component {
                     {this.state.descriptionState === 'text' ?
                         <div title='Click to change' onClick={this.onHandleEditDesc}>{this.state.description}</div> :
                         <input autoFocus={true}
-                                style={this.state.isValidDesc === true ? inputTextStyle : inputTextStyleError}
+                               style={this.state.isValidDesc === true ? inputTextStyle : inputTextStyleError}
                                onBlur={this.onHandleEditDesc} onChange={this.changeDesc}
-                            type='text' value={this.state.description} maxLength='300' />}
+                               type='text' value={this.state.description} maxLength='300' />}
                 </td>
                 <td style={tdStyle} width='100'>
                     <label className="switch">
                         {this.props.parser.ParserState == 0 ?
                             <input type="checkbox" onChange={this.changeState}/> :
-                        <input type="checkbox" checked onChange={this.changeState}/>}
+                            <input type="checkbox" checked onChange={this.changeState}/>}
                         <span className="slider"></span>
                     </label>
                 </td>
                 <td style={tdStyle} width='42'>
-                    <div className='delete-button' title='Remove parser'
-                         onClick={() => this.props.changeParser(this.props.parser, 'delete')}/>
+                    <div className="dropdown">
+                        <button id='remove' title='Remove' className='remove' onBlur={this.handleRemove} onClick={this.handleRemove}/>
+                        <div  id='dropdown-content3' className="dropdown-content"
+                              onClick={(e) => e.stopPropagation()}>
+                            <p>Are you sure?</p>
+                            <div>
+                                <input type='button' value='Yes' name='yes' onClick={this.confirmDeletion}/>
+                                <input type='button' value='Cancel' name='cancel' onClick={this.confirmDeletion}/>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         );

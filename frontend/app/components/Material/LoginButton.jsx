@@ -29,7 +29,7 @@ const useStyles = makeStyles({
 export default function LoginButton(props) {
     const classes = useStyles();
 
-    return <Button className={classes.default} href={props.href} type={props.type}>
+    return <Button className={classes.default} href={props.href} type={props.type} >
         {props.label}
     </Button>;
 }
