@@ -48,4 +48,10 @@ let setNextCount = function (updateNextCount) {
     }
 };
 
-module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser, addParsers, changeParser, setNextCount};
+let clearStore = function() {
+    return {
+        type: 'CLEAR'
+    }
+}
+
+module.exports = {addVacancy, changeVacancy, changeNewVacanciesCount, setUser, addParsers, changeParser, setNextCount, clearStore};

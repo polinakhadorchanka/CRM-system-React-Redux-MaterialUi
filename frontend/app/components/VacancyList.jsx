@@ -89,7 +89,7 @@ class VacancyList extends React.Component {
                 id = positions[0] ? positions[0].VacancyId : undefined,
                 userId = context.props.store.user.ClientId;
 
-            if(document.getElementById('techFilter').value === '') {
+            if(document.getElementById('techFilter') && document.getElementById('techFilter').value === '') {
                 fetch(`/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`)
                     .then(
                         function (response) {

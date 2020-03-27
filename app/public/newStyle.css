@@ -1,0 +1,114 @@
+@font-face {
+    font-family: "Titillium Web";
+    src: url("fonts/TitilliumWeb-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Bangers";
+    src: url("fonts/Bangers-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+
+    background-color: #fffbf4;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* Autorization */
+.login-container {
+    position: absolute;
+    width: 100%;
+    min-width: 1000px;
+    min-height: 500px;
+    height: 90%;
+}
+
+.login-block {
+    position: absolute;
+    padding: 30px;
+
+    left: 50%;
+    top: 50%;
+    width: 500px;
+    margin-left: -250px;
+    margin-top: -225px;
+
+    background-color: #ffe3db;
+    color: #1e1e1e;
+
+    border-radius: 10%;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.login-block h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.login-block form {
+    border: 1px solid #1e1e1e;
+    padding: 10px;
+}
+
+.login-block form .or-element {
+    display: block;
+    text-align: center;
+    user-select: none;
+}
+
+.login-block .info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.login-block .info-symbol {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-image: url("images/info.png");
+    background-size: 12px 12px;
+}
+
+.login-block .info-block {
+    display: none;
+    position: absolute;
+    right: -210px;
+    top: 0;
+
+    max-width: 200px;
+    box-shadow: 8px 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+
+    font-size: 12px;
+    text-align: justify;
+    padding: 20px 20px 5px 5px;
+
+    background-color: #e1e1e1;
+    color: #1e1e1e;
+}
+
+.login-block .info-block ul {
+    padding-left: 20px;
+}
+
+.login-block .info-block li {
+    margin: 0;
+    padding: 0;
+}
+
+.login-block .info-block.open {
+    display: block;
+}

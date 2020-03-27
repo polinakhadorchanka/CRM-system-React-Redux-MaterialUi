@@ -3,10 +3,13 @@ import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
 import HeaderButton from "./material/HeaderButton.jsx";
+import {Link} from "react-router-dom";
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
+
+        this.removeUser = this.removeUser.bind(this);
 
         if(localStorage.getItem('user'))
             props.setUser(JSON.parse(localStorage.getItem('user')));
@@ -14,17 +17,25 @@ class Header extends React.Component {
 
     removeUser() {
         localStorage.removeItem('user');
+        this.props.clearStore();
     }
 
     logOut() {
         let divStyle = {
-            'display' : 'flex',
-            'flex-direction' : 'row'
-        };
+                'display' : 'flex',
+                'flex-direction' : 'row'
+            },
+            spanStyle = {
+                'color': '#e1e1e1',
+                'margin': '2px 10px 0 0'
+            };
 
         return (
             <div style={divStyle}>
-                <HeaderButton href='/login' label='Log Out' handleClick={this.removeUser}/>
+                <span style={spanStyle}>{JSON.parse(localStorage.getItem('user')).Login}</span>
+                <Link to='/login' onClick={this.removeUser}>
+                    <HeaderButton label='Log Out'/>
+                </Link>
             </div>
         );
     }
@@ -37,8 +48,8 @@ class Header extends React.Component {
 
         return (
             <div style={divStyle}>
-                <HeaderButton href='/login' label='Login'/>
-                <HeaderButton href='/registration' label='Registration'/>
+                <Link to='/login'><HeaderButton label='Login'/></Link>
+                <Link to='/registration'><HeaderButton label='Registration'/></Link>
             </div>
         );
     }

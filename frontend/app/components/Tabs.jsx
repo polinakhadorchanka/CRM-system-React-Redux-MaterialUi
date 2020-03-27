@@ -6,8 +6,6 @@ import VacancyList from "./VacancyList.jsx";
 import Board from "./Board.jsx";
 import ParsersTable from "./ParsersTable.jsx";
 import FilterInput from "./FilterInput.jsx";
-import TabButton from "./material/TabButton.jsx";
-import UpdateRounded from '@material-ui/icons/UpdateRounded';
 
 let startVacancies = {
     all : [],

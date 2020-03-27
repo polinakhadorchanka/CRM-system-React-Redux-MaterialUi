@@ -59,6 +59,7 @@ const reducer = function(state = initialUserState, action) {
                 parsers[parsers.indexOf(el)] = action.parser;
             }
             return Object.assign({}, state, { parsers: parsers});
+        case 'CLEAR': return initialUserState;
         default: return state;
     }
 };

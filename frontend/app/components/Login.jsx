@@ -4,7 +4,11 @@ import actions from "../actions.jsx";
 
 import LoginTextField from "./material/LoginTextField.jsx";
 import LoginButton from "./material/LoginButton.jsx";
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import {withRouter} from "react-router-dom"
+
+let history = createBrowserHistory();
 
 class Login extends React.Component {
     constructor() {
@@ -77,8 +81,7 @@ class Login extends React.Component {
                 }
                 else {
                     context.props.setUser(data);
-                    //context.props.history.push(`/${data.Login}`);
-                    window.location.href = `/${data.Login}`;
+                    context.props.history.push(`/${data.Login}`);
                 }
             })
                 .catch(function (err) {
@@ -139,7 +142,7 @@ function mapStateToProps(state) {
     };
 }
 
-const Connected = connect(mapStateToProps, actions) (Login);
+const Connected = withRouter(connect(mapStateToProps, actions) (Login));
 
 class Export extends React.Component {
     render(){
