@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
+import VacancyCard from "./Material/VacancyCard.jsx";
 
 class VacancyBlock extends React.Component {
     constructor(props) {
@@ -168,7 +169,30 @@ class VacancyBlock extends React.Component {
                 positions[this.props.index].Technologies.split(' // ') : undefined,
                 context = this;
 
-        return <div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
+        return (
+            <VacancyCard vacancy={positions[this.props.index]} handleFilter={this.setFilter}/>
+        );
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        store: state
+    };
+}
+
+const Connected = connect(mapStateToProps, actions) (VacancyBlock);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected position={this.props.position} filter={this.props.filter} index={this.props.index}/>);
+    }
+}
+
+export default Export;
+
+/*
+<div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
             <div className='vacancy-block' onClick={this.openDescription}>
                 <div className='vacancy-status'>
                     <img src={positions[this.props.index].IsViewed == 1 ?
@@ -246,21 +270,4 @@ class VacancyBlock extends React.Component {
             <div  id={positions[this.props.index].Url + this.state.filter} className='description description-hide'
                   dangerouslySetInnerHTML = {{__html:positions[this.props.index].Description}} />
         </div>;
-    }
-}
-
-function mapStateToProps(state) {
-    return {
-        store: state
-    };
-}
-
-const Connected = connect(mapStateToProps, actions) (VacancyBlock);
-
-class Export extends React.Component {
-    render(){
-        return (<Connected position={this.props.position} filter={this.props.filter} index={this.props.index}/>);
-    }
-}
-
-export default Export;
+ */

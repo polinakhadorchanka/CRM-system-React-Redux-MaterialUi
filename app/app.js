@@ -9,6 +9,7 @@ let app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+let dateFlag;
 //TODO: переписать на получение count количества записей
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
@@ -20,13 +21,16 @@ app.listen(3000, function(){
 });
 
 app.get("/api/vacancies", function(req, res){
-    let vacancies,
-        id = req.query.id,
+    let id = req.query.id,
         filter = req.query.filter,
         userId = req.query.userId,
         techFilter = req.query.techFilter,
         count = req.query.count;
-
+    mod.getLastNoteDate().then(function (resultD) {
+        if(id == 'undefined') {
+            dateFlag = resultD.DbAddingDate;
+        }
+    });
     mod.getData(id, filter, userId, techFilter,count).then(function(result) {
         res.send(result);
     });
@@ -34,12 +38,10 @@ app.get("/api/vacancies", function(req, res){
 
 // Получение новых вакансий++
 app.get("/api/vacancies/new", function(req, res){
-    let vacancies,
-        id = req.query.id,
-        filter = req.query.filter,
-        userId = req.query.userId,
-        techFilter = req.query.techFilter;
-    mod.getNewData(id, filter, userId, techFilter).then(function(result) {
+    console.log('кнопка has been activated');
+    let id = req.query.id,
+        userId = req.query.userId;
+    mod.getNewData(id, userId, dateFlag).then(function(result) {
         res.send(result);
     });
 });
@@ -47,23 +49,25 @@ app.get("/api/vacancies/new", function(req, res){
 // Получение количества новых вакансий++
 app.get("/api/vacancies/new/count", function(req, res){
     let id = req.query.id,
-        userId = req.query.userId,
-        techFilter = req.query.techFilter;
-    mod.getAmount(id, userId, techFilter).then(function(result) {
-        res.send(result);
+        userId = req.query.userId;
+    mod.getLastNoteDate().then(function (resultD) {
+        mod.getAmount(id, userId,dateFlag).then(function(result) {
+            res.send(result);
+        });
     });
 });
 
 // Получение количества оставшихся вакансий++
-// Пример вызова `/api/vacancies/next?count=${this.state.nextCount}` , где count - количество отображаемых вакансий
-app.get("/api/vacancies/next", function(req, res){
+app.get("/api/vacancies/next", function(req, res) {
     let filter = req.query.filter,
         id = req.query.id,
         userId = req.query.userId,
         techFilter = req.query.techFilter;
-    mod.getAmountLeft(id, filter,userId, techFilter).then(function(result) {
-        res.send(result);
-    });
+    if (id != undefined) {
+        mod.getAmountLeft(id, filter, userId, techFilter).then(function (result) {
+            res.send(result);
+        });
+    }
 });
 
 //функция изменения статуса записи
@@ -170,7 +174,6 @@ app.post("/registration", function(req, res){
 });
 
 app.get('/api/parsers',function (req,res) {
-    let counter = +0;
     mod.getListOfParsers('all').then(function (result) {
         res.send(result);
     });

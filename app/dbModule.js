@@ -1,5 +1,6 @@
 const sql = require('mssql');
 const parser = require('mssql-connection-string');
+const dateFormat = require('dateformat');
 
 const connectionString = process.argv[2];
 const knexDb = parser(connectionString);
@@ -17,11 +18,14 @@ module.exports.getData = async function(id, filter, userId, techFilter,count) {
 		// filter ++ TODO: если нам передали тек фильтр то вызвать функцию с ним, когда у нас 1 вывод записей идёт, могут применить фильтр и надо выдать список
 		sql.connect(config).then(function() {
 			if(id == 'undefined') {
-				usQuery = `select * from testF0('${userId}','${filter}','${techFilter}',${count}) order by DbAddingDate DESC, Url, position`;
+				usQuery = `select * from testF0('${userId}','${filter}','${techFilter}',${count}) order by SiteAddingDate DESC, Url, position`;
 			} else{
-				usQuery = `select * from testF1('${id}','${userId}','${filter}','${techFilter}',${count}) order by DbAddingDate DESC, Url, position`;
+				usQuery = `select * from testF1('${id}','${userId}','${filter}','${techFilter}',${count}) order by SiteAddingDate DESC, Url, position`;
 			}
 			let obj = new sql.Request().query(usQuery).then(function (result) {
+				result.recordset.forEach(function (element) {
+					element.SiteAddingDate = dateFormat(element.SiteAddingDate, "dd-mm-yyyy");
+				});
 				resolve(result.recordset);
 			}).catch(function(err) {
 				console.dir(err);
@@ -30,11 +34,13 @@ module.exports.getData = async function(id, filter, userId, techFilter,count) {
 	})
 };
 
-module.exports.getAmount = async function(id, userId) {
+module.exports.getAmount = async function(id, userId,dateFlag) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
+		dateFlag = dateFlag.toISOString();
 		sql.connect(config).then(function() {
-			usQuery = `select dbo.testF3 ('${id}','${userId}') as count`;
+			usQuery = `select dbo.testF3 ('${id}','${userId}','${dateFlag}') as count`;
+			console.log(usQuery);
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
 			}).catch(function(err) {
@@ -62,13 +68,16 @@ module.exports.getAmountLeft = async function(vacId,filter,userId, techFilter) {
 	})
 };
 
-module.exports.getNewData = async function(id, userId) {
+module.exports.getNewData = async function(id, userId, dateFlag) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
+		dateFlag = dateFlag.toISOString();
+		console.log('ДАЖЕ В ФУНКЦИЮ ПОПАЛИ');
 		sql.connect(config).then(function() {
-			usQuery = `select * from dbo.testF4('${id}','${userId}') order by DbAddingDate DESC, Position, Url`;
+			usQuery = `select * from dbo.testF4('${id}','${userId}','${dateFlag}') order by SiteAddingDate DESC, Position, Url`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
+				console.log(result.recordset);
 			}).catch(function(err) {
 				console.dir(err);
 			});
@@ -209,11 +218,11 @@ module.exports.insertNewParser = function(token, apiKey, state, description) {
 			new sql.Request().query(`exec ParsersInsert '${token}', '${apiKey}', ${state}, '${description}'`).then(function() {
 				resolve([{errorCode: 0}]);
 			}).catch(function(err) {
-				console.dir(err);
+				//console.dir(err);
 				resolve([{errorCode: 4, errorMessage: "DB token adding error"}]);
 			});
 		}).catch(function(err) {
-			console.dir(err);
+			//console.dir(err);
 			resolve([{errorCode: 4, errorMessage: "DB token adding error"}]);
 		});
 	})

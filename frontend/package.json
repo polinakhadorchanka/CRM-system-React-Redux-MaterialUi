@@ -17,7 +17,8 @@
     "typeface-roboto": "0.0.75",
     "webpack-material-ui": "0.0.5",
     "history": "latest",
-    "react-router": "latest"
+    "react-router": "latest",
+    "prop-types": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

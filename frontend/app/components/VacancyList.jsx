@@ -29,7 +29,7 @@ class VacancyList extends React.Component {
             id = positions[positions.length-1] ?
                 positions[positions.length-1].VacancyId : undefined,
             userId = this.props.store.user.ClientId,
-            techFilter = document.getElementById('techFilter').value;
+            techFilter = document.getElementById('techFilter') ? document.getElementById('techFilter').value : undefined;
 
         await fetch(`/api/vacancies/next?userId=${userId}&id=${id}&filter=${context.state.filter}` +
             `&techFilter=${techFilter !== '' ? techFilter : undefined}`)
@@ -58,7 +58,7 @@ class VacancyList extends React.Component {
             id = positions[positions.length-1] ?
                 positions[positions.length-1].VacancyId : undefined,
             userId = this.props.store.user.ClientId,
-            techFilter = document.getElementById('techFilter').value;
+            techFilter = document.getElementById('techFilter') ? document.getElementById('techFilter').value : undefined;
 
         await fetch(`/api/vacancies?userId=${userId}&id=${id}&` +
             `count=${this.state.nextCount}&filter=${this.state.filter}` +
@@ -87,7 +87,7 @@ class VacancyList extends React.Component {
             let positions = context.state.filter === 'all' ? context.props.store.allVacancies
                 : context.props.store.unviewedVacancies,
                 id = positions[0] ? positions[0].VacancyId : undefined,
-                userId = context.props.store.user.ClientId;
+                userId = context.props.store.user.ClientId, a =1;
 
             if(document.getElementById('techFilter') && document.getElementById('techFilter').value === '') {
                 fetch(`/api/vacancies/new/count?userId=${userId}&id=${id}&filter=${context.state.filter}`)
@@ -116,7 +116,7 @@ class VacancyList extends React.Component {
     }
 
     async showNewVacancies(e) {
-        if(document.getElementById('techFilter').value !== '') {
+        if(document.getElementById('techFilter').value === '') {
             let context = this,
                 allPositions = context.props.store.allVacancies,
                 unviewedPositions = context.props.store.unviewedVacancies,
