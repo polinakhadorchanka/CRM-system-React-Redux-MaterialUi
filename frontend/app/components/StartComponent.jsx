@@ -28,9 +28,6 @@ class StartComponent extends React.Component {
 
         return (
             <div>
-                <div>
-                    <img style={imgStyle} src='images/img.png'/>
-                </div>
                 <div style={pStyle}>
 
                 </div>

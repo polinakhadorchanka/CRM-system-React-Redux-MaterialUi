@@ -66,20 +66,21 @@ class Header extends React.Component {
             },
             systemNameStyle = {
                 'padding-top': '3px',
+                'padding-left': '10px',
 
                 'font-family': 'Bangers, cursive',
                 'font-size': '24px',
                 'color': '#e1e1e1',
 
                 'user-select': 'none',
-                'cursor': 'pointer',
+                'cursor': 'pointer'
             };
 
         return (
             <header style={headerStyle}>
-                <a style={systemNameStyle} href='/'>
+                <Link to='/'><a style={systemNameStyle} href='/'>
                     CRM System
-                </a>
+                </a></Link>
                 {this.props.store.user ? this.logOut() : this.logIn()}
             </header>
         );

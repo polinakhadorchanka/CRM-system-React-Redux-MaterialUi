@@ -6,22 +6,22 @@ const useStyles = makeStyles({
     default: {
         width: '100%',
         height: '40px',
-        backgroundColor: '#1e1e1e',
+        backgroundColor: '#243070',
         color: '#e1e1e1 !important',
         fontSize: '12px',
         lineHeight: '14px',
         padding: '8px 15px 7px',
         '&:hover': {
-            color: '#7f9fd5 !important',
-            backgroundColor: '#1e1e1e',
+            color: '#ffffff !important',
+            backgroundColor: '#243070',
         },
         '&:active': {
-            color: '#7f9fd5 !important',
-            backgroundColor: '#1e1e1e',
+            color: '#ffffff !important',
+            backgroundColor: '#243070',
         },
         '&:focus': {
-            color: '#7f9fd5 !important',
-            backgroundColor: '#1e1e1e',
+            color: '#ffffff !important',
+            backgroundColor: '#243070',
         },
     },
 });

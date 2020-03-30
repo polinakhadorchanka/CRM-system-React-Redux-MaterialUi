@@ -12,16 +12,16 @@ const useStyles = makeStyles({
         marginRight: '10px',
         padding: '8px 15px 7px',
         '&:hover': {
-            borderColor: '#7f9fd5',
-            color: '#7f9fd5 !important',
+            borderColor: '#ffffff',
+            color: '#ffffff !important',
         },
         '&:active': {
-            borderColor: '#7f9fd5',
-            color: '#7f9fd5 !important',
+            borderColor: '#ffffff',
+            color: '#ffffff !important',
         },
         '&:focus': {
-            borderColor: '#7f9fd5',
-            color: '#7f9fd5 !important',
+            borderColor: '#ffffff',
+            color: '#ffffff !important',
         },
     },
 });

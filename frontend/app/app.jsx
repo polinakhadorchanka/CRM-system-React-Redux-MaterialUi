@@ -24,22 +24,21 @@ async function getStartVacancies() {
     if ((document.location.pathname === '/login' || document.location.pathname === '/registration'
         || document.location.pathname === '/')
         && localStorage.getItem('user') !== null) {
-            window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
+        window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
     } else {
         ReactDOM.render(
             <Provider store={store}>
                 <Router history={history}>
-                    <div>
-                    </div>
-                    <Header/>
-                    <div>
-                        <Switch>
-                            <Route exact path="/login" component={Login}/>
-                            <Route exact path="/registration" component={Registration}/>
-                            <Route exact path="/:userLogin" component={Tabs}/>
-                            <Route exact path="/" component={StartComponent}/>
-                        </Switch>
-                    </div>
+                    <div id='background'/>
+                        <Header/>
+                        <div>
+                            <Switch>
+                                <Route exact path="/login" component={Login}/>
+                                <Route exact path="/registration" component={Registration}/>
+                                <Route exact path="/:userLogin" component={Tabs}/>
+                                <Route exact path="/" component={StartComponent}/>
+                            </Switch>
+                        </div>
                 </Router>
             </Provider>,
             document.getElementById("container")
