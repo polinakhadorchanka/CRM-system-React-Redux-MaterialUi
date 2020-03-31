@@ -45,12 +45,13 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         backgroundColor: 'transparent',
+        minWidth: '1000px'
     },
 }));
 
 //theme.palette.background.paper
 
-export default function SimpleTabs() {
+export default function SimpleTabs(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -62,8 +63,8 @@ export default function SimpleTabs() {
         <div className={classes.root}>
             <AppBar position="static">
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="All" {...a11yProps(0)} />
-                    <Tab label="Unviewed" {...a11yProps(1)} />
+                    <Tab label="All" {...a11yProps(0)} onClick={() => props.setNextCount(true, 'all')}/>
+                    <Tab label="Unviewed" {...a11yProps(1)} onClick={() => props.setNextCount(true, 'unviewed')}/>
                     <Tab label="Board" {...a11yProps(2)} />
                     <Tab label="Parsers" {...a11yProps(3)} />
                     <FilterInput/>

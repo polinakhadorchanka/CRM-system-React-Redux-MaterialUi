@@ -5,6 +5,11 @@ import actions from "../actions.jsx";
 import LoginTextField from "./material/LoginTextField.jsx";
 import LoginButton from "./material/LoginButton.jsx";
 
+import { createBrowserHistory } from 'history';
+import {withRouter} from "react-router-dom"
+
+let history = createBrowserHistory();
+
 class Registration extends React.Component {
     constructor() {
         super();
@@ -116,7 +121,8 @@ class Registration extends React.Component {
                     $('.info-block').addClass('open');
                     context.setState({errors : data});
                 }
-                else window.location.href = '/login';
+
+                context.props.history.push('/login');
             })
                 .catch(function (err) {
                     console.log('EXP: ', err);
@@ -184,7 +190,7 @@ function mapStateToProps(state) {
     };
 }
 
-const Connected = connect(mapStateToProps, actions) (Registration);
+const Connected =  withRouter(connect(mapStateToProps, actions) (Registration));
 
 class Export extends React.Component {
     render(){

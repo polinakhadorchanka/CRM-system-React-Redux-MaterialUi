@@ -11,16 +11,9 @@ class VacancyBlock extends React.Component {
             isOpening: false
         };
 
-        this.onClickView = this.onClickView.bind(this);
         this.openDescription = this.openDescription.bind(this);
         this.removeVacancy = this.removeVacancy.bind(this);
         this.handleChooseStatus = this.handleChooseStatus.bind(this);
-        this.confirmDeletion = this.confirmDeletion.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
-    }
-
-    onClickView() {
-        this.setState({isOpening: true});
     }
 
     changeStatus(vacancy, userId) {
@@ -46,7 +39,7 @@ class VacancyBlock extends React.Component {
             });
     }
 
-    async openDescription() {
+    async openDescription(e, func) {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies;
 
@@ -55,15 +48,13 @@ class VacancyBlock extends React.Component {
             vacancy.IsViewed = 1;
 
             this.props.changeVacancy(vacancy);
-
             this.changeStatus(vacancy, this.props.store.user.ClientId);
         }
 
-        let description = document.getElementById(positions[this.props.index].Url + this.state.filter);
-        description.classList.toggle('description-hide');
+        if(func) func();
     }
 
-    async removeVacancy() {
+    async removeVacancy(e, func) {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies,
             vacancy = positions[this.props.index];
@@ -75,29 +66,11 @@ class VacancyBlock extends React.Component {
         this.props.changeVacancy(vacancy);
 
         this.changeStatus(vacancy, this.props.store.user.ClientId);
+
+        if(func) func();
     }
 
-    static handleStatusList(e) {
-        if(e.type === 'click') {
-            e.target.classList.toggle('open');
-            $(e.target).next().toggleClass('open');
-            if(!$(e.target).hasClass('open'))
-                e.target.blur();
-        }
-        else if(e.type === 'blur') {
-            let elements = document.querySelectorAll(':hover');
-            if(elements[elements.length-2].id !== 'dropdown-content') {
-                e.target.classList.remove('open');
-                $(e.target).next().removeClass('open');
-            }
-        }
-        e.stopPropagation();
-    }
-
-    handleChooseStatus(e) {
-        $('.dropdown-content').removeClass('open');
-        $('.dropbtn').removeClass('open');
-
+    handleChooseStatus(e, func) {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
             : this.props.store.unviewedVacancies,
             vacancy = positions[this.props.index];
@@ -124,33 +97,7 @@ class VacancyBlock extends React.Component {
 
         this.changeStatus(vacancy, this.props.store.user.ClientId);
 
-        e.stopPropagation();
-    }
-
-    handleRemove(e) {
-        if(e.type === 'click') {
-            e.target.classList.toggle('open');
-            $(e.target).next().toggleClass('open');
-            if(!$(e.target).hasClass('open'))
-                e.target.blur();
-        }
-        else if(e.type === 'blur') {
-            let elements = document.querySelectorAll(':hover');
-            if((elements[elements.length-3].id  && elements[elements.length-3].id !== 'dropdown-content2') ||
-                !elements[elements.length-3].id) {
-                e.target.classList.remove('open');
-                $(e.target).next().removeClass('open');
-            }
-        }
-        e.stopPropagation();
-    }
-
-    confirmDeletion(e) {
-        if(e.target.name === 'yes') {
-            this.removeVacancy();
-        }
-        $('#dropdown-content2').removeClass('open');
-        $('.dropbtn').removeClass('open');
+        if(func) func();
         e.stopPropagation();
     }
 
@@ -170,7 +117,12 @@ class VacancyBlock extends React.Component {
                 context = this;
 
         return (
-            <VacancyCard vacancy={positions[this.props.index]} handleFilter={this.setFilter}/>
+            <VacancyCard vacancy={positions[this.props.index]}
+                         handleFilter={this.setFilter}
+                         handleOpenDesc={this.openDescription}
+                         handleChooseStatus={this.handleChooseStatus}
+                         handleRemoveVacancy={this.removeVacancy}
+            />
         );
     }
 }

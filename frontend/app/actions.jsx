@@ -41,10 +41,11 @@ let changeParser = function (parser) {
     }
 };
 
-let setNextCount = function (updateNextCount) {
+let setNextCount = function (updateNextCount, filter) {
     return {
         type: "SET_NEXTCOUNT",
-        updateNextCount
+        updateNextCount,
+        filter
     }
 };
 

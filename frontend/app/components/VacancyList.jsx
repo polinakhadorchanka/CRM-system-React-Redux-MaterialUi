@@ -162,13 +162,28 @@ class VacancyList extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         let positions = prevState.filter === 'all' ? prevProps.store.allVacancies : prevProps.store.unviewedVacancies;
-        if(this.props.store.updateNextCount === true && positions.length > 0) {
-            this.props.setNextCount(false);
-            this.getNextCount();
-        }
-        else if(this.props.store.updateNextCount === true && positions.length === 0) {
-            this.props.setNextCount(false);
-            this.setState({nextCount: 0});
+
+        switch (prevState.filter) {
+            case 'all':
+                if(this.props.store.updateNextCountAll === true && positions.length > 0) {
+                    this.props.setNextCount(false, 'all');
+                    this.getNextCount();
+                }
+                else if(this.props.store.updateNextCountAll === true && positions.length === 0) {
+                    this.props.setNextCount(false, 'all');
+                    this.setState({nextCount: 0});
+                }
+                break;
+            case 'unviewed':
+                if(this.props.store.updateNextCountUnviewed === true && positions.length > 0) {
+                    this.props.setNextCount(false, 'unviewed');
+                    this.getNextCount();
+                }
+                else if(this.props.store.updateNextCountUnviewed === true && positions.length === 0) {
+                    this.props.setNextCount(false, 'unviewed');
+                    this.setState({nextCount: 0});
+                }
+                break;
         }
     }
 
@@ -179,7 +194,8 @@ class VacancyList extends React.Component {
         return <div className="vacancy-list">
             {
                 positions.map(function(vacancy, index){
-                    return <VacancyBlock position={vacancy} filter={filter} index={index}/>
+                    if(vacancy.IsRemoved != 1)
+                        return <VacancyBlock position={vacancy} filter={filter} index={index}/>
                 })
             }
             <div id="show-new-vacancies-block" className={this.props.store.newVacanciesCount === 0 ?

@@ -2,11 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
-import VacancyList from "./VacancyList.jsx";
-import Board from "./Board.jsx";
-import ParsersTable from "./ParsersTable.jsx";
-import FilterInput from "./FilterInput.jsx";
-import TabButton from "./Material/TabButton.jsx";
 import TabPanel from "./Material/TabPanel.jsx";
 
 let startVacancies = {
@@ -39,7 +34,8 @@ class Tabs extends React.Component {
         this.props.addVacancy(startVacancies.board, 'board');
         this.props.addParsers(startVacancies.parsers);
 
-        this.props.setNextCount(true);
+        this.props.setNextCount(true, 'all');
+        this.props.setNextCount(true, 'unviewed');
     }
 
     async getParsers() {
@@ -76,7 +72,7 @@ class Tabs extends React.Component {
             return <div className='error'>404 - Not found</div>;
         } else {
             return (
-                <TabPanel/>
+                <TabPanel setNextCount={this.props.setNextCount}/>
             );
         }
     }

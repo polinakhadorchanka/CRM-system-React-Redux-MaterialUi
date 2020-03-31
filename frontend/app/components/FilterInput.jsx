@@ -50,7 +50,9 @@ class FilterInput extends React.Component {
 
             this.props.addVacancy(startVacancies.all, 'all');
             this.props.addVacancy(startVacancies.unviewed, 'unviewed');
-            this.props.setNextCount(true);
+
+            this.props.setNextCount(true, 'all');
+            this.props.setNextCount(true, 'unviewed');
         }
     }
 

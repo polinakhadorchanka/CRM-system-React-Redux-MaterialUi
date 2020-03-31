@@ -5,13 +5,16 @@ const initialUserState = {
     parsers: [],
     newVacanciesCount: 0,
     user: null,
-    updateNextCount: true
+    updateNextCountAll: true,
+    updateNextCountUnviewed: true
 };
 
 const reducer = function(state = initialUserState, action) {
     switch(action.type) {
         case 'SET_NEXTCOUNT':
-            return Object.assign({}, state, { updateNextCount: action.updateNextCount });
+            if(action.filter === 'all')
+                return Object.assign({}, state, { updateNextCountAll: action.updateNextCount });
+            else return Object.assign({}, state, { updateNextCountUnviewed: action.updateNextCount });
         case 'ADD_VACANCY':
             switch(action.filter) {
                 case 'all':
