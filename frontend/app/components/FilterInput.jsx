@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
+import SearchIcon from '@material-ui/icons/Search';
+import IconButton from "@material-ui/core/IconButton";
 
 let startVacancies = {
     all : [],
@@ -60,7 +62,9 @@ class FilterInput extends React.Component {
         return (
             <form id='techFilterForm' onSubmit={this.handleSubmit} className='searchFilter'>
                 <input id='techFilter' type='text' placeholder='Technology search'/>
-                <input id='techFilterSubmit' type='submit' value=''/>
+                <IconButton id='techFilterSubmit' type='submit'>
+                    <SearchIcon style={{'color':'#e1e1e1'}} />
+                </IconButton>
             </form>
         );
     }

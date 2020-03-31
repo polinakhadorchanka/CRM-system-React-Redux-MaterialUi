@@ -111,10 +111,7 @@ class VacancyBlock extends React.Component {
 
     render() {
         let positions = this.state.filter === 'all' ? this.props.store.allVacancies
-            : this.props.store.unviewedVacancies,
-            stack = positions[this.props.index].Technologies ?
-                positions[this.props.index].Technologies.split(' // ') : undefined,
-                context = this;
+            : this.props.store.unviewedVacancies;
 
         return (
             <VacancyCard vacancy={positions[this.props.index]}
@@ -142,84 +139,3 @@ class Export extends React.Component {
 }
 
 export default Export;
-
-/*
-<div className={positions[this.props.index].IsRemoved == 1 ? 'hide' : ''}>
-            <div className='vacancy-block' onClick={this.openDescription}>
-                <div className='vacancy-status'>
-                    <img src={positions[this.props.index].IsViewed == 1 ?
-                        (positions[this.props.index].BoardStatus !== null ? 'images/status-favorite.png' :
-                            (positions[this.props.index].IsRemoved == 1 ? 'images/status-removed.png' :
-                                'images/status-viewed.png')) :
-                        (positions[this.props.index].BoardStatus !== null ? 'images/status-favorite.png' :
-                            'images/status-unviewed.png')}
-                         title={positions[this.props.index].IsViewed == 1 ?
-                             (positions[this.props.index].IsFavorite == 1 ? 'favorite' :
-                                 (positions[this.props.index].IsRemoved == 1 ? 'removed' :
-                                     'viewed')) :
-                             (positions[this.props.index].IsFavorite == 1 ? 'favorite' : 'unviewed')}/>
-                </div>
-                <div className='vacancy-information'>
-                    <span className='vacancy-name'>{positions[this.props.index].Position}</span> <br/>
-                    <a href={positions[this.props.index].Website} target='_blank'
-                       onClick={(e) => e.stopPropagation()}>
-                    <span className={positions[this.props.index].CompanyName ? 'company-name' : 'hide'}>
-                        {positions[this.props.index].CompanyName}
-                    </span>
-                    </a>
-                    <span className={positions[this.props.index].Country ? 'company-country' : 'hide'}>
-                    {' / ' + positions[this.props.index].Country}
-                </span>
-                    <div class='stackDiv'>
-                        {stack ? stack.map(function (el) {
-                            if(el !== '')
-                                return <div className='tech-stack' onClick={context.setFilter}
-                                            title={'Show vacancies for the selected technology'}
-                                            id={el}>{el}</div>;
-                        }) : undefined}
-                    </div>
-                    <span className={positions[this.props.index].Location ? 'location' : 'hide'}>
-                    Location: {positions[this.props.index].Location}
-                </span>
-                    <span className={positions[this.props.index].Contacts ? 'contacts' : 'hide'}>
-                    Contacts: {positions[this.props.index].Contacts}
-                </span>
-                </div>
-                <div className='date'>
-                    {positions[this.props.index].SiteAddingDate}
-                </div>
-                <div className='vacancy-actions'>
-                    <a href={positions[this.props.index].Url} target='_blank'
-                       onClick={(e) => e.stopPropagation()}>
-                        <input tabIndex='-1' type='button' value='View' title='View vacancy'/>
-                    </a> <br/>
-                    <div className='buttons'>
-                        <div className="dropdown">
-                            <button className="dropbtn" onClick={VacancyBlock.handleStatusList}
-                                    onBlur={VacancyBlock.handleStatusList}
-                                    title='Add to board'/>
-                            <div  id='dropdown-content' className="dropdown-content" onClick={this.handleChooseStatus}>
-                                <span className='status-element'>new</span>
-                                <span className='status-element'>in the process</span>
-                                <span className='status-element'>completed</span>
-                                <span className='status-element'>deferred</span>
-                            </div>
-                        </div>
-                        <div className="dropdown">
-                            <button id='remove' title='Remove' onBlur={this.handleRemove} onClick={this.handleRemove}/>
-                            <div  id='dropdown-content2' className="dropdown-content"
-                                  onClick={(e) => e.stopPropagation()}>
-                                <p>Are you sure?</p>
-                                <div>
-                                    <input type='button' value='Yes' name='yes' onClick={this.confirmDeletion}/>
-                                    <input type='button' value='Cancel' name='cancel' onClick={this.confirmDeletion}/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div  id={positions[this.props.index].Url + this.state.filter} className='description description-hide'
-                  dangerouslySetInnerHTML = {{__html:positions[this.props.index].Description}} />
-        </div>;
- */

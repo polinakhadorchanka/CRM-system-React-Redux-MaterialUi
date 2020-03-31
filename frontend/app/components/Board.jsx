@@ -2,37 +2,49 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
-class KanbanBoard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = ({
-            isLoading: true,
-            projects: [],
-            draggedOverCol: 0,
-        });
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from "@material-ui/core/IconButton";
+import VacancyDescription from "./Material/VacancyDescription.jsx";
 
-
-        this.handleOnDragEnter = this.handleOnDragEnter.bind(this);
-        this.handleOnDragEnd = this.handleOnDragEnd.bind(this);
-        this.deleteCard = this.deleteCard.bind(this);
-        this.handleOnOpenDescription = this.handleOnOpenDescription.bind(this);
-        this.changeVacancy = this.changeVacancy.bind(this);
-
-        this.columns = [
-            {name: 'new', stage: 1},
-            {name: 'in the process', stage: 2},
-            {name: 'completed', stage: 3},
-            {name: 'deferred', stage: 4},
-        ];
+const useStyles = makeStyles({
+    root: {
+        width: '24%',
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        fontSize: 14,
+    },
+    pos: {
+        marginBottom: 12,
+    },
+    card: {
+        width: '90%',
+        margin: '5%',
+        backgroundColor: '#f1f1f1'
     }
+});
 
-    componentDidMount() {
-        this.setState({ projects: this.props.store.boardVacancies, isLoading: false });
-    }
+function KanbanBoard(props) {
+    const classes = useStyles();
+    const bull = <span className={classes.bullet}>•</span>;
+    const columns = [
+        {name: 'new', stage: 1},
+        {name: 'in the process', stage: 2},
+        {name: 'completed', stage: 3},
+        {name: 'deferred', stage: 4},
+    ];
+    const projects = props.store.boardVacancies;
+    let draggedOverCol;
 
-    changeVacancy(project) {
-        this.props.changeVacancy(project);
-        let userId = this.props.store.user.ClientId;
+    function changeVacancy(project) {
+        props.changeVacancy(project);
+        let userId = props.store.user.ClientId;
         fetch(`/api/vacancy-status?userId=${userId}`,
             {
                 method: 'PUT',
@@ -46,11 +58,11 @@ class KanbanBoard extends React.Component {
         });
     }
 
-    deleteCard(e, project) {
-        let vacancies = this.props.store.boardVacancies.filter((el) => el.VacancyId !== project.VacancyId),
-            userId = this.props.store.user.ClientId;
-        this.props.addVacancy(vacancies, 'board');
-        this.props.changeVacancy(project);
+    function deleteCard(e, project) {
+        let vacancies = props.store.boardVacancies.filter((el) => el.VacancyId !== project.VacancyId),
+            userId = props.store.user.ClientId;
+        props.addVacancy(vacancies, 'board');
+        props.changeVacancy(project);
 
         project.BoardStatus = null;
         fetch(`/api/vacancy-status?userId=${userId}`,
@@ -77,12 +89,12 @@ class KanbanBoard extends React.Component {
         e.stopPropagation();
     }
 
-    handleOnOpenDescription(project) {
+    function handleOnOpenDescription(project) {
         if(project.IsViewed != true) {
             project.IsViewed = true;
-            this.props.changeVacancy(project);
+            props.changeVacancy(project);
 
-            let userId = this.props.store.user.ClientId;
+            let userId = props.store.user.ClientId;
 
             fetch(`/api/vacancy-status?userId=${userId}`,
                 {
@@ -108,17 +120,17 @@ class KanbanBoard extends React.Component {
     }
 
     //this is called when a Kanban card is dragged over a column (called by column)
-    handleOnDragEnter(e, stageValue) {
-        this.setState({ draggedOverCol: stageValue });
+    function handleOnDragEnter(e, stageValue) {
+        draggedOverCol = stageValue;
     }
 
     //this is called when a Kanban card dropped over a column (called by card)
-    handleOnDragEnd(e, project) {
-        const updatedProjects = this.props.store.boardVacancies.slice(0);
-        updatedProjects.find((projectObject) => {return projectObject.VacancyId === project.VacancyId;}).BoardStatus = this.state.draggedOverCol;
-        this.props.addVacancy(updatedProjects, 'board');
+    function handleOnDragEnd(e, project) {
+        const updatedProjects = props.store.boardVacancies.slice(0);
+        updatedProjects.find((projectObject) => {return projectObject.VacancyId === project.VacancyId;}).BoardStatus = draggedOverCol;
+        props.addVacancy(updatedProjects, 'board');
 
-        let userId = this.props.store.user.ClientId;
+        let userId = props.store.user.ClientId;
 
         fetch(`/api/vacancy-status?userId=${userId}`,
             {
@@ -142,84 +154,123 @@ class KanbanBoard extends React.Component {
             });
     }
 
-    render() {
-        if (this.state.isLoading) {
-            return (<div className='boardContainer'><h3>Loading...</h3></div>);
-        }
-
-        return  (
-            <div className='boardContainer'>
-                {this.columns.map((column) => {
-                    return (
+    return (
+        <div className='boardContainer'>
+            {columns.map((column) => {
+                return (
+                    <Card className={classes.root}>
                         <KanbanColumn
                             name={ column.name }
                             stage={ column.stage }
-                            projects={ this.props.store.boardVacancies.filter((project) => {return project.BoardStatus === column.name;}) }
-                            onDragEnter={ this.handleOnDragEnter }
-                            onDragEnd={ this.handleOnDragEnd }
-                            deleteCard = { this.deleteCard }
-                            changeVacancy = { this.changeVacancy }
-                            handleOnOpenDescription = { this.handleOnOpenDescription }
+                            projects={ props.store.boardVacancies.filter((project) => {return project.BoardStatus === column.name;}) }
+                            onDragEnter={ handleOnDragEnter }
+                            onDragEnd={ handleOnDragEnd }
+                            deleteCard = { deleteCard }
+                            changeVacancy = { changeVacancy }
+                            handleOnOpenDescription = { handleOnOpenDescription }
                             key={ column.stage }
                         />
-                    );
-                })}
-            </div>
-        );
-    }
+                    </Card>
+                );
+            })}
+        </div>
+    );
 }
 
-class KanbanColumn extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = ({ mouseIsHovering: false });
+function KanbanColumn(props) {
+    const classes = useStyles();
+    let mouseIsHovering = false;
+
+    function componentWillReceiveProps(nextProps) {
+        mouseIsHovering = false;
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.state = ({ mouseIsHovering: false });
-    }
-
-    generateKanbanCards() {
-        return this.props.projects.slice(0).map((project) => {
+    function generateKanbanCards() {
+        return props.projects.slice(0).map((project) => {
             return (
-                <KanbanCard
-                    project={project}
-                    key={project.vacancyId}
-                    onDragEnd={this.props.onDragEnd}
-                    deleteCard = { this.props.deleteCard }
-                    handleOnOpenDescription = { this.props.handleOnOpenDescription }
-                    changeVacancy = { this.props.changeVacancy }
-                />
+                <Card className={classes.card}>
+                    <KanbanCard
+                        project={project}
+                        key={project.vacancyId}
+                        onDragEnd={props.onDragEnd}
+                        deleteCard = { props.deleteCard }
+                        handleOnOpenDescription = { props.handleOnOpenDescription }
+                        changeVacancy = { props.changeVacancy }
+                    />
+                </Card>
             );
         });
     }
 
-    render() {
-        return  (
-            <div className='boardColumn'
-                 onDragEnter={(e) => {this.setState({ mouseIsHovering: true }); this.props.onDragEnter(e, this.props.name);}}
-                 onDragExit={(e) => {this.setState({ mouseIsHovering: false });}}>
-                <h4>{this.props.name} ({this.props.projects.length})</h4>
-                {this.generateKanbanCards()}
-            </div>);
-    }
+    return (
+        <div className='boardColumn'
+             onDragEnter={(e) => {mouseIsHovering = true; props.onDragEnter(e, props.name);}}
+             onDragExit={(e) => {mouseIsHovering = false;}}>
+            <h4>{props.name} ({props.projects.length})</h4>
+            {generateKanbanCards()}
+        </div>
+    );
 }
 
 class KanbanCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            collapsed: true,
-            isDescriptionOpen: false,
-            commentState: 'text',
-            comment: props.project.Comment !== null ? props.project.Comment : ''
+            collapsed: true
         };
 
-        this.onHandleEditComment = this.onHandleEditComment.bind(this);
         this.changeComment = this.changeComment.bind(this);
-        this.handleDescription = this.handleDescription.bind(this);
     }
 
+    changeComment(e, comment) {
+        let vacancy = this.props.project;
+        vacancy.Comment = comment;
+        this.props.changeVacancy(vacancy);
+    }
+
+    render() {
+        return (
+            <div>
+                <div className='boardCard'
+                     draggable={true}
+                     onDragEnd={(e) => {this.props.onDragEnd(e, this.props.project);}}>
+                    <div className='container'>
+                        <div>
+                            <span className='vacancy-name'>{this.props.project.Position}</span> <br/>
+                            <span className={this.props.project.CompanyName ? 'company-name' : 'hide'}>
+                    {this.props.project.CompanyName}
+                </span>
+                        </div>
+                        <div>
+                            <div><VacancyDescription vacancy={this.props.project} changeComment={this.changeComment}/></div>
+                            <div><IconButton onClick={(e) => this.props.deleteCard(e, this.props.project)}>
+                                <ClearIcon/>
+                            </IconButton></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        store: state
+    };
+}
+
+const Connected = connect(mapStateToProps, actions) (KanbanBoard);
+
+class Export extends React.Component {
+    render(){
+        return (<Connected/>);
+    }
+}
+
+export default Export;
+
+/*
     handleDescription(e) {
         if(this.props.project.isViewed != 1) {
             this.props.handleOnOpenDescription(this.props.project);
@@ -248,7 +299,7 @@ class KanbanCard extends React.Component {
         }
     }
 
-    vacancyDescription(vacancy) {
+vacancyDescription(vacancy) {
         return (
             <div className='card-description'>
                 <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
@@ -307,43 +358,4 @@ class KanbanCard extends React.Component {
             </div>
         );
     }
-
-    render() {
-        return (
-            <div>
-                <div className='boardCard'
-                     draggable={true}
-                     onDragEnd={(e) => {this.props.onDragEnd(e, this.props.project);}}
-                     onClick={this.handleDescription}>
-                    <div className='container'>
-                        <div>
-                            <span className='vacancy-name'>{this.props.project.Position}</span> <br/>
-                            <span className={this.props.project.CompanyName ? 'company-name' : 'hide'}>
-                    {this.props.project.CompanyName}
-                </span>
-                        </div>
-                        <div className='delete-button'
-                             onClick={(e) => this.props.deleteCard(e, this.props.project)}/>
-                    </div>
-                </div>
-                {this.vacancyDescription(this.props.project)}
-            </div>
-        );
-    }
-}
-
-function mapStateToProps(state) {
-    return {
-        store: state
-    };
-}
-
-const Connected = connect(mapStateToProps, actions) (KanbanBoard);
-
-class Export extends React.Component {
-    render(){
-        return (<Connected/>);
-    }
-}
-
-export default Export;
+ */

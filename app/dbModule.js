@@ -40,7 +40,6 @@ module.exports.getAmount = async function(id, userId,dateFlag) {
 		dateFlag = dateFlag.toISOString();
 		sql.connect(config).then(function() {
 			usQuery = `select dbo.testF3 ('${id}','${userId}','${dateFlag}') as count`;
-			console.log(usQuery);
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
 			}).catch(function(err) {
@@ -72,12 +71,13 @@ module.exports.getNewData = async function(id, userId, dateFlag) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
 		dateFlag = dateFlag.toISOString();
-		console.log('ДАЖЕ В ФУНКЦИЮ ПОПАЛИ');
 		sql.connect(config).then(function() {
 			usQuery = `select * from dbo.testF4('${id}','${userId}','${dateFlag}') order by SiteAddingDate DESC, Position, Url`;
 			let obj = new sql.Request().query(usQuery).then(function(result) {
+				result.recordset.forEach(function (element) {
+					element.SiteAddingDate = dateFormat(element.SiteAddingDate, "dd-mm-yyyy");
+				});
 				resolve(result.recordset);
-				console.log(result.recordset);
 			}).catch(function(err) {
 				console.dir(err);
 			});

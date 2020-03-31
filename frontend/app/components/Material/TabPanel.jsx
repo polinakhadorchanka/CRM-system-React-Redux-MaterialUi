@@ -10,6 +10,9 @@ import VacancyList from "../VacancyList.jsx";
 import Board from "../Board.jsx";
 import ParsersTable from "../ParsersTable.jsx";
 import FilterInput from "../FilterInput.jsx";
+import UpdateIcon from '@material-ui/icons/Update';
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -47,9 +50,22 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'transparent',
         minWidth: '1000px'
     },
+    bar: {
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+        padding: '0 20px',
+    },
+    tab: {
+        color: '#e1e1e1',
+        opacity: '1',
+        '&:focus': {
+            borderBottom: '2px solid #e8e8e8',
+        },
+        '&:active': {
+            borderBottom: '2px solid #e8e8e8 !important',
+        },
+    }
 }));
-
-//theme.palette.background.paper
 
 export default function SimpleTabs(props) {
     const classes = useStyles();
@@ -61,13 +77,16 @@ export default function SimpleTabs(props) {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="static" className={classes.bar}>
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="All" {...a11yProps(0)} onClick={() => props.setNextCount(true, 'all')}/>
-                    <Tab label="Unviewed" {...a11yProps(1)} onClick={() => props.setNextCount(true, 'unviewed')}/>
-                    <Tab label="Board" {...a11yProps(2)} />
-                    <Tab label="Parsers" {...a11yProps(3)} />
+                    <Tab className={classes.tab} label="All" {...a11yProps(0)} onClick={() => props.setNextCount(true, 'all')}/>
+                    <Tab className={classes.tab} label="Unviewed" {...a11yProps(1)} onClick={() => props.setNextCount(true, 'unviewed')}/>
+                    <Tab className={classes.tab} label="Board" {...a11yProps(2)} />
+                    <Tab className={classes.tab} label="Parsers" {...a11yProps(3)} />
                     <FilterInput/>
+                    <IconButton>
+                        <UpdateIcon onClick={props.handleClick} style={{'color':'#e1e1e1'}}/>
+                    </IconButton>
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>

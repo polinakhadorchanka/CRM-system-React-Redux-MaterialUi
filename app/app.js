@@ -38,12 +38,14 @@ app.get("/api/vacancies", function(req, res){
 
 // Получение новых вакансий++
 app.get("/api/vacancies/new", function(req, res){
-    console.log('кнопка has been activated');
     let id = req.query.id,
         userId = req.query.userId;
     mod.getNewData(id, userId, dateFlag).then(function(result) {
         res.send(result);
-    });
+        mod.getLastNoteDate().then(function (resultD) {
+            dateFlag = resultD.DbAddingDate;
+        });
+    })
 });
 
 // Получение количества новых вакансий++

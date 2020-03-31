@@ -29,10 +29,10 @@ class Tabs extends React.Component {
         await this.getVacancies('board', this.props.store.user.ClientId);
         await this.getParsers();
 
-        this.props.addVacancy(startVacancies.all, 'all');
-        this.props.addVacancy(startVacancies.unviewed, 'unviewed');
-        this.props.addVacancy(startVacancies.board, 'board');
-        this.props.addParsers(startVacancies.parsers);
+        await this.props.addVacancy(startVacancies.all, 'all');
+        await this.props.addVacancy(startVacancies.unviewed, 'unviewed');
+        await this.props.addVacancy(startVacancies.board, 'board');
+        await this.props.addParsers(startVacancies.parsers);
 
         this.props.setNextCount(true, 'all');
         this.props.setNextCount(true, 'unviewed');
@@ -72,7 +72,7 @@ class Tabs extends React.Component {
             return <div className='error'>404 - Not found</div>;
         } else {
             return (
-                <TabPanel setNextCount={this.props.setNextCount}/>
+                <TabPanel setNextCount={this.props.setNextCount} handleClick={this.setStartVacancies}/>
             );
         }
     }

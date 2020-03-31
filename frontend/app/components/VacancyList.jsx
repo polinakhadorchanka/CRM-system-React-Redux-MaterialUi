@@ -19,6 +19,7 @@ class VacancyList extends React.Component {
         this.showNewVacancies = this.showNewVacancies.bind(this);
         this.getNextCount = this.getNextCount.bind(this);
 
+        this.getNextCount();
         if(this.state.filter === 'all') this.getNewVacanciesCount(this);
     }
 

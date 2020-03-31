@@ -13,7 +13,7 @@ import Button from "@material-ui/core/Button";
 import DoneIcon from '@material-ui/icons/Done';
 import MaterialMenu from "./MaterialMenu.jsx";
 import StarsIcon from '@material-ui/icons/Stars';
-import Dialog from "./Dialog.jsx";
+import Dialog from "./ConfirmDialog.jsx";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
     },
     actions: {
         marginTop: '5px'
+    },
+    content: {
+        maxHeight: '250px',
+        overflowY: 'auto'
     }
 }));
 
@@ -112,7 +116,7 @@ export default function RecipeReviewCard(props) {
                 }
             />
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
+                <CardContent className={classes.content}>
                     <div dangerouslySetInnerHTML = {{__html:props.vacancy.Description}} />
                 </CardContent>
             </Collapse>
