@@ -313,3 +313,25 @@ a:hover {
     align-items: center;
     padding: 5px;
 }
+
+.boardCard .vacancy-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.boardCard .company-name {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.boardCard button {
+    width: 28px;
+    height: 28px;
+
+    padding: 0 10px;
+}
+
+.boardCard button svg {
+    width: 20px;
+    height: 20px;
+}

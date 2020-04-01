@@ -58,12 +58,9 @@ const useStyles = makeStyles((theme) => ({
     tab: {
         color: '#e1e1e1',
         opacity: '1',
-        '&:focus': {
-            borderBottom: '2px solid #e8e8e8',
-        },
-        '&:active': {
-            borderBottom: '2px solid #e8e8e8 !important',
-        },
+    },
+    indicator: {
+        background: '#e1e1e1'
     }
 }));
 
@@ -78,7 +75,7 @@ export default function SimpleTabs(props) {
     return (
         <div className={classes.root}>
             <AppBar position="static" className={classes.bar}>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" classes={{indicator: classes.indicator}} >
                     <Tab className={classes.tab} label="All" {...a11yProps(0)} onClick={() => props.setNextCount(true, 'all')}/>
                     <Tab className={classes.tab} label="Unviewed" {...a11yProps(1)} onClick={() => props.setNextCount(true, 'unviewed')}/>
                     <Tab className={classes.tab} label="Board" {...a11yProps(2)} />

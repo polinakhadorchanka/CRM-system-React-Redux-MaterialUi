@@ -26,8 +26,12 @@ const useStyles = makeStyles({
     card: {
         width: '90%',
         margin: '5%',
-        backgroundColor: '#f1f1f1'
-    }
+        backgroundColor: '#f1f1f1',
+    },
+    button: {
+        marginLeft: 'auto',
+        width: '30px'
+    },
 });
 
 function KanbanBoard(props) {
@@ -179,14 +183,15 @@ function KanbanBoard(props) {
 
 function KanbanColumn(props) {
     const classes = useStyles();
-    let mouseIsHovering = false;
+    let mouseIsHovering = false,
+        projects = props.projects;
 
     function componentWillReceiveProps(nextProps) {
         mouseIsHovering = false;
     }
 
     function generateKanbanCards() {
-        return props.projects.slice(0).map((project) => {
+        return projects.slice(0).map((project) => {
             return (
                 <Card className={classes.card}>
                     <KanbanCard
@@ -242,10 +247,10 @@ class KanbanCard extends React.Component {
                 </span>
                         </div>
                         <div>
-                            <div><VacancyDescription vacancy={this.props.project} changeComment={this.changeComment}/></div>
-                            <div><IconButton onClick={(e) => this.props.deleteCard(e, this.props.project)}>
+                            <VacancyDescription vacancy={this.props.project} changeComment={this.changeComment}/>
+                            <IconButton onClick={(e) => this.props.deleteCard(e, this.props.project)}>
                                 <ClearIcon/>
-                            </IconButton></div>
+                            </IconButton>
                         </div>
                     </div>
                 </div>
@@ -269,93 +274,3 @@ class Export extends React.Component {
 }
 
 export default Export;
-
-/*
-    handleDescription(e) {
-        if(this.props.project.isViewed != 1) {
-            this.props.handleOnOpenDescription(this.props.project);
-        }
-
-        this.setState(function(prevState) {
-            return {
-                isDescriptionOpen: prevState.isDescriptionOpen !== true
-            };
-        });
-        e.stopPropagation();
-    }
-
-    changeComment(e) {
-        this.setState({comment : e.target.value});
-    }
-
-    onHandleEditComment(e) {
-        if(e.type === 'click')
-            this.setState({commentState : 'input'});
-        else if(e.type === 'blur') {
-            this.setState({commentState : 'text'});
-            let vacancy = this.props.project;
-            vacancy.Comment = this.state.comment;
-            this.props.changeVacancy(vacancy);
-        }
-    }
-
-vacancyDescription(vacancy) {
-        return (
-            <div className='card-description'>
-                <div className={this.state.isDescriptionOpen === true ? 'back-vacancy-information' :
-                    ' back-vacancy-information hide'}> </div>
-                <div className={this.state.isDescriptionOpen === true ? 'vacancy-information' :
-                    'vacancy-information hide'}
-                     onClick={this.handleDescription}>
-                    <div className='vacancy-block' onClick={(e) => e.stopPropagation()}>
-                        <div className='flex-block'>
-                            <div>
-                                <span className='vacancy-name'>{vacancy.Position}</span> <br/>
-                                <a href={vacancy.Website} target='_blank'>
-                            <span className={vacancy.CompanyName ? 'company-name' : 'hide'}>
-                                {vacancy.CompanyName}
-                            </span>
-                                </a>
-                                <span className={vacancy.Country ? 'company-country' : 'hide'}>
-                                {' / ' + vacancy.Country}
-                            </span> <br/>
-                                <span className={vacancy.Location ? 'location' : 'hide'}>
-                                Location: {vacancy.Location}
-                            </span>
-                                <span className={vacancy.Contacts ? 'contacts' : 'hide'}>
-                                Contacts: {vacancy.Contacts}
-                            </span>
-                            </div>
-                            <div>
-                                <a href={vacancy.Url} target='_blank'
-                                   onClick={(e) => e.stopPropagation()}>
-                                    <input type='button' value='View' title='view vacancy'/>
-                                </a>
-                                <div className='date'>
-                                    {vacancy.SiteAddingDate}
-                                </div>
-                            </div>
-                        </div>
-                        <div  id={vacancy.Url + 'board'} className='description'
-                              dangerouslySetInnerHTML = {{__html:vacancy.Description}} />
-                        <span className='comment'>
-                            Comments:
-                        </span>
-                        <div className='user-comment'
-                             title={ this.state.commentState === 'text' ? 'Click to change' : undefined}
-                             onClick={this.state.commentState === 'text' ? this.onHandleEditComment : undefined}>
-                            {this.state.commentState === 'text' ?
-                                <div>
-                                    {this.state.comment !== '' ? this.state.comment : 'Click to change'}
-                                </div> :
-                                <input autoFocus={true}
-                                       onFocus={(e) => e.target.select()}
-                                       onBlur={this.onHandleEditComment} onChange={this.changeComment}
-                                       type='text' value={this.state.comment} maxLength='300' />}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
- */
