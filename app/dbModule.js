@@ -54,16 +54,18 @@ module.exports.getAmount = async function(id, userId,dateFlag) {
 module.exports.getAmountLeft = async function(vacId,filter,userId, techFilter) {
 	// filter
 	return new Promise(function(resolve, reject) {
-		sql.connect(config).then(function() {
-			let usQuery = `select dbo.testF2 ('${vacId}','${filter}','${userId}','${techFilter}') as count`;
-			let obj = new sql.Request().query(usQuery).then(function(result) {
-				resolve(result.recordset);
-			}).catch(function(err) {
+		if(vacId != 'undefined') {
+			sql.connect(config).then(function () {
+				let usQuery = `select dbo.testF2 ('${vacId}','${filter}','${userId}','${techFilter}') as count`;
+				let obj = new sql.Request().query(usQuery).then(function (result) {
+					resolve(result.recordset);
+				}).catch(function (err) {
+					console.dir(err);
+				});
+			}).catch(function (err) {
 				console.dir(err);
 			});
-		}).catch(function(err) {
-			console.dir(err);
-		});
+		}
 	})
 };
 

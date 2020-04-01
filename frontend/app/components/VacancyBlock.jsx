@@ -90,6 +90,8 @@ class VacancyBlock extends React.Component {
                 break;
         }
 
+        vacancy.IsViewed = true;
+
         if(this.props.store.boardVacancies.filter((e) => e.VacancyId === vacancy.VacancyId).length === 0)
             this.props.addVacancy(this.props.store.boardVacancies.concat(vacancy), 'board');
 

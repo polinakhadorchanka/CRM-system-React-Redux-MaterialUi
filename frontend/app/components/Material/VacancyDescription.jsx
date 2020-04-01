@@ -80,7 +80,8 @@ export default function AlertDialog(props) {
     const [expanded, setExpanded] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
-    let stack = props.vacancy.Technologies;
+    let stack = props.vacancy.Technologies ?
+        props.vacancy.Technologies.split(' // ') : undefined;
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -132,8 +133,7 @@ export default function AlertDialog(props) {
                                 <div className={stack ? 'stackDiv' : undefined}>
                                     {stack ? stack.map(function (el, index) {
                                         if(el !== '' && index <= 6)
-                                            return <div className='tech-stack' style={index === 0 && props.vacancy.CompanyName
-                                                ? {'margin-left': '10px'} : undefined}>{el}</div>;
+                                            return <div className='tech-stack'>{el}</div>;
                                     }) : undefined}
                                 </div>
                             </div>

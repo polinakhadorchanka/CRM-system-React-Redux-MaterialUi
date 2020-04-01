@@ -80,7 +80,7 @@ export default function RecipeReviewCard(props) {
                         <MaterialMenu values={['new', 'in the process', 'completed', 'deferred']}
                                       handleChooseStatus={props.handleChooseStatus}
                         />
-                        <Dialog handleRemoveVacancy={props.handleRemoveVacancy}/>
+                        <Dialog handleRemove={props.handleRemoveVacancy}/>
                         <IconButton
                             className={clsx(classes.expand, {
                                 [classes.expandOpen]: expanded,

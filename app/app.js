@@ -1,7 +1,7 @@
 let express = require("express");
 let bodyParser = require('body-parser');
 let mod = require('./dbModule');
-let parseH = require('./parsehubModule')
+let parseH = require('./parsehubModule');
 let dateFormat = require('dateformat');
 //todo: разобраться с сессиями, корзина, докер, мб линкедин
 let app = express();
@@ -109,6 +109,7 @@ function workWithParseHub(key,token){
                                         parseH.getDataFromParseHub(key, token).then(function (result) {
                                             mod.updateParserReadDate(token,key).then(async function (res) {
                                                 let r = await parseH.processJSON(JSON.stringify(result));
+                                                r = await parseH.sortDataFromParser(r);
                                                 return r;
                                             }).then(function (result) {
                                                 mod.insertVacations(result);

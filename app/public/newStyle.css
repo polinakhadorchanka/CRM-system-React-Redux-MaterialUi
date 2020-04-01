@@ -219,6 +219,7 @@ a:hover {
     border: 1px solid #1e1e1e;
     font-size: 12px;
     line-height: 14px;
+    cursor: pointer;
 }
 
 .tech-stack:hover {
@@ -311,7 +312,7 @@ a:hover {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 5px;
+    padding: 5px 5px 5px 10px;
 }
 
 .boardCard .vacancy-name {
@@ -334,4 +335,10 @@ a:hover {
 .boardCard button svg {
     width: 20px;
     height: 20px;
+}
+
+#errorMessage {
+    margin: 20px;
+    color: #e1e1e1;
+    font-size: 12px;
 }
