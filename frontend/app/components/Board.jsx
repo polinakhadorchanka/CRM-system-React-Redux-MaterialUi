@@ -136,30 +136,28 @@ function KanbanBoard(props) {
         updatedProjects.find((projectObject) => {return projectObject.VacancyId === project.VacancyId;}).BoardStatus = draggedOverCol;
         props.addVacancy(updatedProjects, 'board');
 
-        if(project.boardStatus !== undefined) {
-            let userId = props.store.user.ClientId;
+        let userId = props.store.user.ClientId;
 
-            fetch(`/api/vacancy-status?userId=${userId}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(project)
-                })
-                .then(
-                    function (response) {
-                        if (response.status !== 200) {
-                            console.log(`/api/vacancy-status` +
-                                response.status);
-                        }
+        fetch(`/api/vacancy-status?userId=${userId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(project)
+            })
+            .then(
+                function (response) {
+                    if (response.status !== 200) {
+                        console.log(`/api/vacancy-status` +
+                            response.status);
                     }
-                )
-                .catch(function (err) {
-                    console.log('EXP: ', err);
-                });
-        }
+                }
+            )
+            .catch(function (err) {
+                console.log('EXP: ', err);
+            });
     }
 
     return (

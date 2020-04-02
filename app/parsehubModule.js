@@ -102,6 +102,22 @@ module.exports.processJSON = async function(data) {
     return JSON.stringify(obj);
 };
 
+module.exports.sortDataFromParser = async function(data) {
+    data = JSON.parse(data);
+    data.positions.sort(function (a,b) {
+        let adate = new Date(a.date),
+            bdate = new Date(b.date);
+        if (adate < bdate ) {
+            return -1;
+        }
+        if (adate > bdate) {
+            return 1;
+        }
+        return 0;
+    });
+    return JSON.stringify(data);
+};
+
 function changeDate(time) {
     let now = new Date();
     if (/[0-9]/.test(time)) {

@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         backgroundColor: 'transparent',
-        minWidth: '1000px'
+        minWidth: '1200px'
     },
     bar: {
         backgroundColor: 'transparent',
@@ -81,8 +81,8 @@ export default function SimpleTabs(props) {
                     <Tab className={classes.tab} label="Board" {...a11yProps(2)} />
                     <Tab className={classes.tab} label="Parsers" {...a11yProps(3)} />
                     <FilterInput/>
-                    <IconButton>
-                        <UpdateIcon onClick={props.handleClick} style={{'color':'#e1e1e1'}}/>
+                    <IconButton id='update-button' onClick={props.handleClick} >
+                        <UpdateIcon style={{'color':'#e1e1e1'}}/>
                     </IconButton>
                 </Tabs>
             </AppBar>

@@ -9,9 +9,10 @@ export default function SimpleMenu(props) {
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+        event.stopPropagation();
     };
 
-    const handleClose = () => {
+    const handleClose = (e) => {
         setAnchorEl(null);
     };
 

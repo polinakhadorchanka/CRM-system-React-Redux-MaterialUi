@@ -67,6 +67,8 @@ export default function RecipeReviewCard(props) {
     return (
         <Card className={classes.root}>
             <CardHeader
+                        onClick={(e) => props.handleOpenDesc(e, handleExpandClick)}
+                        aria-expanded={expanded}
                 avatar={
                     <Avatar aria-label="recipe" className={classes.avatar}>
                         {props.vacancy.BoardStatus !== null ? <StarsIcon/> :
@@ -76,21 +78,11 @@ export default function RecipeReviewCard(props) {
                 action={
                     <div className={classes.actions}>
                         <span className={classes.date}>{props.vacancy.SiteAddingDate}</span>
-                        <Button href={props.vacancy.Url} color="primary" target='_blank'>View</Button>
+                        <Button href={props.vacancy.Url} color="primary" target='_blank' onClick={(e) => e.stopPropagation()}>View</Button>
                         <MaterialMenu values={['new', 'in the process', 'completed', 'deferred']}
                                       handleChooseStatus={props.handleChooseStatus}
                         />
                         <Dialog handleRemove={props.handleRemoveVacancy}/>
-                        <IconButton
-                            className={clsx(classes.expand, {
-                                [classes.expandOpen]: expanded,
-                            })}
-                            onClick={(e) => props.handleOpenDesc(e, handleExpandClick)}
-                            aria-expanded={expanded}
-                            aria-label="show more"
-                        >
-                            <ExpandMoreIcon />
-                        </IconButton>
                     </div>
                 }
                 title={props.vacancy.Position}

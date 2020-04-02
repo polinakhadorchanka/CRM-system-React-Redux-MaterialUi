@@ -11,12 +11,14 @@ import IconButton from "@material-ui/core/IconButton";
 export default function AlertDialog(props) {
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (e) => {
         setOpen(true);
+        e.stopPropagation();
     };
 
-    const handleClose = () => {
+    const handleClose = (e) => {
         setOpen(false);
+        e.stopPropagation();
     };
 
     return (

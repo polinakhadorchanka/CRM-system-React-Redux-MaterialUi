@@ -16,6 +16,6 @@ const GreenCheckbox = withStyles({
 
 export default function CheckboxLabels(props) {
     return (
-        <GreenCheckbox checked={props.checked} onChange={(e) => props.handleChange(e, undefined, props.parserId)}/>
+        <GreenCheckbox checked={props.checked} onChange={function(e) { console.log(props.parserId); props.handleChange(e, null, props.parserId)}}/>
     );
 }

@@ -114,7 +114,8 @@ class ParsersTable extends React.Component {
                 document.getElementById('description').value = '';
 
                 context.setState({errors: []});
-                context.props.addParsers(context.props.store.parsers.concat(obj));
+                //context.props.addParsers(context.props.store.parsers.concat(obj));
+                document.getElementById('update-button').click();
             }
         })
             .catch(function (err) {
