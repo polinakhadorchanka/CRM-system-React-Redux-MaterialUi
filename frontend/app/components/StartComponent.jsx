@@ -1,20 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from "../actions.jsx";
+import {withRouter} from "react-router-dom";
 
 class StartComponent extends React.Component {
     constructor(props) {
         super(props);
+
+        if(localStorage.getItem('user') !== null)
+            props.history.push(`/${JSON.parse(localStorage.getItem('user')).Login}`);
     }
+
     render() {
-        let imgStyle = {
-                'width' : '100%',
-                'min-width': '1000px',
-                'opacity': '0.7',
-                'user-select': 'none',
-                'pointer-events': 'none'
-            },
-            pStyle = {
+        let pStyle = {
                 'position': 'absolute',
                 'top': '150px',
                 'margin-left' : '60px',
@@ -42,7 +40,7 @@ function mapStateToProps(state) {
     };
 }
 
-const Connected = connect(mapStateToProps, actions) (StartComponent);
+const Connected = withRouter(connect(mapStateToProps, actions) (StartComponent));
 
 class Export extends React.Component {
     render(){

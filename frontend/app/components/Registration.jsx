@@ -25,6 +25,9 @@ class Registration extends React.Component {
             errors: []
         };
 
+        if(localStorage.getItem('user') !== null)
+            props.history.push(`/${JSON.parse(localStorage.getItem('user')).Login}`);
+
         document.title = document.title + ' - Registration';
 
         this.onEmailChange = this.onEmailChange.bind(this);

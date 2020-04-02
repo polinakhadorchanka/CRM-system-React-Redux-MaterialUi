@@ -37,9 +37,14 @@ module.exports.getData = async function(id, filter, userId, techFilter,count) {
 module.exports.getAmount = async function(id, userId,dateFlag) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
-		dateFlag = dateFlag.toISOString();
-		sql.connect(config).then(function() {
+		if(id == 'undefined'){
+			usQuery = `select count(*) as count from Vacancy `;
+		}
+		else {
+			dateFlag = dateFlag.toISOString();
 			usQuery = `select dbo.testF3 ('${id}','${userId}','${dateFlag}') as count`;
+		}
+		sql.connect(config).then(function() {
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				resolve(result.recordset);
 			}).catch(function(err) {
@@ -72,9 +77,13 @@ module.exports.getAmountLeft = async function(vacId,filter,userId, techFilter) {
 module.exports.getNewData = async function(id, userId, dateFlag) {
 	return new Promise(function(resolve, reject) {
 		let usQuery;
-		dateFlag = dateFlag.toISOString();
-		sql.connect(config).then(function() {
+		if(id == 'undefined')
+			usQuery = `select * from dbo.testF5() order by SiteAddingDate DESC, Position, Url`;
+		else {
+			dateFlag = dateFlag.toISOString();
 			usQuery = `select * from dbo.testF4('${id}','${userId}','${dateFlag}') order by SiteAddingDate DESC, Position, Url`;
+		}
+		sql.connect(config).then(function() {
 			let obj = new sql.Request().query(usQuery).then(function(result) {
 				result.recordset.forEach(function (element) {
 					element.SiteAddingDate = dateFormat(element.SiteAddingDate, "dd-mm-yyyy");

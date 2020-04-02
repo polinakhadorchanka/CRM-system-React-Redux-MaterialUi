@@ -120,26 +120,33 @@ module.exports.sortDataFromParser = async function(data) {
 
 function changeDate(time) {
     let now = new Date();
-    if (/[0-9]/.test(time)) {
-        let timeSpaceless = time.replace(/\s+/g, ''),
-            num = '' + parseInt(time.replace(/\D+/g, "")),
-            indexOfNumber = time.replace(/\s+/g, '').indexOf(num),
-            finalTime = num + timeSpaceless[indexOfNumber + num.length];
-        switch (finalTime[finalTime.length - 1]) {
-            case "h":
-                now -= num * 1000 * 60 * 60;
-                break;
-            case "d":
-                now -= num * 1000 * 60 * 60 * 24;
-                break;
-            case "m":
-                now = now.setMonth(now.getMonth() - num);
-                break;
+    if(new Date(time) == 'Invalid Date') {
+        if (/[0-9]/.test(time)) {
+            let timeSpaceless = time.replace(/\s+/g, ''),
+                num = '' + parseInt(time.replace(/\D+/g, "")),
+                indexOfNumber = time.replace(/\s+/g, '').indexOf(num),
+                finalTime = num + timeSpaceless[indexOfNumber + num.length];
+            switch (finalTime[finalTime.length - 1]) {
+                case "h":
+                    now -= num * 1000 * 60 * 60;
+                    break;
+                case "w":
+                    now -= num * 1000 * 60 * 60 * 24 * 7;
+                    break;
+                case "d":
+                    now -= num * 1000 * 60 * 60 * 24;
+                    break;
+                case "m":
+                    now = now.setMonth(now.getMonth() - num);
+                    break;
+            }
         }
+        return dateFormat(now, "isoDate");
+    } else if(time == 'Posted yesterday'){
+        now -= 1000 * 60 * 60 * 24;
+        return dateFormat(now, "isoDate");
     }
-    let date = dateFormat(now, "isoDate");
-    return date;
-
+    return time;
 }
 
 function changeTechnologies(stack) {

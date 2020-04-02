@@ -27,7 +27,7 @@ app.get("/api/vacancies", function(req, res){
         techFilter = req.query.techFilter,
         count = req.query.count;
     mod.getLastNoteDate().then(function (resultD) {
-        if(id == 'undefined') {
+        if(id == 'undefined' && resultD!=undefined) {
             dateFlag = resultD.DbAddingDate;
         }
     });

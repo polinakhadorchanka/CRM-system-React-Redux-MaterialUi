@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import actions from "../actions.jsx";
 
 import VacancyBlock from "./VacancyBlock.jsx";
+import CountButton from "./Material/CountButton.jsx";
 
 class VacancyList extends React.Component {
     constructor(props) {
@@ -199,11 +200,7 @@ class VacancyList extends React.Component {
                         return <VacancyBlock position={vacancy} filter={filter} index={index}/>
                 })
             }
-            <div id="show-new-vacancies-block" className={this.props.store.newVacanciesCount === 0 ?
-                'show-new-vacancies-block-hide' : ''}
-                 onClick={this.showNewVacancies}>
-                {"show " + this.props.store.newVacanciesCount + " new vacancies"}
-            </div>
+            <CountButton count={this.props.store.newVacanciesCount} handleClick={this.showNewVacancies}/>
             <div id="bottom-block"
                  className={this.state.nextCount <= 0 ? "hide" : ""}
                  onClick={this.showNextVacancies}>

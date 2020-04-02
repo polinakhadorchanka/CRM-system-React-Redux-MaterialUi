@@ -14,6 +14,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import MaterialMenu from "./MaterialMenu.jsx";
 import StarsIcon from '@material-ui/icons/Stars';
 import Dialog from "./ConfirmDialog.jsx";
+import {Tooltip} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,10 +80,14 @@ export default function RecipeReviewCard(props) {
                     <div className={classes.actions}>
                         <span className={classes.date}>{props.vacancy.SiteAddingDate}</span>
                         <Button href={props.vacancy.Url} color="primary" target='_blank' onClick={(e) => e.stopPropagation()}>View</Button>
+                        <Tooltip title='Add to board'>
                         <MaterialMenu values={['new', 'in the process', 'completed', 'deferred']}
                                       handleChooseStatus={props.handleChooseStatus}
                         />
+                        </Tooltip>
+                        <Tooltip title='Remove'>
                         <Dialog handleRemove={props.handleRemoveVacancy}/>
+                        </Tooltip>
                     </div>
                 }
                 title={props.vacancy.Position}

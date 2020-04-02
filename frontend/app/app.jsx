@@ -1,4 +1,3 @@
-//import Button from "@material-ui/core/Button";
 import React from 'react';
 import ReactDOM  from 'react-dom';
 import { createStore } from 'redux'
@@ -21,11 +20,6 @@ let history = createBrowserHistory();
 getStartVacancies();
 
 async function getStartVacancies() {
-    if ((document.location.pathname === '/login' || document.location.pathname === '/registration'
-        || document.location.pathname === '/')
-        && localStorage.getItem('user') !== null) {
-        window.location.href = `/${JSON.parse(localStorage.getItem('user')).Login}`;
-    } else {
         ReactDOM.render(
             <Provider store={store}>
                 <Router history={history}>
@@ -43,5 +37,4 @@ async function getStartVacancies() {
             </Provider>,
             document.getElementById("container")
         );
-    }
 }

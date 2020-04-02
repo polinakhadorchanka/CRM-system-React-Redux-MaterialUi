@@ -78,7 +78,9 @@ class Header extends React.Component {
 
         return (
             <header style={headerStyle}>
-                <Link to='/'><a style={systemNameStyle} href='/'>
+                <Link
+                    to={localStorage.getItem('user') === null ? '/' : `/${JSON.parse(localStorage.getItem('user')).Login}`}>
+                    <a style={systemNameStyle} href='/'>
                     CRM System
                 </a></Link>
                 {this.props.store.user ? this.logOut() : this.logIn()}

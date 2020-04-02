@@ -8,11 +8,9 @@ import { Link } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import {withRouter} from "react-router-dom"
 
-let history = createBrowserHistory();
-
 class Login extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isLoginValid: true,
             isPasswordValid: true,
@@ -20,6 +18,9 @@ class Login extends React.Component {
             password: '',
             errors: []
         };
+
+        if(localStorage.getItem('user') !== null)
+            props.history.push(`/${JSON.parse(localStorage.getItem('user')).Login}`);
 
         document.title = document.title + ' - Login';
 
