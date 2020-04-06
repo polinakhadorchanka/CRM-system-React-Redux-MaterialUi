@@ -66,13 +66,13 @@ module.exports.runParseHubFunction = async function(key, token) {
     });
 };
 
-module.exports.getListOfParsersByKey = async function(key, token) {
+module.exports.getListOfParsersByKey = async function(key) {
     return new Promise(function(resolve, reject) {
         request({
             uri: 'https://www.parsehub.com/api/v2/projects',
             method: 'GET',
             qs: {
-                api_key: "td_sN-PPvfKs",
+                api_key: key,
                 offset: "0",
                 limit: "20",
                 include_options: "1"
@@ -90,12 +90,12 @@ module.exports.getListOfParsersByKey = async function(key, token) {
 
 /* Обработка входных данных */
 
-module.exports.processJSON = async function(data) {
+module.exports.processJSON = async function(data,parserTime) {
     data = data.replace(/'/g, "''");
 
     let obj = JSON.parse(data);
     obj.positions.forEach(function(element) {
-        element.date = changeDate(element.date);
+        element.date = changeDate(element.date,parserTime);
         element.technologies = changeTechnologies((element.technologies));
     });
 
@@ -118,8 +118,8 @@ module.exports.sortDataFromParser = async function(data) {
     return JSON.stringify(data);
 };
 
-function changeDate(time) {
-    let now = new Date();
+function changeDate(time,parserTime) {
+    let now = new Date(parserTime);
     if(new Date(time) == 'Invalid Date') {
         if (/[0-9]/.test(time)) {
             let timeSpaceless = time.replace(/\s+/g, ''),
