@@ -22,7 +22,7 @@ class Login extends React.Component {
         if(localStorage.getItem('user') !== null)
             props.history.push(`/${JSON.parse(localStorage.getItem('user')).Login}`);
 
-        document.title = document.title + ' - Login';
+        document.title = ' CRM-system - Login';
 
         this.onLoginChange = this.onLoginChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
@@ -75,7 +75,13 @@ class Login extends React.Component {
                     },
                     body: JSON.stringify(obj)
                 })
-                .then(response => response.json()).then(function (data) {
+                .then(function (response) {
+                    if (response.status !== 200) {
+                        alert('Sorry, server connection error.');
+                        return;
+                    }
+                    return response.json();
+                }).then(function (data) {
                 if (data[0] && data[0].errorMessage !== null) {
                     context.setState({errors: data});
                     $('.info-block').addClass('open');
@@ -86,7 +92,7 @@ class Login extends React.Component {
                 }
             })
                 .catch(function (err) {
-                    console.log('EXP: ', err);
+                    alert('Sorry, server connection error.');
                 });
         }
     }

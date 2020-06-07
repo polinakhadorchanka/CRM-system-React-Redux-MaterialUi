@@ -78,10 +78,18 @@ export default function SimpleTabs(props) {
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" classes={{indicator: classes.indicator}} >
                     <Tab className={classes.tab} label="All" {...a11yProps(0)} onClick={() => props.setNextCount(true, 'all')}/>
                     <Tab className={classes.tab} label="Unviewed" {...a11yProps(1)} onClick={() => props.setNextCount(true, 'unviewed')}/>
-                    <Tab className={classes.tab} label="Board" {...a11yProps(2)} />
-                    <Tab className={classes.tab} label="Parsers" {...a11yProps(3)} />
-                    <FilterInput/>
-                    <IconButton id='update-button' onClick={props.handleClick} >
+                    <Tab className={classes.tab} label="Board" {...a11yProps(2)} onClick={props.handleClick}/>
+                    <Tab className={classes.tab} label="Parsers" {...a11yProps(3)} onClick={props.handleClick}/>
+                    {((document.getElementById('simple-tab-2') &&
+                        document.getElementById('simple-tab-2').getAttribute('aria-selected') === 'true') ||
+                    (document.getElementById('simple-tab-3') &&
+                    document.getElementById('simple-tab-3').getAttribute('aria-selected') === 'true')) ? undefined : <FilterInput/>}
+                    <IconButton id='update-button' onClick={props.handleClick}
+                                style={((document.getElementById('simple-tab-2') &&
+                                    document.getElementById('simple-tab-2').getAttribute('aria-selected') === 'true') ||
+                                    (document.getElementById('simple-tab-3') &&
+                                        document.getElementById('simple-tab-3').getAttribute('aria-selected') === 'true')) ?
+                                    {marginLeft: 'auto'} : undefined} >
                         <UpdateIcon style={{'color':'#e1e1e1'}}/>
                     </IconButton>
                 </Tabs>

@@ -25,7 +25,13 @@ class FilterInput extends React.Component {
     async getVacancies(filter, userId, techFilter) {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
             `count=9&filter=${filter}&techFilter=${techFilter ? techFilter : undefined}`)
-            .then(response => response.json()).then(function (data) {
+            .then(function (response) {
+                if (response.status !== 200) {
+                    alert('Sorry, server connection error.');
+                    return;
+                }
+                return response.json();
+            }).then(function (data) {
                 switch(filter) {
                     case 'all':
                         startVacancies.all = data; break;
@@ -36,7 +42,7 @@ class FilterInput extends React.Component {
                 }
             })
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 

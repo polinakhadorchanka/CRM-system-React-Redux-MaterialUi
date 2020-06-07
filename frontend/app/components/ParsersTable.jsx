@@ -37,7 +37,7 @@ class ParsersTable extends React.Component {
                         },
                         body: JSON.stringify(parser)
                     }).catch(function (err) {
-                    console.log('EXP: ', err);
+                    console.log(err);
                 });
                 break;
             case 'delete':
@@ -52,7 +52,7 @@ class ParsersTable extends React.Component {
                         },
                         body: JSON.stringify(parser)
                     }).catch(function (err) {
-                    console.log('EXP: ', err);
+                    console.log(err);
                 });
                 break;
 
@@ -119,7 +119,7 @@ class ParsersTable extends React.Component {
             }
         })
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 

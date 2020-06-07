@@ -43,6 +43,7 @@ function KanbanBoard(props) {
         {name: 'completed', stage: 3},
         {name: 'deferred', stage: 4},
     ];
+
     const projects = props.store.boardVacancies;
     let draggedOverCol;
 
@@ -59,7 +60,7 @@ function KanbanBoard(props) {
                     },
                     body: JSON.stringify(project)
                 }).catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
         }
     }
@@ -89,7 +90,7 @@ function KanbanBoard(props) {
                 }
             )
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
 
         e.stopPropagation();
@@ -120,44 +121,54 @@ function KanbanBoard(props) {
                     }
                 )
                 .catch(function (err) {
-                    console.log('EXP: ', err);
+                    console.log(err);
                 });
         }
     }
 
     //this is called when a Kanban card is dragged over a column (called by column)
     function handleOnDragEnter(e, stageValue) {
-        draggedOverCol = stageValue;
+        if(stageValue !== undefined)
+            draggedOverCol = stageValue;
     }
 
     //this is called when a Kanban card dropped over a column (called by card)
     function handleOnDragEnd(e, project) {
-        const updatedProjects = props.store.boardVacancies.slice(0);
-        updatedProjects.find((projectObject) => {return projectObject.VacancyId === project.VacancyId;}).BoardStatus = draggedOverCol;
-        props.addVacancy(updatedProjects, 'board');
+        project.BoardStatus = draggedOverCol;
 
-        let userId = props.store.user.ClientId;
+        if(project.BoardStatus !== undefined) {
+            let userId = props.store.user.ClientId;
 
-        fetch(`/api/vacancy-status?userId=${userId}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(project)
-            })
-            .then(
-                function (response) {
-                    if (response.status !== 200) {
-                        console.log(`/api/vacancy-status` +
-                            response.status);
+            console.log(project);
+            fetch(`/api/vacancy-status?userId=${userId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(project)
+                })
+                .then(
+                    function (response) {
+                        if (response.status !== 200) {
+                            console.log(`/api/vacancy-status` +
+                                response.status);
+
+                            return;
+                        }
+
+                        const updatedProjects = props.store.boardVacancies.slice(0);
+                        updatedProjects.find((projectObject) => {
+                            return projectObject.VacancyId === project.VacancyId;
+                        }).BoardStatus = draggedOverCol;
+                        props.addVacancy(updatedProjects, 'board');
                     }
-                }
-            )
-            .catch(function (err) {
-                console.log('EXP: ', err);
-            });
+                )
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
     }
 
     return (

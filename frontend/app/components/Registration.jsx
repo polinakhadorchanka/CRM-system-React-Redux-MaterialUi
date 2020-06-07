@@ -28,7 +28,7 @@ class Registration extends React.Component {
         if(localStorage.getItem('user') !== null)
             props.history.push(`/${JSON.parse(localStorage.getItem('user')).Login}`);
 
-        document.title = document.title + ' - Registration';
+        document.title = ' CRM-system - Registration';
 
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onLoginChange = this.onLoginChange.bind(this);
@@ -124,11 +124,12 @@ class Registration extends React.Component {
                     $('.info-block').addClass('open');
                     context.setState({errors : data});
                 }
-
+				else {
                 context.props.history.push('/login');
+				}
             })
                 .catch(function (err) {
-                    console.log('EXP: ', err);
+                    alert('Sorry, server connection error.');
                 });
         }
     }

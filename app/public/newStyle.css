@@ -72,6 +72,8 @@ a:hover {
     text-align: center;
     margin-bottom: 20px;
     user-select: none;
+
+    font-size: 24px;
 }
 
 .login-block form {

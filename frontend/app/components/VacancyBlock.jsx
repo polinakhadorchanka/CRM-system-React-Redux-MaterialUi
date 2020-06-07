@@ -29,13 +29,12 @@ class VacancyBlock extends React.Component {
             .then(
                 function (response) {
                     if (response.status !== 200) {
-                        console.log(`/api/vacancy-status` +
-                            response.status);
+                        alert('Sorry, server connection error.');
                     }
                 }
             )
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 

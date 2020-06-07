@@ -49,7 +49,7 @@ class VacancyList extends React.Component {
                 }
             )
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 
@@ -68,7 +68,7 @@ class VacancyList extends React.Component {
             .then(
                 function(response) {
                     if (response.status !== 200) {
-                        console.log(`ERR: showNextVacancies : ` + response.status);
+                        alert('Sorry, server cnnection error.');
                         return;
                     }
 
@@ -80,7 +80,7 @@ class VacancyList extends React.Component {
                 }
             )
             .catch(function(err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 
@@ -96,8 +96,7 @@ class VacancyList extends React.Component {
                     .then(
                         function (response) {
                             if (response.status !== 200) {
-                                console.log('ERR: /api/vacancies/new/count : ' +
-                                    response.status);
+                                alert('Sorry, server cnnection error.');
                                 return;
                             }
 
@@ -108,7 +107,6 @@ class VacancyList extends React.Component {
                         }
                     )
                     .catch(function (err) {
-                        console.log('EXP: ', err);
                     });
             } else {
                 context.changeStore('CHANGE_COUNT', 0);
@@ -146,7 +144,7 @@ class VacancyList extends React.Component {
                     }
                 )
                 .catch(function (err) {
-                    console.log('EXP: ', err);
+                    console.log(err);
                 });
         }
         else {

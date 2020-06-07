@@ -17,6 +17,8 @@ class Tabs extends React.Component {
 
         this.setStartVacancies = this.setStartVacancies.bind(this);
         this.setStartVacancies();
+		
+		document.title = ' CRM-system';
     }
 
     async setStartVacancies(e, techFilter) {
@@ -40,18 +42,30 @@ class Tabs extends React.Component {
 
     async getParsers() {
         await fetch(`/api/parsers`)
-            .then(response => response.json()).then(function (data) {
+            .then(function (response) {
+                if (response.status !== 200) {
+                    alert('Sorry, server connection error.');
+                    return;
+                }
+                return response.json();
+            }).then(function (data) {
                 startVacancies.parsers = data;
             })
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 
     async getVacancies(filter, userId, techFilter) {
         await fetch(`/api/vacancies?userId=${userId}&id=undefined&` +
             `count=9&filter=${filter}&techFilter=${techFilter ? techFilter : undefined}`)
-            .then(response => response.json()).then(function (data) {
+            .then(function (response) {
+                if (response.status !== 200) {
+                    alert('Sorry, server connection error.');
+                    return;
+                }
+                return response.json();
+            }).then(function (data) {
                 switch(filter) {
                     case 'all':
                         startVacancies.all = data; break;
@@ -62,7 +76,7 @@ class Tabs extends React.Component {
                 }
             })
             .catch(function (err) {
-                console.log('EXP: ', err);
+                console.log(err);
             });
     }
 
@@ -94,81 +108,3 @@ class Export extends React.Component {
 }
 
 export default Export;
-
-/*
-<div>
-                    <ul className="nav nav-tabs" style={{'position': 'relative'}}>
-                        <li className="nav-item">
-                            <TabButton id='all' href="#l-all" label='All' className="nav-link active" dataToggle="tab"/>
-                        </li>
-                        <li className="nav-item">
-                            <TabButton id='unviewed' href="#l-unviewed" label='Unviewed' className="nav-link" dataToggle="tab"/>
-                        </li>
-                        <li className="nav-item">
-                            <TabButton id='board' href="#board-tab" label='Board' className="nav-link" dataToggle="tab"/>
-                        </li>
-                        <li className="nav-item">
-                            <TabButton id='Parsers' href="#parsers-tab" label='Parsers' className="nav-link" dataToggle="tab"/>
-                        </li>
-                        <li id='update-tab'>
-                            <TabButton className="nav-link" id='update-item' title='Update' handleClick={this.setStartVacancies}/>
-                        </li>
-                        <FilterInput/>
-                    </ul>
-                    <div className="tab-content">
-                        <div className="tab-pane fade show active" id="l-all">
-                            <VacancyList filter='all' ref='l-all'/>
-                        </div>
-                        <div className="tab-pane fade show" id="l-unviewed">
-                            <VacancyList filter='unviewed' ref='l-unviewed'/>
-                        </div>
-                        <div className="tab-pane fade" id="board-tab">
-                            <Board/>
-                        </div>
-                        <div className="tab-pane fade" id="parsers-tab">
-                            <ParsersTable/>
-                        </div>
-                    </div>
-                </div>
-
-
-<div>
-                    <ul className="nav nav-tabs" style={{'position': 'relative'}}>
-                        <li className="nav-item">
-                            <a id='all' className="nav-link active" data-toggle="tab" href="#l-all">All</a>
-                        </li>
-                        <li className="nav-item">
-                            <a id='unviewed'
-                               className="nav-link" data-toggle="tab" href="#l-unviewed">Unviewed</a>
-                        </li>
-                        <li className="nav-item">
-                            <a id='board'
-                               className="nav-link" data-toggle="tab" href="#board-tab">Board</a>
-                        </li>
-                        <li className="nav-item">
-                            <a id='Parsers'
-                               className="nav-link" data-toggle="tab" href="#parsers-tab">Parsers</a>
-                        </li>
-                        <li id='update-tab'>
-                            <a href='#'>
-                                <div id='update-item' title='Update' onClick={this.setStartVacancies}/>
-                            </a>
-                        </li>
-                        <FilterInput/>
-                    </ul>
-                    <div className="tab-content">
-                        <div className="tab-pane fade show active" id="l-all">
-                            <VacancyList filter='all' ref='l-all'/>
-                        </div>
-                        <div className="tab-pane fade show" id="l-unviewed">
-                            <VacancyList filter='unviewed' ref='l-unviewed'/>
-                        </div>
-                        <div className="tab-pane fade" id="board-tab">
-                            <Board/>
-                        </div>
-                        <div className="tab-pane fade" id="parsers-tab">
-                            <ParsersTable/>
-                        </div>
-                    </div>
-                </div>
- */
